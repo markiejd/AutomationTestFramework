@@ -126,7 +126,7 @@ namespace Core
             return null;
         }
         
-        public static string GetJiraData(string API_Access_Token = "token", string apiUrl = "https://")
+        public static string GetJiraData(string API_Access_Token = "", string apiUrl = "https://")
         {
             try
             {
@@ -421,7 +421,7 @@ namespace Core
             }
         }
 
-        private static HttpClient? GetHttpClient(string authorisation = "token", string userName = "", string userPassword = "")
+        private static HttpClient? GetHttpClient(string authorisation = "", string userName = "", string userPassword = "")
         {
             var client = new HttpClient();
             switch(authorisation.ToLower())
