@@ -1,0 +1,9 @@
+locust
+psutil
+requests
+gevent
+flask
+gunicorn
+flask_cors
+flask_restx
+beautifulsoup4

@@ -1,0 +1,16 @@
+{
+    "Host": "https://bidgendev.openai.azure.com/openai/deployments/",
+    "AskQuestion": {
+        "method": "POST",
+        "endpoint": "/chat/completions?api-version=2024-02-01",
+        "data":
+            {
+            "role": "user",
+            "content": "Who is the founder of CGI?"
+            },
+        "headers": {
+                "Content-Type": "application/json; charset=UTF-8"
+            }
+        }
+}
+

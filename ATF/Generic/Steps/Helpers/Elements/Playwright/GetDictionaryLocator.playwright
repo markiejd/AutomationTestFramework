@@ -1,0 +1,94 @@
+
+using Core;
+using Core.Logging;
+
+namespace Generic.Steps.Helpers.Classes
+{
+    public static class GetDictionaryLocator
+    {
+        public static string? ByValue(FormBase CurrentPage, string value)
+        {
+            DebugOutput.Log($"Does the Current Page {CurrentPage.Name} contain the element {value}");
+            if (CurrentPage.Elements.ContainsKey(value))
+            {
+                DebugOutput.Log($"IT DOES! Found it!");
+                return CurrentPage.Elements[value];
+            }
+            DebugOutput.Log($"Nope - not in this page at least!");
+            return null;
+        }
+
+        
+        public static string? GetElementLocator(string name, FormBase CurrentPage, string type = "")
+        {
+            if (name != "ID") name = name.ToLower();
+            DebugOutput.Log($"GetCorrectElementName {name} CURRENTPAGE {CurrentPage} and TYPE = {type}");
+            if (CurrentPage.Elements.ContainsKey(name))
+            {
+                DebugOutput.Log($"Found the element name {name} on current page form!");
+                return CurrentPage.Elements[name];
+            }
+            var noSpaceName = name.Replace(" ", "");
+            if (CurrentPage.Elements.ContainsKey(noSpaceName))
+            {
+                DebugOutput.Log($"Found the element name NO SPACE {noSpaceName} on current page form!");
+                return CurrentPage.Elements[noSpaceName];
+            }
+
+            DebugOutput.Log($"Failed to find name as {name} this is common if you have multiple things, with multipe names, so have to give it the element type to narrow it down!");
+
+            switch (type.ToLower())
+            {
+                default:
+                case "":
+                    {
+                        DebugOutput.Log($"Do not know what TYPE of element! to check!");
+                        return null;
+                    }
+                case "accordion":
+                    return GetDictionaryLocator.ByValue(CurrentPage, name + " " + "accordion");
+                case "button":
+                    return GetDictionaryLocator.ByValue(CurrentPage, name + " " + "button");
+                case "chip":
+                    return GetDictionaryLocator.ByValue(CurrentPage, name + " " + "chip");
+                case "checkbox":
+                    return GetDictionaryLocator.ByValue(CurrentPage, name + " " + "checkbox");
+                case "datepicker":
+                    return GetDictionaryLocator.ByValue(CurrentPage, name + " " + "datepicker");
+                case "dropdown":
+                    return GetDictionaryLocator.ByValue(CurrentPage, name + " " + "dropdown");
+                case "image":
+                    return GetDictionaryLocator.ByValue(CurrentPage, name + " " + "image");
+                case "input":
+                case "text":
+                case "textbox":
+                    return GetDictionaryLocator.ByValue(CurrentPage, name + " " + "textbox");
+                case "list":
+                    return GetDictionaryLocator.ByValue(CurrentPage, name + " " + "list");
+                case "radiobutton":
+                    return GetDictionaryLocator.ByValue(CurrentPage, name + " " + "radiobutton");
+                case "slider":
+                    return GetDictionaryLocator.ByValue(CurrentPage, name + " " + "slider");
+                case "span":
+                    return GetDictionaryLocator.ByValue(CurrentPage, name + " " + "span");
+                case "stepper":
+                    return GetDictionaryLocator.ByValue(CurrentPage, name + " " + "stepper");
+                case "tab":
+                case "tabs":
+                    return GetDictionaryLocator.ByValue(CurrentPage, name + " " + "tabs");
+                case "timepicker":
+                    return GetDictionaryLocator.ByValue(CurrentPage, name + " " + "timepicker");
+                case "tree":
+                    return GetDictionaryLocator.ByValue(CurrentPage, name + " " + "tree");
+                case "visualiser":
+                    {
+                        DebugOutput.Log($"You can only have 1 visualiser per page CALLED visualiser");
+                        return null;
+                    }
+                case "window":
+                    return GetDictionaryLocator.ByValue(CurrentPage, name + " " + "window");
+            }
+        }
+        
+    }
+}

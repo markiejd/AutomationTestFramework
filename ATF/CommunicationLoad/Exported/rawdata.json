@@ -1,0 +1,217 @@
+{
+  "metadata": {
+    "start_time": "2024-10-14T13:18:44Z",
+    "end_time": "2024-10-14T13:19:44Z",
+    "host": "https://api.github.com",
+    "locustfile": "locustfile.py"
+  },
+  "statistics": {
+    "requests": {
+      "/": {
+        "method": "GET",
+        "num_requests": 58,
+        "num_failures": 45,
+        "response_times": {
+          "min": 42.0,
+          "max": 325.0,
+          "average": 71.10839482830387,
+          "median": 52,
+          "p95": 0,
+          "p99": 0
+        },
+        "performance": {
+          "current_rps": 1.0,
+          "current_fail_per_sec": 1.0,
+          "avg_content_length": 708.6379310344828
+        }
+      },
+      "/repos/octocat/Hello-World": {
+        "method": "GET",
+        "num_requests": 125,
+        "num_failures": 104,
+        "response_times": {
+          "min": 42.0,
+          "max": 394.0,
+          "average": 67.22372000478208,
+          "median": 50,
+          "p95": 0,
+          "p99": 0
+        },
+        "performance": {
+          "current_rps": 2.3,
+          "current_fail_per_sec": 2.3,
+          "avg_content_length": 1060.704
+        }
+      }
+    },
+    "failures": [
+      {
+        "endpoint": "/repos/octocat/Hello-World",
+        "method": "GET",
+        "error": "HTTPError(&#x27;429 Client Error: too many requests for url: /repos/octocat/Hello-World&#x27;)",
+        "occurrences": 21
+      },
+      {
+        "endpoint": "/",
+        "method": "GET",
+        "error": "HTTPError(&#x27;403 Client Error: rate limit exceeded for url: /&#x27;)",
+        "occurrences": 35
+      },
+      {
+        "endpoint": "/repos/octocat/Hello-World",
+        "method": "GET",
+        "error": "HTTPError(&#x27;403 Client Error: rate limit exceeded for url: /repos/octocat/Hello-World&#x27;)",
+        "occurrences": 83
+      },
+      {
+        "endpoint": "/",
+        "method": "GET",
+        "error": "HTTPError(&#x27;429 Client Error: too many requests for url: /&#x27;)",
+        "occurrences": 10
+      }
+    ],
+    "exceptions": []
+  },
+  "history": [
+    {
+      "timestamp": "2024-10-14T13:18:47Z",
+      "metrics": {
+        "users": 4,
+        "rps": 1.0,
+        "failures_per_sec": 0,
+        "avg_response_time": 249.65,
+        "p95_response_time": 370.0
+      }
+    },
+    {
+      "timestamp": "2024-10-14T13:18:52Z",
+      "metrics": {
+        "users": 9,
+        "rps": 1.5,
+        "failures_per_sec": 0,
+        "avg_response_time": 213.16,
+        "p95_response_time": 390.0
+      }
+    },
+    {
+      "timestamp": "2024-10-14T13:18:57Z",
+      "metrics": {
+        "users": 10,
+        "rps": 2.1,
+        "failures_per_sec": 0,
+        "avg_response_time": 148.69,
+        "p95_response_time": 340.0
+      }
+    },
+    {
+      "timestamp": "2024-10-14T13:19:02Z",
+      "metrics": {
+        "users": 10,
+        "rps": 3.0,
+        "failures_per_sec": 0.5,
+        "avg_response_time": 118.76,
+        "p95_response_time": 150.0
+      }
+    },
+    {
+      "timestamp": "2024-10-14T13:19:07Z",
+      "metrics": {
+        "users": 10,
+        "rps": 3.4,
+        "failures_per_sec": 2.2,
+        "avg_response_time": 103.39,
+        "p95_response_time": 73
+      }
+    },
+    {
+      "timestamp": "2024-10-14T13:19:12Z",
+      "metrics": {
+        "users": 10,
+        "rps": 3.2,
+        "failures_per_sec": 3.2,
+        "avg_response_time": 92.09,
+        "p95_response_time": 73
+      }
+    },
+    {
+      "timestamp": "2024-10-14T13:19:17Z",
+      "metrics": {
+        "users": 10,
+        "rps": 2.9,
+        "failures_per_sec": 2.9,
+        "avg_response_time": 85.03,
+        "p95_response_time": 64
+      }
+    },
+    {
+      "timestamp": "2024-10-14T13:19:22Z",
+      "metrics": {
+        "users": 10,
+        "rps": 2.9,
+        "failures_per_sec": 2.9,
+        "avg_response_time": 80.3,
+        "p95_response_time": 65
+      }
+    },
+    {
+      "timestamp": "2024-10-14T13:19:27Z",
+      "metrics": {
+        "users": 10,
+        "rps": 3.4,
+        "failures_per_sec": 3.4,
+        "avg_response_time": 76.02,
+        "p95_response_time": 66
+      }
+    },
+    {
+      "timestamp": "2024-10-14T13:19:32Z",
+      "metrics": {
+        "users": 10,
+        "rps": 3.5,
+        "failures_per_sec": 3.5,
+        "avg_response_time": 73.23,
+        "p95_response_time": 60
+      }
+    },
+    {
+      "timestamp": "2024-10-14T13:19:37Z",
+      "metrics": {
+        "users": 10,
+        "rps": 3.3,
+        "failures_per_sec": 3.3,
+        "avg_response_time": 70.79,
+        "p95_response_time": 66
+      }
+    },
+    {
+      "timestamp": "2024-10-14T13:19:42Z",
+      "metrics": {
+        "users": 10,
+        "rps": 3.4,
+        "failures_per_sec": 3.4,
+        "avg_response_time": 69.29,
+        "p95_response_time": 66
+      }
+    },
+    {
+      "timestamp": "2024-10-14T13:21:12Z",
+      "metrics": {
+        "users": 0,
+        "rps": 3.3,
+        "failures_per_sec": 3.3,
+        "avg_response_time": 68.45,
+        "p95_response_time": 0
+      }
+    },
+    {
+      "timestamp": "2024-10-14T13:21:14Z",
+      "metrics": {
+        "users": 0,
+        "rps": 3.3,
+        "failures_per_sec": 3.3,
+        "avg_response_time": 68.45,
+        "p95_response_time": 0
+      }
+    }
+  ]
+}

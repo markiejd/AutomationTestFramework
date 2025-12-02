@@ -1,0 +1,1 @@
+We got to keep this file here to keep the directory in git - but there should be NO batch files in here part of git!

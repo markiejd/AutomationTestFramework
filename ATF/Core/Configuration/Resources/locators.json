@@ -1,0 +1,121 @@
+{
+    "DatePickerButtonOpen": [
+    "By.Name(\"PART_DropDownButton\")"
+    ],
+    "DatePickerText": [
+        "By.ClassName(\"RadWatermarkTextBox\")",
+        "By.Name(\"PART_DropDownButton\")"
+    ],
+    "DropDownItemLocators": [
+        "By,TagName(\"mat-option\")",
+        "By.ClassName(\"RadComboBoxItem\")",
+        "By.TagName(\"option\")",
+        "By.TagName(\"li\")"
+    ],
+    "ListItemLocator": [
+        "By.ClassName(\"MuiButtonBase-root\")",
+        "By.ClassName(\"RadListBoxItem\")"
+    ],
+    "SpinnerLocator": [
+        "By.Id(\"loading\")",
+        "By.Id(\"spinner\")",
+        "By.TagName(\"mat-spinner\")"
+    ],
+    "StepperStepLocator": [
+        "By.TagName(\"li\")"
+    ],
+    "TabLocator": [
+        "By.XPath(\"//div[@role='tab']\")",
+        "By.ClassName(\"nav-item\")",
+        "By.ClassName(\"RadTabItem\")"
+    ],
+    "TabTextLocator": [
+        "By.TagName(\"span\")"
+    ],
+    "TablePrimaryColumnNumber": 1,
+    "TableActions": [
+        "accept & open",
+        "view",
+        "view exhibits",
+        "view receipt",
+        "upload",
+        "...",
+        "import exhibits",
+        "select",
+        "view / update"
+    ],
+    "TableActionsLocator": [
+        "By.XPath(\"//span[2]/button[1]\")",
+        "By.XPath(\"//span[1]/button[1]\")",
+        "By.XPath(\"//*[@Name='View Exhibits']\")",
+        "By.Name(\"View Receipt\")",
+        "By.Id(\"Upload\")",
+        "By.Id(\"trigger\")",
+        "By.Id(\"importExhibits\")",
+        "By.ClassName(\"tdcenter\")",
+        "By.Id(\"viewPersonActionButton\")"
+    ],
+    "TableHeadLocator": [
+        "By.XPath(\"//thead\")",
+        "By.ClassName(\"GridViewHeaderRow\")"
+    ],
+    "TableHeadCellsLocator": [
+        "By.TagName(\"th\")",
+        "By.ClassName(\"header\")",
+        "By.ClassName(\"GridViewHeaderCell\")",
+        "By.ClassName(\"datatable-header-cell\")"
+    ],
+    "TableBodyLocator": [
+        "By.TagName(\"tbody\")",
+        "By.ClassName(\"PART_GridViewVirtualizingPanel\")"
+    ],
+    "TableBodyRowLocator": [
+        "By.ClassName(\"table-row\")",
+        "By.TagName(\"tr\")",
+        "By.XPath(\"//tbody/tr\")",
+        "By.ClassName(\"GridViewRow\")",
+        "By.ClassName(\"datatable-body-row\")"
+    ],
+    "TableBodyRowSubLocator": [
+        "By.ClassName(\"ExhibitsSearchScene.JsonDAL.Models.Search\")"
+    ],
+    "TableBodyCellsLocator": [
+        "By.TagName(\"td\")",
+        "By.ClassName(\"datatable-body-cell\")",
+        "By.ClassName(\"GridViewCell\")",
+        "By.XPath(\"./td\")"
+    ],
+    "TableFilterLocator": [
+        "By.Id(\"searchBox\")"
+    ],
+    "TableNextPageButton": [
+        "By.CSS_SELECTOR, '[title=\"Go to next page\"][aria-label=\"Go to next page\"]'",
+        "By.XPath(\"//button[contains(text(),'Next')]\")"
+    ],
+    "TablePreviousPageButton": [
+        "By.XPath(\"//button[contains(text(),'Previous')]\")"
+    ],
+    "TimePickerButtonOpen": [
+        "By.Name(\"PART_DropDownButton\")"
+    ],
+    "TimePickerText": [
+        "By.ClassName(\"RadWatermarkTextBox\")"
+    ],
+    "TreeNodeLocator": [
+        "By.ClassName(\"RadTreeViewItem\")",
+        "By.ClassName(\"leaf\")"
+    ],
+    "TreeNodeSelector": [
+            "By.ClassName(\"org\")"
+    ],
+    "TreeNodeToggleLocator": [
+        "By.Id(\"Expander\")",
+        "By.ClassName(\"hitarea\")"
+    ],
+    "TreeAddNodeText": [
+        "new location"
+    ],
+    "TreeAddNodeButton": [
+        "add new location"
+    ]
+}

@@ -1,0 +1,13 @@
+{
+"Host": "https://api.github.com",
+"GetRateLimit": {
+    "method": "GET",
+    "endpoint": "/rate_limit",
+    "data": {}
+  },
+"GetOctocat": {
+    "method": "GET",
+    "endpoint": "/repos/octocat/Hello-World",
+    "data": {}
+  }
+}

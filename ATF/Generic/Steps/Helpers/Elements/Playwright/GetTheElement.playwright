@@ -1,0 +1,197 @@
+
+using Core;
+using Core.Logging;
+using Microsoft.Playwright;
+
+namespace Generic.Steps.Helpers.Classes
+{
+    public static class GetTheElement
+    {
+        
+        /// <summary>
+        /// Get Element - using Self Heal if POM Locator Fails
+        /// </summary>
+        /// <param name="currentPage"></param>
+        /// <param name="elementName"></param>
+        /// <param name="elementType"></param>
+        /// <returns>element if found, null if not, even after self heal</returns>
+        public static IPage? GetElement(FormBase currentPage, string elementName, string elementType, int timeout = 0)
+        {
+            DebugOutput.Log($"GetElement {currentPage.Name} {elementName} {elementType} {timeout}");
+            return null;
+            // IPage? element = null;
+            // var locator = GetDictionaryLocator.GetElementLocator(elementName, currentPage, elementType);
+            // if (locator == null)
+            // {
+            //     switch(elementType.ToLower())
+            //     {
+            //         default:
+            //         case "link":
+            //         {
+            //             var stringXPath = $"//*[text()='{elementName}']";
+            //             locator = string.XPath(stringXPath);
+            //             element =  SeleniumUtil.GetElement(locator, timeout);
+            //             break;
+            //         }
+            //         case "spinner":
+            //         {
+            //             element = GetElementMultipleLocators(GetSubLocators.SpinnerLocators);
+            //             if (element != null) locator = string.LinkText("SpinnerLocators");
+            //             break;
+            //         }
+            //         case "stepper":
+            //         {
+            //             element = GetElementMultipleLocators(GetSubLocators.StepperStepLocator);
+            //             if (element != null) locator = string.LinkText("StepperStepLocator");
+            //             break;
+            //         }
+            //         case "tab":
+            //         {
+            //             element = GetElementMultipleLocators(GetSubLocators.TabLocator);
+            //             if (element != null) locator = string.LinkText("TabLocator");
+            //             break;
+            //         }
+            //         case "window":
+            //         {
+            //             var stringXPath = $"//Window[contains(@Name,'{elementName}')]";
+            //             locator = string.XPath("//Window/");
+            //             element =  SeleniumUtil.GetElement(locator, timeout);
+            //             break;
+            //         }
+            //     }
+            // }
+            // if (locator == null)
+            // {
+            //     DebugOutput.Log($"NO LOCATOR FOUND IN PAGE {currentPage.Name} FOR NAME {elementName} OF TYPE {elementType} - unless the element is in the ");
+            //     return null;
+            // }
+            // if (element == null)
+            // {
+            //     DebugOutput.Log($"START GET ELEMENT {DateTime.UtcNow}");
+            //     element =  SeleniumUtil.GetElement(locator, timeout);
+            //     DebugOutput.Log($"END GET ELEMENT {DateTime.UtcNow}");
+            // }
+            // if (element != null) return element;
+
+            // DebugOutput.Log($"Element {elementName} of type {elementType} was not found using POM Locators {locator}");
+            // if (!TargetConfiguration.Configuration.SelfHeal) return null;
+            // DebugOutput.Log($"We have tried the lot - out of ideas! SELF HEAL ATTEMPT!");
+            // var selfHealModel = SelfHeal.GetSelfHealModel(currentPage.Name, elementName, elementType);
+            // if (selfHealModel == null)
+            // {
+            //     DebugOutput.Log($"Have no record of this element being displayed, so no details stored!");
+            //     return null;
+            // }
+            // DebugOutput.Log($"We do have a record of this element, so a chance for self healing!");
+            // DebugOutput.Log($"We going to try TAG and TEXT");
+            // element = GetElementUsingTagAndText(selfHealModel.ElementTag, selfHealModel.ElementText);
+            // if (element != null) return element;
+            // element = GetElementUsingXPath(selfHealModel.ElementXPathString);
+            // if (element != null) return element;
+            // element = GetElementUsingText(selfHealModel.ElementText);
+            // if (element != null) return element;
+            // DebugOutput.Log($"To get to here, we have tried, and failed SELF HEALING!");
+            // return null;
+        }
+
+        private static IPage? GetElementMultipleLocators(string[] locators, int timeout = 0)
+        {
+            return null;
+            // foreach (var locator in locators)
+            // {
+            //     var element = SeleniumUtil.GetElement(locator, timeout);
+            //     if (element != null)
+            //     {
+            //         return element;
+            //     }
+            // }
+            // return null;
+        }
+
+        public static IPage? stringXPathSring(string xPath, int timeout)
+        {
+            return null;
+            // string xPathLocator = string.XPath(xPath);
+            // return SeleniumUtil.GetElement(xPathLocator, timeout);
+        }
+
+        public static IPage? GetExpansion(IPage element)
+        {
+            return null;
+            // string expansionElementLocator = string.ClassName("accordion-toggle");
+            // var expansionElement = SeleniumUtil.GetElementUnderElement(element, expansionElementLocator, 1);
+            // return expansionElement;
+        }
+
+        public static IPage? GetGroup(IPage element, string groupName)
+        {
+            return null;
+            // var groupXPath = GetSubLocators.AccordionSubElementXPathStart[GetSubLocators.AccordionVersionNumber] + groupName + GetSubLocators.AccordionSubElementXPathEnd[GetSubLocators.AccordionVersionNumber];
+            // var groupLocator = string.XPath(groupXPath);
+            // return SeleniumUtil.GetElementUnderElement(element, groupLocator);
+        }
+
+        public static IPage? GetGroupExpanded(IPage groupElement)
+        {            
+            return null;
+            // var groupExpandedXPath = GetSubLocators.AccordionSubElementExpanded[GetSubLocators.AccordionVersionNumber];
+            // var groupExpandedLocator = string.XPath(groupExpandedXPath);
+            // return SeleniumUtil.GetElementUnderElement(groupElement, groupExpandedLocator, 1);
+        }
+
+        public static IPage? GetParent(IPage element)
+        {
+            return null;
+            // return SeleniumUtil.GetElementParent(element);
+        }
+
+        public static IPage? GetSubElementstringText(FormBase currentPage, string elementName, string elementType, string locator, string text, int timeout = 0)
+        {
+            return null;
+            // var element = GetElement(currentPage, elementName, elementType);
+            // if (element == null) return null;
+            // var subElements = SeleniumUtil.GetElementsUnder(element, locator, timeout);
+            // if (subElements == null) return null;
+            // foreach (var subElement in subElements)
+            // {
+            //     if (SeleniumUtil.GetElementText(subElement) == text) return subElement;
+            // }
+            // return null;
+        }
+
+        private static IPage? GetElementUsingTagAndText(string? elementTag, string? elementText)
+        {
+            return null;
+            // if (elementTag == null) return null;
+            // string tagLocator = string.TagName(elementTag);
+            // var elements = SeleniumUtil.GetElements(tagLocator, 1);
+            // if (elements == null) return null;
+            // if (elements.Count == 1) return elements[0];
+            // if (elementText == null) return null;
+            // foreach (var e in elements)
+            // {
+            //     var text = SeleniumUtil.GetElementText(e);
+            //     if (text == elementText) return e;
+            // }
+            // return null;
+        }
+
+        private static IPage? GetElementUsingText(string? text)
+        {
+            return null;
+            // if (text == null) return null;
+            // var xPathString = $"//*[text() = '{text}']";
+            // string xPathLocator = string.XPath(text);
+            // return SeleniumUtil.GetElement(xPathLocator, 1);
+        }
+
+        private static IPage? GetElementUsingXPath(string? xPath)
+        {
+            return null;
+            // if (xPath == null) return null;
+            // string xPathLocator = string.XPath(xPath);
+            // return SeleniumUtil.GetElement(xPathLocator, 1);
+        }
+
+    }
+}

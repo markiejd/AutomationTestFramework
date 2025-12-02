@@ -1,0 +1,52 @@
+{
+    "Host": "https://petstore.swagger.io/v2",
+    "AddPet": {
+        "method": "POST",
+        "endpoint": "/pet",
+        "data": {
+            "id": 1,
+            "category": {
+                "id": 2,
+                "name": "string"
+            },
+            "name": "Nez",
+            "photoUrls": [
+                "string"
+            ],
+            "tags": [
+                {
+                    "id": 3,
+                    "name": "string"
+                }
+            ],
+            "status": "available"
+        }
+    },
+    "GetPet": {
+        "method": "GET",
+        "endpoint": "/pet/1",
+        "data": {}
+    },
+    "UpdatePet": {
+        "method": "PUT",
+        "endpoint": "/pet",
+        "data": {
+            "id": 1,
+            "category": {
+                "id": 2,
+                "name": "string"
+            },
+            "name": "Nez",
+            "photoUrls": [
+                "string"
+            ],
+            "tags": [
+                {
+                    "id": 3,
+                    "name": "string"
+                }
+            ],
+            "status": "available"
+        }
+    }
+}

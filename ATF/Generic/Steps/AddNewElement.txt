@@ -1,0 +1,30 @@
+Create Folder of Element Name in \Steps\Elements\
+Go to Directory \Steps\Helpers\Classes\
+Copy the File OldStepHelper.cs
+Rename it by replacing Old with your Element name (capital for start of words), remove the " - Copy"
+Open the newly renamed file (check it is the right file, VS has a habit of openning the OldStepHelper)
+Replace Old with your Element Name (capital for start of words, exactly as in the file name) - should be 3 - do not worry about errors at this point
+Save <ElementName>StepHelper.cs
+Open the file StepHelpers.cs (note the plural)
+Starting at line 24, find the line public IOldStepHelper Old { get; private set; }
+Copy this and paste it alphabetical to where your new element will sit
+Replace the Old with the name of your new Element
+In the method InitializeHelpers()
+Find the line Old = new OldStepHelper(featureContext, targetForms); in the InitializeHelpers Method, and copy it
+Paste it back in the same method, in alphabetical order where your new element will be found.
+Replace the Old with your new element name in the line you just pasted in - again ignore red errors
+Save file
+Go to Directory \Steps\Helpers\Interfaces
+Copy the File IOldStepHelper.cs
+Rename the copied file, replace Old with your new Element Name (capital for start of words)
+Open the newly rename file (again confirm VS is tricky)
+Replace the IOldStepHelper (will be red underlined) with I<ElementName>StepHelper
+Open the File IStepHelpers.cs (note the plural)
+Copy the line IOldStepHelper Old { get; }
+Paste it in the same method alphabetically where the new element will site
+In the pasted line replace the Old with ElementName (x2)
+Save File
+
+Confirm no more red lines (build solution)
+
+When you require a Steps/Element (given, when and then) - Copy from another

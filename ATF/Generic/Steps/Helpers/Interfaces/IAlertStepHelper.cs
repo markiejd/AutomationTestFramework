@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Generic.Steps.Helpers.Interfaces
+{
+    public interface IAlertStepHelper : IStepHelper
+    {
+        bool Accept();
+        bool Cancel();
+        bool IsDisplayed(string accordionName);
+        bool SendKeys(string text);
+    }
+}

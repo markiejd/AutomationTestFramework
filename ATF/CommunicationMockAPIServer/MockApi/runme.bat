@@ -1,0 +1,3 @@
+cd CommunicationMockAPIServer
+cd MockAPI
+dotnet run

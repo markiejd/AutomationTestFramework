@@ -1,0 +1,10 @@
+{
+  "Languages": "en",
+  "SafeBrowsingEnabled": true,
+  "ProfileDefaultContentSettingsPopups": false,
+  "DisablePopupBlocking": true,
+  "PromptForDownload": false,
+  "DownloadDefaultDirectory": "../../../test-results",
+  "StartMaximized": true,
+  "StartArguments": [  ]
+}

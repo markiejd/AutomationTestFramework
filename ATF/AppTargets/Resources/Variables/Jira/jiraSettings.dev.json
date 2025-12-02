@@ -1,0 +1,14 @@
+{
+    "JiraConfiguration":
+    [	  
+        {
+            "JiraName": "TEST",
+            "Url": "https://TEST.org/jira/",
+            "Authorization": "basic",
+            "UserName": "HIDDEN",
+            "UserPassword": "PASSWORDHIDDEN!"
+        }
+    ],
+    "TokenLocation": "c:/drivers/",
+    "UserDetailsLocation": "c:/drivers/"
+}

@@ -1,0 +1,8 @@
+{
+    "Host": "https://bbc-news-api.vercel.app",
+    "News": {
+        "method": "GET",
+        "endpoint": "/news?lang=english",
+        "data": {}
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "Host": "https://ca-dsrv-firefly-qa3-db6e5318e.happyriver-d3981a85.uksouth.azurecontainerapps.io",
+    "ApplyFilter": {
+        "method": "POST",
+        "endpoint": "/dataservice/api/sql/execute",
+        "data": {"template":"ui.usp_GetAccounts","endpoint":"sync","params":{"USER":"Username"}}
+
+    }
+}

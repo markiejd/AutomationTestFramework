@@ -1,0 +1,9 @@
+{
+  "API": "github",
+  "verify_ssl": false,
+  "request": "GetRateLimit",
+  "api_key": false,
+  "user_number": 2,
+  "increment_rate": 1,
+  "run_time": "30s"
+}

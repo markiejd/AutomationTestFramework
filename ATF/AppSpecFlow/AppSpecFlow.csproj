@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <!-- Nuget Latest 31/10/2024 -->
+    <!-- Azure Storage Blobs Latest Version 12.22.2 -->
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.22.2" />
+    <!-- Microsoft Net Test Sdk Version 17.11.1 -->
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    <!-- SpecFlow MsTest Version 4.0.13-beta -->
+    <PackageReference Include="SpecFlow.MsTest" Version="4.0.16-beta" />
+    <!-- MsTest TestAdapter 3.6.1 -->
+    <PackageReference Include="MSTest.TestAdapter" Version="3.0.0" />
+    <!-- MsTest TestFramework 3.6.1 -->
+    <PackageReference Include="MSTest.TestFramework" Version="3.0.0" />
+    <!--FluentAssertions 6.12.1 -->
+    <PackageReference Include="FluentAssertions" Version="6.2.0" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\AppTargets\AppTargets.csproj" />
+    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Generic\Generic.csproj" />
+  </ItemGroup>
+
+
+</Project>

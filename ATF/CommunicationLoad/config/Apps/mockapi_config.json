@@ -1,0 +1,8 @@
+{
+    "Host": "http://localhost:4000",
+    "GetUser": {
+        "method": "GET",
+        "endpoint": "/users/123",
+        "data": {}
+    }
+}

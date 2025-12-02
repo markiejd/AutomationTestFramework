@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "AkLVWDfgizk=",
+  "success": true,
+  "projectFilePath": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\Core\\Core.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\mark.duffy\\.nuget\\packages\\microsoft.win32.systemevents\\8.0.0\\microsoft.win32.systemevents.8.0.0.nupkg.sha512",
+    "C:\\Users\\mark.duffy\\.nuget\\packages\\newtonsoft.json\\13.0.2\\newtonsoft.json.13.0.2.nupkg.sha512",
+    "C:\\Users\\mark.duffy\\.nuget\\packages\\selenium.webdriver\\4.24.0\\selenium.webdriver.4.24.0.nupkg.sha512",
+    "C:\\Users\\mark.duffy\\.nuget\\packages\\system.drawing.common\\8.0.8\\system.drawing.common.8.0.8.nupkg.sha512"
+  ],
+  "logs": []
+}

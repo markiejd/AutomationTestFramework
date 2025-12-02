@@ -1,0 +1,6 @@
+{
+    "URL": "localhost",    
+    "DefaultUserName": "Test User",
+    "DefaultPassword": "Password",
+    "FileSystemName": "dev"
+} 

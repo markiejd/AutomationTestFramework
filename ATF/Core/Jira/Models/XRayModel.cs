@@ -1,0 +1,558 @@
+using Newtonsoft.Json;
+
+namespace Core.Jira.XRAY.Model
+{
+    // Root myDeserializedClass = JsonConvert.Deserializestring?<Root>?(myJsonResponse);
+    public class Aggregateprogress
+    {
+        public int? progress { get; set; }
+        public int? total { get; set; }
+    }
+
+    public class Assignee
+    {
+        public string? self { get; set; }
+        public string? name { get; set; }
+        public string? key { get; set; }
+        public string? emailAddress { get; set; }
+        public AvatarUrls? avatarUrls { get; set; }
+        public string? displayName { get; set; }
+        public bool? active { get; set; }
+        public string? timeZone { get; set; }
+    }
+
+    public class Author
+    {
+        public string? self { get; set; }
+        public string? name { get; set; }
+        public string? key { get; set; }
+        public string? emailAddress { get; set; }
+        public AvatarUrls? avatarUrls { get; set; }
+        public string? displayName { get; set; }
+        public bool? active { get; set; }
+        public string? timeZone { get; set; }
+    }
+
+    public class AvatarUrls
+    {
+        [JsonProperty("48x48")]
+        public string? _48x48 { get; set; }
+
+        [JsonProperty("24x24")]
+        public string? _24x24 { get; set; }
+
+        [JsonProperty("16x16")]
+        public string? _16x16 { get; set; }
+
+        [JsonProperty("32x32")]
+        public string? _32x32 { get; set; }
+    }
+
+    public class Comment
+    {
+        public List<Comment>? comments { get; set; }
+        public int? maxResults { get; set; }
+        public int? total { get; set; }
+        public int? startAt { get; set; }
+    }
+
+    public class Comment2
+    {
+        public string? self { get; set; }
+        public string? id { get; set; }
+        public Author? author { get; set; }
+        public string? body { get; set; }
+        public UpdateAuthor? updateAuthor { get; set; }
+        public DateTime? created { get; set; }
+        public DateTime? updated { get; set; }
+    }
+
+    public class Component
+    {
+        public string? self { get; set; }
+        public string? id { get; set; }
+        public string? name { get; set; }
+        public string? description { get; set; }
+    }
+
+    public class Creator
+    {
+        public string? self { get; set; }
+        public string? name { get; set; }
+        public string? key { get; set; }
+        public string? emailAddress { get; set; }
+        public AvatarUrls? avatarUrls { get; set; }
+        public string? displayName { get; set; }
+        public bool? active { get; set; }
+        public string? timeZone { get; set; }
+    }
+
+    public class Customfield10208
+    {
+        public string? self { get; set; }
+        public string? value { get; set; }
+        public string? id { get; set; }
+        public bool? disabled { get; set; }
+    }
+
+    public class Customfield10212
+    {
+        public string? self { get; set; }
+        public string? value { get; set; }
+        public string? id { get; set; }
+        public bool? disabled { get; set; }
+    }
+
+    public class Customfield10213
+    {
+        public string? self { get; set; }
+        public string? value { get; set; }
+        public string? id { get; set; }
+        public bool? disabled { get; set; }
+    }
+
+    public class Customfield10216
+    {
+        public List<object>? steps { get; set; }
+    }
+
+    public class Customfield10220
+    {
+        public int? issueId { get; set; }
+        public List<object>? statuses { get; set; }
+        public long timestamp { get; set; }
+    }
+
+    public class Customfield12421
+    {
+        public string? self { get; set; }
+        public string? value { get; set; }
+        public string? id { get; set; }
+        public bool? disabled { get; set; }
+    }
+
+    public class Customfield12422
+    {
+        public string? self { get; set; }
+        public string? value { get; set; }
+        public string? id { get; set; }
+        public bool? disabled { get; set; }
+    }
+
+    public class Customfield14405
+    {
+        public string? self { get; set; }
+        public string? value { get; set; }
+        public string? id { get; set; }
+        public bool? disabled { get; set; }
+    }
+
+    public class Customfield15402
+    {
+        public DatasetRestBean? datasetRestBean { get; set; }
+    }
+
+    public class DatasetRestBean
+    {
+        public List<object>? @params { get; set; }
+    }
+
+    public class Fields
+    {
+        public string? customfield_15400 { get; set; }
+        public string? customfield_13100 { get; set; }
+        public string? customfield_15401 { get; set; }
+        public string? customfield_12013 { get; set; }
+        public Resolution? resolution { get; set; }
+        public Customfield15402? customfield_15402 { get; set; }
+        public string? customfield_12016 { get; set; }
+        public string? customfield_10500 { get; set; }
+        public string? customfield_12801 { get; set; }
+        public string? customfield_12809 { get; set; }
+        public DateTime? lastViewed { get; set; }
+        public string? customfield_14300 { get; set; }
+        public string? customfield_12000 { get; set; }
+        public string? customfield_14301 { get; set; }
+        public string? customfield_12001 { get; set; }
+        public List<object>? labels { get; set; }
+        public string? customfield_13328 { get; set; }
+        public string? customfield_11701 { get; set; }
+        public string? customfield_12914 { get; set; }
+        public string? aggregatetimeoriginalestimate { get; set; }
+        public string? customfield_12916 { get; set; }
+        public string? customfield_12915 { get; set; }
+        public string? customfield_12917 { get; set; }
+        public List<object>? issuelinks { get; set; }
+        public Assignee? assignee { get; set; }
+        public List<Component>? components { get; set; }
+        public string? customfield_17002 { get; set; }
+        public string? customfield_17001 { get; set; }
+        public string? customfield_17000 { get; set; }
+        public string? customfield_14410 { get; set; }
+        public string? customfield_12110 { get; set; }
+        public string? customfield_13320 { get; set; }
+        public string? customfield_14411 { get; set; }
+        public string? customfield_13321 { get; set; }
+        public string? customfield_13200 { get; set; }
+        public string? customfield_14412 { get; set; }
+        public string? customfield_14413 { get; set; }
+        public string? customfield_14407 { get; set; }
+        public string? customfield_13317 { get; set; }
+        public string? customfield_14408 { get; set; }
+        public string? customfield_13316 { get; set; }
+        public List<Customfield14405>? customfield_14405 { get; set; }
+        public string? customfield_13319 { get; set; }
+        public string? customfield_14406 { get; set; }
+        public string? customfield_13318 { get; set; }
+        public string? customfield_14409 { get; set; }
+        public List<object>? subtasks { get; set; }
+        public string? customfield_14400 { get; set; }
+        public Reporter? reporter { get; set; }
+        public string? customfield_13311 { get; set; }
+        public List<object>? customfield_12100 { get; set; }
+        public string? customfield_13310 { get; set; }
+        public string? customfield_14403 { get; set; }
+        public string? customfield_13313 { get; set; }
+        public string? customfield_16703 { get; set; }
+        public string? customfield_14404 { get; set; }
+        public string? customfield_13312 { get; set; }
+        public string? customfield_16702 { get; set; }
+        public string? customfield_14401 { get; set; }
+        public string? customfield_13315 { get; set; }
+        public string? customfield_16701 { get; set; }
+        public string? customfield_14402 { get; set; }
+        public string? customfield_13314 { get; set; }
+        public string? customfield_13306 { get; set; }
+        public string? customfield_13305 { get; set; }
+        public string? customfield_13308 { get; set; }
+        public string? customfield_13307 { get; set; }
+        public string? customfield_11800 { get; set; }
+        public string? customfield_13309 { get; set; }
+        public Progress? progress { get; set; }
+        public Votes? votes { get; set; }
+        public Worklog? worklog { get; set; }
+        public string? archivedby { get; set; }
+        public Issuetype? issuetype { get; set; }
+        public string? customfield_17100 { get; set; }
+        public Project? project { get; set; }
+        public string? customfield_11000 { get; set; }
+        public string? customfield_13300 { get; set; }
+        public string? customfield_13302 { get; set; }
+        public string? customfield_13301 { get; set; }
+        public string? customfield_13304 { get; set; }
+        public string? customfield_15601 { get; set; }
+        public string? customfield_13303 { get; set; }
+        public string? resolutiondate { get; set; }
+        public Watches? watches { get; set; }
+        public string? customfield_16006 { get; set; }
+        public DateTime? customfield_16005 { get; set; }
+        public string? customfield_12200 { get; set; }
+        public string? customfield_14502 { get; set; }
+        public string? customfield_16802 { get; set; }
+        public string? customfield_11113 { get; set; }
+        public string? customfield_16801 { get; set; }
+        public List<string>? customfield_16800 { get; set; }
+        public string? customfield_13405 { get; set; }
+        public string? customfield_15705 { get; set; }
+        public string? customfield_13404 { get; set; }
+        public string? customfield_11900 { get; set; }
+        public string? customfield_13407 { get; set; }
+        public string? customfield_15703 { get; set; }
+        public string? customfield_13406 { get; set; }
+        public string? customfield_15704 { get; set; }
+        public string? customfield_13408 { get; set; }
+        public string? customfield_15707 { get; set; }
+        public DateTime? updated { get; set; }
+        public string? timeoriginalestimate { get; set; }
+        public string? description { get; set; }
+        public string? customfield_11220 { get; set; }
+        public string? customfield_10010 { get; set; }
+        public string? customfield_10011 { get; set; }
+        public string? customfield_11100 { get; set; }
+        public string? customfield_11222 { get; set; }
+        public string? customfield_10012 { get; set; }
+        public string? customfield_13401 { get; set; }
+        public string? customfield_11101 { get; set; }
+        public string? customfield_15701 { get; set; }
+        public string? customfield_15702 { get; set; }
+        public string? customfield_13403 { get; set; }
+        public string? customfield_13402 { get; set; }
+        public Timetracking? timetracking { get; set; }
+        public string? customfield_15700 { get; set; }
+        public string? customfield_12426 { get; set; }
+        public string? customfield_12425 { get; set; }
+        public string? customfield_10006 { get; set; }
+        public string? customfield_12428 { get; set; }
+        public string? customfield_12427 { get; set; }
+        public string? customfield_11219 { get; set; }
+        public string? customfield_12309 { get; set; }
+        public string? customfield_10009 { get; set; }
+        public string? customfield_12308 { get; set; }
+        public string? summary { get; set; }
+        public string? customfield_10000 { get; set; }
+        public string? customfield_10001 { get; set; }
+        public Customfield12422? customfield_12422 { get; set; }
+        public string? customfield_13511 { get; set; }
+        public Customfield12421? customfield_12421 { get; set; }
+        public string? customfield_10002 { get; set; }
+        public string? customfield_13510 { get; set; }
+        public string? customfield_16900 { get; set; }
+        public string? customfield_12424 { get; set; }
+        public string? customfield_13512 { get; set; }
+        public string? customfield_10004 { get; set; }
+        public string? customfield_11204 { get; set; }
+        public string? customfield_11205 { get; set; }
+        public string? customfield_11206 { get; set; }
+        public string? environment { get; set; }
+        public string? customfield_13506 { get; set; }
+        public string? customfield_11207 { get; set; }
+        public string? customfield_11208 { get; set; }
+        public string? customfield_11209 { get; set; }
+        public string? duedate { get; set; }
+        public string? customfield_13509 { get; set; }
+        public Comment? comment { get; set; }
+        public List<object>? fixVersions { get; set; }
+        public string? customfield_11200 { get; set; }
+        public string? customfield_12411 { get; set; }
+        public string? customfield_13500 { get; set; }
+        public string? customfield_15800 { get; set; }
+        public string? customfield_12410 { get; set; }
+        public string? customfield_15801 { get; set; }
+        public string? customfield_12413 { get; set; }
+        public string? customfield_13502 { get; set; }
+        public string? customfield_12412 { get; set; }
+        public string? customfield_12404 { get; set; }
+        public string? customfield_12403 { get; set; }
+        public double? customfield_12406 { get; set; }
+        public string? customfield_12405 { get; set; }
+        public string? customfield_12407 { get; set; }
+        public string? customfield_12409 { get; set; }
+        public string? customfield_16200 { get; set; }
+        public Customfield10220? customfield_10220 { get; set; }
+        public Priority? priority { get; set; }
+        public string? customfield_10100 { get; set; }
+        public List<object>? customfield_10101 { get; set; }
+        public string? customfield_10214 { get; set; }
+        public string? customfield_15903 { get; set; }
+        public string? customfield_10215 { get; set; }
+        public string? customfield_11304 { get; set; }
+        public string? customfield_15904 { get; set; }
+        public Customfield10216? customfield_10216 { get; set; }
+        public string? customfield_15901 { get; set; }
+        public string? customfield_15902 { get; set; }
+        public List<string>? customfield_10218 { get; set; }
+        public string? customfield_15907 { get; set; }
+        public string? timeestimate { get; set; }
+        public List<object>? customfield_10219 { get; set; }
+        public List<object>? versions { get; set; }
+        public string? customfield_12638 { get; set; }
+        public string? customfield_15908 { get; set; }
+        public string? customfield_15905 { get; set; }
+        public string? customfield_15906 { get; set; }
+        public Status? status { get; set; }
+        public string? customfield_12631 { get; set; }
+        public string? customfield_12630 { get; set; }
+        public string? customfield_15900 { get; set; }
+        public Customfield10212? customfield_10212 { get; set; }
+        public string? customfield_12633 { get; set; }
+        public string? customfield_13601 { get; set; }
+        public Customfield10213? customfield_10213 { get; set; }
+        public string? customfield_13600 { get; set; }
+        public string? customfield_11302 { get; set; }
+        public string? customfield_12632 { get; set; }
+        public string? archiveddate { get; set; }
+        public string? customfield_12626 { get; set; }
+        public string? customfield_10206 { get; set; }
+        public string? customfield_14802 { get; set; }
+        public string? customfield_12625 { get; set; }
+        public string? customfield_12628 { get; set; }
+        public string? customfield_10207 { get; set; }
+        public string? aggregatetimeestimate { get; set; }
+        public string? customfield_12627 { get; set; }
+        public Customfield10208? customfield_10208 { get; set; }
+        public string? customfield_12629 { get; set; }
+        public Creator? creator { get; set; }
+        public Aggregateprogress? aggregateprogress { get; set; }
+        public string? customfield_10200 { get; set; }
+        public string? customfield_10202 { get; set; }
+        public string? customfield_12614 { get; set; }
+        public string? timespent { get; set; }
+        public string? aggregatetimespent { get; set; }
+        public string? customfield_11401 { get; set; }
+        public string? customfield_11400 { get; set; }
+        public string? customfield_10307 { get; set; }
+        public int? workratio { get; set; }
+        public DateTime? created { get; set; }
+        public string? customfield_16401 { get; set; }
+        public string? customfield_14100 { get; set; }
+        public string? customfield_16400 { get; set; }
+        public string? customfield_11501 { get; set; }
+        public string? customfield_13803 { get; set; }
+        public string? customfield_13805 { get; set; }
+        public string? customfield_13804 { get; set; }
+        public string? customfield_13807 { get; set; }
+        public string? customfield_13806 { get; set; }
+        public string? customfield_15301 { get; set; }
+        public string? customfield_15302 { get; set; }
+        public string? customfield_15300 { get; set; }
+        public string? customfield_11500 { get; set; }
+        public string? customfield_15303 { get; set; }
+        public string? customfield_15304 { get; set; }
+        public string? customfield_12700 { get; set; }
+        public string? customfield_11614 { get; set; }
+        public double? customfield_13912 { get; set; }
+        public List<object>? attachment { get; set; }
+        public string? customfield_11616 { get; set; }
+        public string? customfield_11615 { get; set; }
+        public string? customfield_11618 { get; set; }
+        public string? customfield_11617 { get; set; }
+        public string? customfield_11619 { get; set; }
+        public string? customfield_12026 { get; set; }
+        public string? customfield_13900 { get; set; }
+        public string? customfield_11601 { get; set; }
+        public string? customfield_11600 { get; set; }
+        public string? customfield_11603 { get; set; }
+        public string? customfield_13901 { get; set; }
+        public string? customfield_11602 { get; set; }
+        public string? customfield_13904 { get; set; }
+        public string? customfield_13903 { get; set; }
+        public string? customfield_11604 { get; set; }
+        public string? customfield_13906 { get; set; }
+        public string? customfield_13905 { get; set; }
+        public string? customfield_13908 { get; set; }
+        public string? customfield_13909 { get; set; }
+    }
+
+    public class Issuetype
+    {
+        public string? self { get; set; }
+        public string? id { get; set; }
+        public string? description { get; set; }
+        public string? iconUrl { get; set; }
+        public string? name { get; set; }
+        public bool? subtask { get; set; }
+    }
+
+    public class Priority
+    {
+        public string? self { get; set; }
+        public string? iconUrl { get; set; }
+        public string? name { get; set; }
+        public string? id { get; set; }
+    }
+
+    public class Progress
+    {
+        public int? progress { get; set; }
+        public int? total { get; set; }
+    }
+
+    public class Project
+    {
+        public string? self { get; set; }
+        public string? id { get; set; }
+        public string? key { get; set; }
+        public string? name { get; set; }
+        public string? projectTypeKey { get; set; }
+        public AvatarUrls? avatarUrls { get; set; }
+        public ProjectCategory? projectCategory { get; set; }
+    }
+
+    public class ProjectCategory
+    {
+        public string? self { get; set; }
+        public string? id { get; set; }
+        public string? description { get; set; }
+        public string? name { get; set; }
+    }
+
+    public class Reporter
+    {
+        public string? self { get; set; }
+        public string? name { get; set; }
+        public string? key { get; set; }
+        public string? emailAddress { get; set; }
+        public AvatarUrls? avatarUrls { get; set; }
+        public string? displayName { get; set; }
+        public bool? active { get; set; }
+        public string? timeZone { get; set; }
+    }
+    
+    public class Resolution
+    {
+        public string? self { get; set; }
+        public string? id { get; set; }
+        public string? description { get; set; }
+        public string? name { get; set; }
+    }
+
+    public class Root
+    {
+        public string? expand { get; set; }
+        public string? id { get; set; }
+        public string? self { get; set; }
+        public string? key { get; set; }
+        public Fields? fields { get; set; }
+    }
+
+    public class Status
+    {
+        public string? self { get; set; }
+        public string? description { get; set; }
+        public string? iconUrl { get; set; }
+        public string? name { get; set; }
+        public string? id { get; set; }
+        public StatusCategory? statusCategory { get; set; }
+    }
+
+    public class StatusCategory
+    {
+        public string? self { get; set; }
+        public int? id { get; set; }
+        public string? key { get; set; }
+        public string? colorName { get; set; }
+        public string? name { get; set; }
+    }
+
+    public class Timetracking
+    {
+    }
+
+    public class UpdateAuthor
+    {
+        public string? self { get; set; }
+        public string? name { get; set; }
+        public string? key { get; set; }
+        public string? emailAddress { get; set; }
+        public AvatarUrls? avatarUrls { get; set; }
+        public string? displayName { get; set; }
+        public bool? active { get; set; }
+        public string? timeZone { get; set; }
+    }
+
+    public class Votes
+    {
+        public string? self { get; set; }
+        public int? votes { get; set; }
+        public bool? hasVoted { get; set; }
+    }
+
+    public class Watches
+    {
+        public string? self { get; set; }
+        public int? watchCount { get; set; }
+        public bool? isWatching { get; set; }
+    }
+
+    public class Worklog
+    {
+        public int? startAt { get; set; }
+        public int? maxResults { get; set; }
+        public int? total { get; set; }
+        public List<object>? worklogs { get; set; }
+    }
+
+
+
+
+}

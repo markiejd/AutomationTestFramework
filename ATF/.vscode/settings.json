@@ -1,0 +1,50 @@
+{
+    "_comment": "DO-NOT-CHANGE-THIS-FILE-3!-ONLY-USE-THE-MENU-OPTION-6-4-TO-CHANGE!",
+    "explorer.autoReveal": false,
+    "workbench.editor.enablePreview": false,
+    "cucumberautocomplete.steps": [
+        "./Generic/Steps/*.cs",
+        "./Generic/Steps/Load/*.cs",
+        "./Generic/Steps/JIRA/*.cs",
+        "./Generic/Steps/AIChatBot/*Steps.cs",
+        "./Generic/Steps/Elements/*/*.cs",
+        "./AppSpecFlow/AppSteps/App/AppSteps.cs",
+        "./AppSpecFlow/AppSteps/Steps.cs",
+        "./AppSpecFlow/AppSteps/App/*/*Steps.cs"
+    ],    
+    "files.exclude":    {    
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/bin": true,
+        "**/obj": true,
+        "**/Packages": true,
+        "**/Features/**/*.cs": true,
+        "**/ProjectPack": true
+    },
+    "terminal.integrated.defaultProfile.windows": "Command Prompt",
+    "cucumberautocomplete.customParameters": [                    
+        {            
+        "parameter": "\"(.*)\"",            
+        "value": ".*"            
+        },            
+        {            
+        "parameter": "\"\"(.*)\"\"",            
+        "value": ".*"            
+        },            
+        {            
+            "parameter" : "\"\"([^\"\"]*)\"\"",            
+            "value": ".*"            
+        }            
+    ],            
+    "http.proxy": "",            
+    "http.proxyAuthorization": null,            
+    "http.proxyStrictSSL": false,
+    "appService.defaultWebAppToDeploy": "/subscriptions/c41ad57b-40a6-47bc-a1e8-0183de32f0e8/resourceGroups/RG_mark.duffy/providers/Microsoft.Web/sites/ATF360",     
+    "appService.zipIgnorePattern": 
+    [
+    ]
+}            

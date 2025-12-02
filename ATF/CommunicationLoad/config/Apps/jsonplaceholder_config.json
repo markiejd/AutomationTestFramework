@@ -1,0 +1,42 @@
+{
+    "Host": "https://jsonplaceholder.typicode.com",
+    "CreatePost": {
+        "method": "POST",
+        "endpoint": "/posts",
+        "data": {
+            "title": "foo",
+            "body": "bar",
+            "userId": 1
+        },
+        "headers": {
+            "Content-Type": "application/json; charset=UTF-8"
+        }
+    },
+    "GetPost": {
+        "method": "GET",
+        "endpoint": "/posts/1",
+        "headers": {
+            "Accept": "application/json"
+        }
+    },
+    "UpdatePost": {
+        "method": "PUT",
+        "endpoint": "/posts/1",
+        "data": {
+            "id": 1,
+            "title": "foo",
+            "body": "baz",
+            "userId": 1
+        },
+        "headers": {
+            "Content-Type": "application/json; charset=UTF-8"
+        }
+    },
+    "DeletePost": {
+        "method": "DELETE",
+        "endpoint": "/posts/1",
+        "headers": {
+            "Accept": "application/json"
+        }
+    }
+}

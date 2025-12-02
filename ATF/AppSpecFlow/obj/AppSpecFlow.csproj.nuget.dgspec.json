@@ -1,0 +1,380 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppSpecFlow\\AppSpecFlow.csproj": {}
+  },
+  "projects": {
+    "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppSpecFlow\\AppSpecFlow.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppSpecFlow\\AppSpecFlow.csproj",
+        "projectName": "AppSpecFlow",
+        "projectPath": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppSpecFlow\\AppSpecFlow.csproj",
+        "packagesPath": "C:\\Users\\mark.duffy\\.nuget\\packages\\",
+        "outputPath": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppSpecFlow\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\mark.duffy\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppTargets\\AppTargets.csproj": {
+                "projectPath": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppTargets\\AppTargets.csproj"
+              },
+              "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\Core\\Core.csproj": {
+                "projectPath": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\Core\\Core.csproj"
+              },
+              "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\Generic\\Generic.csproj": {
+                "projectPath": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\Generic\\Generic.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Azure.Storage.Blobs": {
+              "target": "Package",
+              "version": "[12.22.2, )"
+            },
+            "FluentAssertions": {
+              "target": "Package",
+              "version": "[6.2.0, )"
+            },
+            "MSTest.TestAdapter": {
+              "target": "Package",
+              "version": "[3.0.0, )"
+            },
+            "MSTest.TestFramework": {
+              "target": "Package",
+              "version": "[3.0.0, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.0.0, )"
+            },
+            "SpecFlow.MsTest": {
+              "target": "Package",
+              "version": "[4.0.16-beta, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.307/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppTargets\\AppTargets.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppTargets\\AppTargets.csproj",
+        "projectName": "AppTargets",
+        "projectPath": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppTargets\\AppTargets.csproj",
+        "packagesPath": "C:\\Users\\mark.duffy\\.nuget\\packages\\",
+        "outputPath": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppTargets\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\mark.duffy\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\Core\\Core.csproj": {
+                "projectPath": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\Core\\Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.307/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppXAPI\\AppXAPI.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppXAPI\\AppXAPI.csproj",
+        "projectName": "AppXAPI",
+        "projectPath": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppXAPI\\AppXAPI.csproj",
+        "packagesPath": "C:\\Users\\mark.duffy\\.nuget\\packages\\",
+        "outputPath": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppXAPI\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\mark.duffy\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.307/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\Core\\Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\Core\\Core.csproj",
+        "projectName": "Core",
+        "projectPath": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\Core\\Core.csproj",
+        "packagesPath": "C:\\Users\\mark.duffy\\.nuget\\packages\\",
+        "outputPath": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\mark.duffy\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppXAPI\\AppXAPI.csproj": {
+                "projectPath": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppXAPI\\AppXAPI.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Selenium.WebDriver": {
+              "target": "Package",
+              "version": "[4.24.0, )"
+            },
+            "System.Drawing.Common": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.307/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\Generic\\Generic.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\Generic\\Generic.csproj",
+        "projectName": "Generic",
+        "projectPath": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\Generic\\Generic.csproj",
+        "packagesPath": "C:\\Users\\mark.duffy\\.nuget\\packages\\",
+        "outputPath": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\Generic\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\mark.duffy\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppTargets\\AppTargets.csproj": {
+                "projectPath": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\AppTargets\\AppTargets.csproj"
+              },
+              "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\Core\\Core.csproj": {
+                "projectPath": "C:\\REPO\\GitHub\\AutomationTestFramework\\ATF\\Core\\Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "MSTest.TestFramework": {
+              "target": "Package",
+              "version": "[3.0.0, )"
+            },
+            "SpecFlow": {
+              "target": "Package",
+              "version": "[4.0.16-beta, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.307/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

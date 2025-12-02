@@ -1,0 +1,279 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Locust Test Report</title>
+    
+    <!-- Include Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .stats-table th, .stats-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .stats-table th {
+            background-color: #f8f9fa;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 30px;
+        }
+        
+        .failure-card {
+            background-color: #fff5f5;
+            border-left: 4px solid #f56565;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Locust Test Report</h1>
+            <p>Test run from 2024-10-14T13:18:44Z to 2024-10-14T13:19:44Z</p>
+            <p>Host: https://api.github.com</p>
+        </div>
+        
+        <div class="grid">
+            <div class="card">
+                <h2>Summary</h2>
+                <div id="summaryStats"></div>
+            </div>
+            
+            <div class="card">
+                <h2>Response Time Distribution</h2>
+                <div class="chart-container">
+                    <canvas id="responseTimeChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Requests Statistics</h2>
+            <div id="requestStats"></div>
+        </div>
+        
+        <div class="chart-container">
+            <h2>Users and RPS Over Time</h2>
+            <canvas id="timelineChart"></canvas>
+        </div>
+        
+        <div id="failureStats"></div>
+    </div>
+
+    <script>
+        // Load test data
+        const testData = {"metadata": {"start_time": "2024-10-14T13:18:44Z", "end_time": "2024-10-14T13:19:44Z", "host": "https://api.github.com", "locustfile": "locustfile.py", "theme": null, "show_download_link": false, "is_report": true}, "tasks": {"per_class": {"WebsiteUser": {"ratio": 1.0, "tasks": {"UserBehavior": {"ratio": 1.0, "tasks": {"about": {"ratio": 0.6666666666666666}, "index": {"ratio": 0.3333333333333333}}}}}}, "total": {"WebsiteUser": {"ratio": 1.0, "tasks": {"UserBehavior": {"ratio": 1.0, "tasks": {"about": {"ratio": 0.6666666666666666}, "index": {"ratio": 0.3333333333333333}}}}}}}, "requests_statistics": {"/": {"method": "GET", "num_requests": 58, "num_failures": 45, "avg_response_time": 71.10839482830387, "min_response_time": 42.0, "max_response_time": 325.0, "median_response_time": 52, "avg_content_length": 708.6379310344828, "current_rps": 1.0, "current_fail_per_sec": 1.0, "response_time_percentiles": {"95": 270.0, "99": 330.0}, "safe_name": "/"}, "/repos/octocat/Hello-World": {"method": "GET", "num_requests": 125, "num_failures": 104, "avg_response_time": 67.22372000478208, "min_response_time": 42.0, "max_response_time": 394.0, "median_response_time": 50, "avg_content_length": 1060.704, "current_rps": 2.3, "current_fail_per_sec": 2.3, "response_time_percentiles": {"95": 240.0, "99": 370.0}, "safe_name": "/repos/octocat/Hello-World"}, "Aggregated": {"method": "", "num_requests": 183, "num_failures": 149, "avg_response_time": 68.45492841879445, "min_response_time": 42.0, "max_response_time": 394.0, "median_response_time": 50, "avg_content_length": 949.120218579235, "current_rps": 3.3, "current_fail_per_sec": 3.3, "response_time_percentiles": {"95": 240.0, "99": 370.0}, "safe_name": "Aggregated"}}, "response_time_statistics": {"/": {"method": "GET", "percentiles": {"50": 52, "60": 54, "70": 57, "80": 61, "90": 84, "95": 270.0, "99": 330.0, "100": 330.0}}, "/repos/octocat/Hello-World": {"method": "GET", "percentiles": {"50": 50, "60": 52, "70": 56, "80": 60, "90": 69, "95": 240.0, "99": 370.0, "100": 390.0}}, "Aggregated": {"method": "", "percentiles": {"50": 50, "60": 52, "70": 56, "80": 60, "90": 71, "95": 240.0, "99": 370.0, "100": 390.0}}}, "failures_statistics": [{"name": "/repos/octocat/Hello-World", "method": "GET", "error": "HTTPError(&#x27;429 Client Error: too many requests for url: /repos/octocat/Hello-World&#x27;)", "occurrences": 21}, {"name": "/", "method": "GET", "error": "HTTPError(&#x27;403 Client Error: rate limit exceeded for url: /&#x27;)", "occurrences": 35}, {"name": "/repos/octocat/Hello-World", "method": "GET", "error": "HTTPError(&#x27;403 Client Error: rate limit exceeded for url: /repos/octocat/Hello-World&#x27;)", "occurrences": 83}, {"name": "/", "method": "GET", "error": "HTTPError(&#x27;429 Client Error: too many requests for url: /&#x27;)", "occurrences": 10}], "exceptions_statistics": [], "history": [{"time": "2024-10-14T13:18:47Z", "user_count": 4, "current_rps": 1.0, "current_fail_per_sec": 0, "total_avg_response_time": 249.65, "response_time_percentile_0.95": 370.0}, {"time": "2024-10-14T13:18:52Z", "user_count": 9, "current_rps": 1.5, "current_fail_per_sec": 0, "total_avg_response_time": 213.16, "response_time_percentile_0.95": 390.0}, {"time": "2024-10-14T13:18:57Z", "user_count": 10, "current_rps": 2.1, "current_fail_per_sec": 0, "total_avg_response_time": 148.69, "response_time_percentile_0.95": 340.0}, {"time": "2024-10-14T13:19:02Z", "user_count": 10, "current_rps": 3.0, "current_fail_per_sec": 0.5, "total_avg_response_time": 118.76, "response_time_percentile_0.95": 150.0}, {"time": "2024-10-14T13:19:07Z", "user_count": 10, "current_rps": 3.4, "current_fail_per_sec": 2.2, "total_avg_response_time": 103.39, "response_time_percentile_0.95": 73}, {"time": "2024-10-14T13:19:12Z", "user_count": 10, "current_rps": 3.2, "current_fail_per_sec": 3.2, "total_avg_response_time": 92.09, "response_time_percentile_0.95": 73}, {"time": "2024-10-14T13:19:17Z", "user_count": 10, "current_rps": 2.9, "current_fail_per_sec": 2.9, "total_avg_response_time": 85.03, "response_time_percentile_0.95": 64}, {"time": "2024-10-14T13:19:22Z", "user_count": 10, "current_rps": 2.9, "current_fail_per_sec": 2.9, "total_avg_response_time": 80.3, "response_time_percentile_0.95": 65}, {"time": "2024-10-14T13:19:27Z", "user_count": 10, "current_rps": 3.4, "current_fail_per_sec": 3.4, "total_avg_response_time": 76.02, "response_time_percentile_0.95": 66}, {"time": "2024-10-14T13:19:32Z", "user_count": 10, "current_rps": 3.5, "current_fail_per_sec": 3.5, "total_avg_response_time": 73.23, "response_time_percentile_0.95": 60}, {"time": "2024-10-14T13:19:37Z", "user_count": 10, "current_rps": 3.3, "current_fail_per_sec": 3.3, "total_avg_response_time": 70.79, "response_time_percentile_0.95": 66}, {"time": "2024-10-14T13:19:42Z", "user_count": 10, "current_rps": 3.4, "current_fail_per_sec": 3.4, "total_avg_response_time": 69.29, "response_time_percentile_0.95": 66}, {"time": "2024-10-14T13:21:12Z", "user_count": 0, "current_rps": 3.3, "current_fail_per_sec": 3.3, "total_avg_response_time": 68.45, "response_time_percentile_0.95": 0}, {"time": "2024-10-14T13:21:14Z", "user_count": 0, "current_rps": 3.3, "current_fail_per_sec": 3.3, "total_avg_response_time": 68.45, "response_time_percentile_0.95": 0}], "percentiles_to_chart": [0.95]};
+        
+        // Populate summary statistics
+        function populateSummary() {
+            const aggregated = testData.requests_statistics.Aggregated;
+            const summary = document.getElementById('summaryStats');
+            summary.innerHTML = `
+                <table class="stats-table">
+                    <tr>
+                        <th>Total Requests</th>
+                        <td>${aggregated.num_requests}</td>
+                    </tr>
+                    <tr>
+                        <th>Failed Requests</th>
+                        <td>${aggregated.num_failures}</td>
+                    </tr>
+                    <tr>
+                        <th>Average Response Time</th>
+                        <td>${aggregated.avg_response_time.toFixed(2)} ms</td>
+                    </tr>
+                    <tr>
+                        <th>Current RPS</th>
+                        <td>${aggregated.current_rps.toFixed(2)}</td>
+                    </tr>
+                </table>
+            `;
+        }
+        
+        // Create response time distribution chart
+        function createResponseTimeChart() {
+            const ctx = document.getElementById('responseTimeChart').getContext('2d');
+            const stats = testData.response_time_statistics.Aggregated.percentiles;
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['50%', '60%', '70%', '80%', '90%', '95%', '99%', '100%'],
+                    datasets: [{
+                        label: 'Response Time (ms)',
+                        data: Object.values(stats),
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+        
+        // Create timeline chart
+        function createTimelineChart() {
+            const ctx = document.getElementById('timelineChart').getContext('2d');
+            const history = testData.history;
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: history.map(h => new Date(h.time).toLocaleTimeString()),
+                    datasets: [
+                        {
+                            label: 'Users',
+                            data: history.map(h => h.user_count),
+                            borderColor: 'rgb(75, 192, 192)',
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'RPS',
+                            data: history.map(h => h.current_rps),
+                            borderColor: 'rgb(255, 99, 132)',
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Users'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Requests per Second'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Populate request statistics
+        function populateRequestStats() {
+            const statsDiv = document.getElementById('requestStats');
+            let html = '<table class="stats-table"><thead><tr>' +
+                '<th>Name</th>' +
+                '<th>Requests</th>' +
+                '<th>Failures</th>' +
+                '<th>Median (ms)</th>' +
+                '<th>95%ile (ms)</th>' +
+                '<th>RPS</th>' +
+                '</tr></thead><tbody>';
+                
+            for (const [name, stats] of Object.entries(testData.requests_statistics)) {
+                if (name !== 'Aggregated') {
+                    html += `<tr>
+                        <td>${name}</td>
+                        <td>${stats.num_requests}</td>
+                        <td>${stats.num_failures}</td>
+                        <td>${stats.median_response_time}</td>
+                        <td>${stats.response_time_percentiles['95']}</td>
+                        <td>${stats.current_rps.toFixed(2)}</td>
+                    </tr>`;
+                }
+            }
+            html += '</tbody></table>';
+            statsDiv.innerHTML = html;
+        }
+        
+        // Populate failure statistics
+        function populateFailureStats() {
+            const failures = testData.failures_statistics;
+            if (failures.length > 0) {
+                const failureDiv = document.getElementById('failureStats');
+                let html = '<div class="card failure-card"><h2>Failures</h2>' +
+                    '<table class="stats-table"><thead><tr>' +
+                    '<th>Endpoint</th>' +
+                    '<th>Method</th>' +
+                    '<th>Error</th>' +
+                    '<th>Occurrences</th>' +
+                    '</tr></thead><tbody>';
+                    
+                for (const failure of failures) {
+                    html += `<tr>
+                        <td>${failure.name}</td>
+                        <td>${failure.method}</td>
+                        <td>${failure.error}</td>
+                        <td>${failure.occurrences}</td>
+                    </tr>`;
+                }
+                html += '</tbody></table></div>';
+                failureDiv.innerHTML = html;
+            }
+        }
+        
+        // Initialize all charts and stats
+        window.onload = function() {
+            populateSummary();
+            createResponseTimeChart();
+            createTimelineChart();
+            populateRequestStats();
+            populateFailureStats();
+        };
+    </script>
+</body>
+</html>

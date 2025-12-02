@@ -1,0 +1,39 @@
+[
+    {
+        "EPOCHNumber": "12421424",
+        "TestPlans":
+        [
+            {
+                "TestPlanStart": "2012-04-23T18:25:43.511Z",
+                "TestPlanEnd": "2012-04-23T18:25:43.511Z",
+                "ScenarioPlans":
+                [
+                    {
+                        "TestScenarioStart": "2012-04-23T18:25:43.511Z",
+                        "TestScenarioEnd": "2012-04-23T18:25:43.511Z",
+                        "StepPlans":
+                        [
+                            {
+                                "TestStepStart": "2012-04-23T18:25:43.511Z",
+                                "TestStepEnd": "2012-04-23T18:25:43.511Z",
+                                "ProcPlans":
+                                [
+                                    {
+                                        "ProcName": "Proc 1",
+                                        "TestProcStart": "2012-04-23T18:25:43.511Z",
+                                        "TestProcEnd": "2012-04-23T18:25:43.511Z"
+                                    },                                    
+                                    {
+                                        "ProcName": "Proc 2",
+                                        "TestProcStart": "2012-04-23T18:25:43.511Z",
+                                        "TestProcEnd": "2012-04-23T18:25:43.511Z"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

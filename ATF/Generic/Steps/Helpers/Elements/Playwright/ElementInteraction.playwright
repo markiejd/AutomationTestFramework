@@ -1,0 +1,1200 @@
+﻿
+using Core;
+using Core.Logging;
+using Microsoft.Playwright;
+
+namespace Generic.Steps.Helpers.Classes
+{
+    /// <summary>
+    /// THIS IS THE BLOCK OF SELENIUM - Never pass selenium out of here!
+    /// </summary>
+    public static class ElementInteraction
+    {
+        public static bool AlertIsDisplayed(string alertMessage)
+        {
+            return false;
+            // return SeleniumUtil.AlertDisplayed(alertMessage);
+        }
+
+        public static bool AlertClickAccept()
+        {
+            return false;
+            // return SeleniumUtil.AlertClickAccept();
+        }
+
+        public static bool AlertClickCancel()
+        {
+            return false;
+            // return SeleniumUtil.AlertClickCancel();
+        }
+
+        public static bool AlertSendKeys(string text)
+        {
+            return false;
+            // return SeleniumUtil.AlertInput(text);
+        }
+
+        public static bool ClearTextFromElement(FormBase currentPage, string elementName, string elementType)
+        {
+            DebugOutput.OutputMethod("ClearTextFromElement", $"{currentPage.Name}, {elementName}, {elementType}");
+            return false;
+            // return EnterTextAndKeyIntoElement(currentPage, elementName, elementType, "", "clear");
+        }
+
+        public static bool ClearTextThenEnterTextToElement(FormBase currentPage, string elementName, string elementType, string text, string key = "")
+        {
+            DebugOutput.OutputMethod("ClearTextThenEnterTextToElement", $"{currentPage.Name}, {elementName}, {elementType}");
+            return false;
+            // if (!ClearTextFromElement(currentPage, elementName, elementType)) return Failure($"Failed to clear element");
+            // return EnterTextAndKeyIntoElement(currentPage, elementName, elementType, text, key);
+        }
+
+        public static bool ClickBackButtonInBrowser()
+        {
+            DebugOutput.OutputMethod("ClickBackButtonInBrowser", $"");
+            return false;
+            // return SeleniumUtil.ClickBackButtonInBrowser();
+        }
+
+        public static bool ClickOnCooClickCoordinates(int x = 0, int y = 0)
+        {
+            DebugOutput.OutputMethod("ClickOnCooClickCoordinates", $" {x} {y}");
+            return false;
+            // return SeleniumUtil.ClickCoordinates(x, y);
+        }
+
+        public static bool ClickOnElement(FormBase currentPage, string elementName, string elementType, int x = 0, int y = 0)
+        {
+            DebugOutput.OutputMethod("ClickOnElement", $"{currentPage.Name}, {elementName}, {elementType} {x} {y}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so can not click on it!");
+            // return SeleniumUtil.ClickCoordinatesWithElement(element, x, y);
+        }
+
+        public static bool ClickOnElement_CheckBoxSub(FormBase currentPage, string elementName, string elementType)
+        {
+            DebugOutput.OutputMethod("ClickOnElementCheckBoxSub", $"{currentPage.Name}, {elementName}, {elementType}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so can not click on it!");
+            // var parentElement = GetTheElement.GetParent(element);
+            // if (parentElement == null) return Failure($"Failed, it has no parent?");
+            // string labelElementLocator = GetSubLocators.CheckBoxLabelElementLocator;
+            // var labelElement = SeleniumUtil.GetElementUnderElement(parentElement, labelElementLocator, 1);
+            // if (labelElement == null) return Failure($"Even the parents, sub, {labelElementLocator} nope, doesn't exist!");
+            // return SeleniumUtil.Click(labelElement);
+        }        
+
+        public static bool ClickOnElementEnterTextSendKey(FormBase currentPage, string elementName, string elementType, string text, string key)
+        {
+            DebugOutput.OutputMethod("ClickOnElementCheckBoxSub", $"{currentPage.Name}, {elementName}, {elementType}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so can not click on it!");
+            // if (!SeleniumUtil.Click(element)) return Failure($"Failed to click on the top element!");
+            // if (!SeleniumUtil.EnterText(element, text)) return Failure($"Clicked - but can not enter text");
+            // if (!SeleniumUtil.SendKey(element, "enter")) return Failure($"Clicked, sent text - but its the send key I fail at!");
+            // return true;
+        }
+
+        public static bool ClickOnGroupElement(FormBase currentPage, string elementName, string elementType, string groupName)
+        {
+            DebugOutput.OutputMethod("ClickOnGroupElement", $"{currentPage.Name}, {elementName}, {elementType} {groupName}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its display status");
+            // var groupElement = GetTheElement.GetGroup(element, groupName);
+            // if (groupElement == null) return Failure($"Failed to get the group element under element!");
+            // return SeleniumUtil.Click(groupElement);
+        }
+
+        public static bool ClickOnSubElementstringTagSubElementstringClassstringTextstringTag(FormBase currentPage, string elementName, string elementType, string text, int timeout = 0)
+        {
+            var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            return false;
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so can not click on it!");
+            // // all chips in the chip array
+            // var subElements = SeleniumUtil.GetElementsUnder(element, GetSubLocators.ChipLocator);
+            // if (subElements == null) return Failure($"No sub elements under the element found string {GetSubLocators.ChipLocator}");
+            // foreach (var subSubElement in subElements)
+            // {
+            //     var textElement = SeleniumUtil.GetElementUnderElement(subSubElement, GetSubLocators.ChipTextLocator);
+            //     if (textElement != null)
+            //     {
+            //         var elementText = SeleniumUtil.GetElementText(textElement);
+            //         if (elementText.Contains(text))
+            //         {
+            //             var closeElement = SeleniumUtil.GetElementUnderElement(subSubElement, GetSubLocators.ChipCloseLocator);
+            //             if (closeElement == null) return Failure($"We get the right chip, but no close x");
+            //             return SeleniumUtil.Click(closeElement);
+            //         }
+            //     }
+            // }
+            // return Failure($"Failed to find it - not really surprising was it?!");
+        }
+
+        public static bool ClickOnSubElementstringTextUnderElement(FormBase currentPage, string elementName, string elementType, string name)
+        {
+            DebugOutput.OutputMethod("ClickOnSubElementstringTextUnderElement", $"{currentPage.Name}, {elementName}, {elementType}, {name}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so can not click on it!");
+            // var subElements = GetSubElementsOfElement(element, elementType);
+            // if (subElements == null) return Failure($"No sub tabs found!");
+            // foreach (var e in subElements)
+            // {
+            //     var text = SeleniumUtil.GetElementText(e);
+            //     if (text == name) return SeleniumUtil.Click(e);
+            // }
+            // DebugOutput.Log($"failed to click");
+            // return false;
+        }
+
+        public static bool ClickOnTagElementUnderElement(FormBase currentPage, string elementName, string elementType, string tag)
+        {
+            DebugOutput.OutputMethod("ClickOnButtonInElement", $"{currentPage.Name}, {elementName}, {elementType}, {tag}");            
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so can not click on it!");
+            // var buttonLocator = string.TagName(tag);
+            // var buttonElement = SeleniumUtil.GetElementUnderElement(element, buttonLocator, 1);
+            // if (buttonElement == null) return Failure($"Failed to find a button string TAG {tag} under Element {elementName}");
+            // return SeleniumUtil.Click(buttonElement);
+        }
+
+        public static bool ClickOnTextInTagInElement(FormBase currentPage, string elementName, string elementType, string tag, string item)
+        {
+            DebugOutput.OutputMethod("ClickOnTextInTagInElement", $"{currentPage.Name}, {elementName}, {elementType}, {tag}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so can not click on it!");
+            // var itemElements = GetTheElements.stringTag(element, tag);
+            // if (itemElements == null) return Failure($"Failed to find the sub elements string tag {tag}!");
+            // DebugOutput.Log($"There are {itemElements.Count} elements currently under the accordion");
+            // foreach (var itemElement in itemElements)
+            // {
+            //     if (SeleniumUtil.IsDisplayed(itemElement))
+            //     {
+            //         if (SeleniumUtil.GetElementText(itemElement).Contains(item))
+            //         {
+            //             return SeleniumUtil.Click(itemElement);                        
+            //         }
+            //     }
+            // }
+            // return Failure($"Never found an element string tag {tag} containing text {item} under {elementName}");
+        }
+
+        public static bool ClickNthElement(FormBase currentPage, string elementName, string elementType, string whichElement)
+        {
+            DebugOutput.OutputMethod("ClickNthElement", $"{currentPage.Name}, {elementName}, {elementType} {whichElement} ");
+            return false;
+            // int toBeClicked = 0;
+            // try
+            // {
+            //     toBeClicked = Int32.Parse(whichElement);
+            // }
+            // catch
+            // {
+            //     return Failure($"Failed to convert the string {whichElement} into an integer!");
+            // }
+            // if (toBeClicked < 1)
+            // {
+            //     return Failure($"Although arrays start a 0, we have to assume the user will count 1, 2, 3... so the first element will be 1.  Hence no zero possible!");
+            // }
+            // var elementsLocator = GetDictionaryLocator.GetElementLocator(elementName, currentPage, elementType);
+            // if (elementsLocator == null) return Failure($"We did not find the locator for {elementName} of type {elementType} in page {currentPage}");
+            // var elements = SeleniumUtil.GetElements(elementsLocator);
+            // if (elements == null) return Failure($"We have a locator {elementsLocator} but no elements found - not even 1!");
+            // toBeClicked--;
+            // var elementToBeClicked = elements[toBeClicked];
+            // return SeleniumUtil.Click(elementToBeClicked);
+        }
+
+        public static bool CloseTabstringNumber(int tabNumber)
+        {
+            DebugOutput.OutputMethod("CloseTabstringNumber", $"{tabNumber}");
+            return false;
+            // return SeleniumUtil.CloseTabstringNumber(tabNumber);
+        }
+
+        public static void CloseWebBrowser()
+        {
+            DebugOutput.OutputMethod("CloseWebBrowser");
+            return;
+            // if (SeleniumUtil.webDriver == null) return;
+            // SeleniumUtil.webDriver.Close();
+            // SeleniumUtil.webDriver.Quit();
+            // SeleniumUtil.webDriver = null;
+        }
+
+        public static bool CreateSelfHealModel(FormBase currentPage, IPage element, string elementName, string elementType)
+        {
+            DebugOutput.OutputMethod($"CreateSelfHealModel", $"{currentPage.Name} {element} {elementName} {elementType}");
+            return false;
+            // if (elementName == null || elementType == null) return false;
+            // var model = new SelfHealModel();
+            // model.PageName = currentPage.Name;
+            // model.ElementName = elementName;
+            // model.ElementType = elementType;
+            // model.ElementKnownLocator = GetDictionaryLocator.GetElementLocator(elementName, currentPage, elementType);
+            // model.ElementXPathString = SeleniumUtil.GetFullXPathOfElement(element);
+            // model.ElementText = SeleniumUtil.GetElementText(element);
+            // model.ElementTag = element.TagName;
+            // model.ElementEnabled = element.Enabled;
+            // return SelfHeal.WriteToFile(model);
+        }
+
+        public static bool DoubleClickOnElement(FormBase currentPage, string elementName, string elementType)
+        {
+            DebugOutput.OutputMethod("ClickOnElement", $"{currentPage.Name}, {elementName}, {elementType}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so can not click on it!");
+            // return SeleniumUtil.DoubleClick(element);
+        }
+
+        public static bool DragElementAToElementB(FormBase currentPage, string element1Name, string element2Name, string elementType)
+        {
+            DebugOutput.OutputMethod("DragAToB", $"{currentPage.Name}, {element1Name}, {element2Name}, {elementType}");
+            return false;
+            // var element1 = GetTheElement.GetElement(currentPage, element1Name, elementType);
+            // if (element1 == null) return Failure($"Failed to find 1 {element1Name}");
+            // var element2 = GetTheElement.GetElement(currentPage, element2Name, elementType);
+            // if (element2 == null) return Failure($"Failed to find 2 {element2Name}");
+            // return SeleniumUtil.DragElementToElement(element1, element2);
+        }
+
+        public static bool EnterTextAndKeyIntoElement(FormBase currentPage, string elementName, string elementType, string text, string key = "")
+        {
+            DebugOutput.OutputMethod("EnterText", $"{currentPage.Name}, {elementName}, {elementType}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"Failed to get element! {elementName} of type {elementType} in page {currentPage.Name}");
+            // return SeleniumUtil.EnterText(element, text, key);
+        }
+
+        public static string? GetAttributeValueOfSubElementstringNameOfElement(FormBase currentPage, string elementName, string elementType, string subElementName, string attribute)
+        {
+            DebugOutput.OutputMethod("GetAttributeValueOfSubElementstringNameOfElement", $"{currentPage.Name}, {elementName}, {elementType} {subElementName}");
+            return null;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return FailureString($"Failed to get element! {elementName} of type {elementType} in page {currentPage.Name}");
+            // var subElements = GetSubElementsOfElement(element, elementType);
+            // if (subElements == null) return FailureString($"FAiled to find the sub elements!");
+            // IPage? wantedElement = null;
+            // foreach (var subElement in subElements)
+            // {
+            //     var text = SeleniumUtil.GetElementText(subElement);
+            //     if (text == subElementName)
+            //     {
+            //         wantedElement = subElement;
+            //         break;
+            //     }
+            // }
+            // if (wantedElement == null) return FailureString($"FAiled to find a sub element, of which we found some, that equaled {subElementName}");
+            // return SeleniumUtil.GetElementAttributeValue(wantedElement, attribute);
+        }
+
+        public static int? GetNumberOfTabsOpenInBrowser()
+        {
+            DebugOutput.OutputMethod("GetNumberOfTabsOpenInBrowser", $"");
+            return null;
+            // return SeleniumUtil.GetNumberOfTabsOpenInBrowser();
+        }
+
+        public static string? GetSelectionValue(FormBase currentPage, string elementName, string elementType)
+        {
+            DebugOutput.OutputMethod("GetSelectorValue", $"{currentPage.Name}, {elementName}, {elementType}");
+            return null;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return FailureString($"Failed to get element! {elementName} of type {elementType} in page {currentPage.Name}");
+            // foreach (var optionLocator in GetSubLocators.DropDownItemLocators)
+            // {
+            //     var optionElements = SeleniumUtil.GetElementsUnder(element, optionLocator);
+            //     if (optionElements.Count > 0)
+            //     {
+            //         foreach(var option in optionElements)
+            //         {
+            //             if (SeleniumUtil.IsSelected(option)) return SeleniumUtil.GetElementText(option);
+            //         }
+            //     }
+            // }
+            // return null;
+        }
+
+        public static List<string>? GetSelectionValues(FormBase currentPage, string elementName, string elementType)
+        {
+            DebugOutput.OutputMethod("GetSelectorValue", $"{currentPage.Name}, {elementName}, {elementType}");  
+            return null;
+            // var listOfPossibleValues = new List<string>();        
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return FailureListString($"Failed to get element! {elementName} of type {elementType} in page {currentPage.Name}");  
+            // foreach (var optionLocator in GetSubLocators.DropDownItemLocators)
+            // {
+            //     var optionElements = SeleniumUtil.GetElementsUnder(element, optionLocator);
+            //     if (optionElements.Count > 0)
+            //     {
+            //         foreach (var option in optionElements)
+            //         {
+            //             var text = SeleniumUtil.GetElementText(option);
+            //             listOfPossibleValues.Add(text);
+            //         }
+            //     }
+            // }
+            // return listOfPossibleValues;
+        }
+
+        private static int? GetSubElementCountFromElement(IPage element, string elementType, string name)
+        {
+            return null;
+            // var subElements = GetSubElementsOfElement(element, elementType);
+            // if (subElements == null) return null;
+            // int counter = 0;
+            // foreach (var subElement in subElements)
+            // {
+            //     var text = SeleniumUtil.GetElementText(subElement);
+            //     if (text == name) return counter;
+            //     counter++;
+            // }
+            // DebugOutput.Log($"FAiled to find {name} in the sub elements of type {elementType}");
+            // return null;
+        }
+
+        public static string? GetSubElementTextFromNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, int nth)
+        {
+            DebugOutput.OutputMethod("GetSubElementTextFromNthElement", $"{currentPage.Name}, {elementName}, {elementType} {subElementName} {subElementType} {nth}");
+            return null;
+            // // get the nth Element
+            // var element = GetTheElements.GetNthElement(currentPage, elementName, elementType, nth, 0);
+            // if (element == null) return FailureString($"Failed to get the {nth}th element!");
+            // // now to get sub            
+            // var locator = GetDictionaryLocator.GetElementLocator(subElementName, currentPage, subElementType);
+            // if (locator == null)
+            // {
+            //     DebugOutput.Log($"NO LOCATOR FOUND IN PAGE {currentPage.Name} FOR NAME {elementName} OF TYPE {elementType} - unless the element is in the ");
+            //     return null;
+            // }
+            // var subElement = SeleniumUtil.GetElementUnderElement(element, locator, 0);
+            // if (subElement == null) return FailureString($"No sub element found {locator}");
+            // return SeleniumUtil.GetElementText(subElement);
+        }
+
+        public static string? GetTextFromElement(FormBase currentPage, string elementName, string elementType)
+        {
+            DebugOutput.OutputMethod("GetTextFromElement", $"{currentPage.Name}, {elementName}, {elementType}");
+            return null;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return FailureString($"Failed to get element! {elementName} of type {elementType} in page {currentPage.Name}");
+            // var text = SeleniumUtil.GetElementText(element);
+            // if (text == null)
+            // {
+            //     DebugOutput.Log($"This first time, I'm going to wait 1 second.. try again!");
+            //     Thread.Sleep(1000);
+            //     text = SeleniumUtil.GetElementText(element);
+            // }
+            // if (text == null) return FailureString($"Failed to get any text from element! {elementName} of type {elementType} in page {currentPage.Name}");
+            // return text;            
+        }
+
+        public static string? GetTextFromLastElement(FormBase currentPage, string elementName, string elementType)
+        {
+            DebugOutput.OutputMethod("GetTextFromLastElement", $"{currentPage.Name}, {elementName}, {elementType}");
+            return null;
+            // var elements = GetTheElements.GetElements(currentPage, elementName, elementType, 0);
+            // if (elements == null) return FailureString($"Never found ANY elements using {elementName} of {elementType} in page {currentPage}");
+            // return SeleniumUtil.GetElementText(elements[elements.Count() - 1]);
+        }
+
+        public static string? GetTextFromNthElement(FormBase currentPage, string elementName, string elementType, int nth)
+        {
+            DebugOutput.OutputMethod("GetTextFromNthElement", $"{currentPage.Name}, {elementName}, {elementType} {nth}");
+            return null;
+            // var elements = GetTheElements.GetElements(currentPage, elementName, elementType, 0);
+            // if (elements == null) return FailureString($"Never found ANY elements using {elementName} of {elementType} in page {currentPage}");
+            // if (elements.Count() < nth) return FailureString($"Your looking for the {nth}th element, but I only found {elements.Count()}");
+            // if (nth < 1) return FailureString($"0 is fine for an array, but humans count 1, 2, 3...");
+            // nth--;  // becuase it IS an array
+            // return SeleniumUtil.GetElementText(elements[nth]);
+        }
+
+        public static bool GetScreenShotOfElement(FormBase currentPage, string elementName, string elementType)
+        {
+            DebugOutput.OutputMethod("GetScreenshotOfElement", $"{currentPage.Name}, {elementName}, {elementType}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"Failed to take screen shot {currentPage.Name} {elementName}  {elementType}");
+            // return SeleniumUtil.ScreenShotElement(element, elementName);
+        }
+
+        public static bool GetScreenShotOfPage(FormBase currentPage)
+        {
+            return false;
+            // DebugOutput.OutputMethod("GetScreenShotOfPage", $"{currentPage.Name}");
+            // return SeleniumUtil.SaveCurrentPageImage(currentPage.Name);
+        }
+
+        public static List<string>? GetSubElementsTextOfElement(FormBase currentPage, string elementName, string elementType)
+        {
+            DebugOutput.OutputMethod("GetSubElementsOfElement", $"{currentPage.Name}, {elementName}, {elementType}");
+            return null;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return null;
+            // var subElements = GetSubElementsOfElement(element, elementType);
+            // if (subElements == null) return FailureListString($"Failed to get sub elements! but did get element!");
+            // var returnList = new List<string>();
+            // foreach (var e in subElements)
+            // {
+            //     var text = SeleniumUtil.GetElementText(e);
+            //     if (text != null) returnList.Add(text);
+            // }
+            // return returnList;
+        }
+
+        private static List<IPage>? GetSubElementsOfElement(IPage element, string elementType)
+        {
+            return null;
+            // if (element == null) return null;
+            // switch (elementType.ToLower())
+            // {
+            //     default:
+            //     case "list": return GetSubElementsOfElement(element, GetSubLocators.ListItemLocator);
+
+            //     case "step":
+            //     case "stepper":
+            //     case "steps": return GetSubElementsOfElement(element, GetSubLocators.StepperStepLabelLocator);
+
+            //     case "tab": return GetSubElementsOfElement(element, GetSubLocators.TabLocator);
+                
+            //     case "tree": return GetSubElementsOfElement(element, GetSubLocators.TreeNodeLocator);
+            // }
+        }
+
+        // private static List<IPage>? GetSubElementsOfElement(IPage element, string locators)
+        // {
+        //     return null;
+        //     // foreach (var locator in locators)
+        //     // {
+        //     //     var subElements = SeleniumUtil.GetElementsUnder(element, locator, 1);
+        //     //     if (subElements != null) return subElements;
+        //     // }
+        //     // return null;
+        // }
+
+        private static List<IPage>? GetSubSubElementsOfNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, string subSubElementName, string subSubElementType, int nth = 0)
+        {
+            DebugOutput.OutputMethod("GetSubSubElementsOfNthElement", $"{currentPage.Name}, {elementName}, {elementType}");
+            return null;
+            // // get list elements - ANSWER 
+            // var nthElement = GetTheNthElement(currentPage, elementName, elementType, nth);   
+            // if (nthElement == null)
+            // {
+            //     DebugOutput.Log($"Failed to find ANY nth element {currentPage.Name} {elementName} {elementType}");
+            //     return null;
+            // }
+            // // answers citation wrapper
+            // var sublocator = GetDictionaryLocator.GetElementLocator(subElementName, currentPage, subElementType);   
+            // if (sublocator == null)
+            // {
+            //     DebugOutput.Log($"Failed to get LOCATOR for sub locator {subElementName} {subElementType}");
+            //     return null;
+            // }
+            // var subElement = SeleniumUtil.GetElementUnderElement(nthElement, sublocator); 
+            // if (subElement == null)
+            // {
+            //     DebugOutput.Log($"o sub element found {subElementName} {subElementType}");
+            //     return null;
+            // }
+            // // answers citation
+            // var subSubLocator = GetDictionaryLocator.GetElementLocator(subSubElementName, currentPage, subSubElementType);
+            // if (subSubLocator == null)
+            // {
+            //     DebugOutput.Log($"FAiled to get the SUB SUB locator! {subElementName} {subElementType}");
+            //     return null;
+            // }
+            // var subSubElements = SeleniumUtil.GetElementsUnder(subElement, subSubLocator);
+            // if (subSubElements == null)
+            // {
+            //     DebugOutput.Log($"Failed at getting the sub sub element! {subElementName} {subElementType}");
+            //     return null;
+            // }
+            // return subSubElements;
+        }
+
+        public static string? GetTextFromSubElementSelectedOfElement(FormBase currentPage, string elementName, string elementType)
+        {
+            DebugOutput.OutputMethod("GetTextFromSubElementSelectedOfElement", $"{currentPage.Name}, {elementName}, {elementType}");
+            return null;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return FailureString("FAiled to even get the parent element!");
+            // var subElements = GetSubElementsOfElement(element, elementType);
+            // if (subElements == null) return FailureString($"failed to get the sub elements!");
+            // foreach (var e in subElements)
+            // {
+            //     if (SeleniumUtil.IsSelected(e)) return SeleniumUtil.GetElementText(e);
+            // }
+            // return null;
+        }
+
+        public static List<string>? GetTextListFromSubSubElementsOfNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, string subSubElementName, string subSubElementType, int nth = 0, string attribute = "")
+        {
+            DebugOutput.OutputMethod("GetTextFromSubSubElementOfLastElement", $"{currentPage.Name}, {elementName}, {elementType}");
+            return null;
+            // var subSubElements = GetSubSubElementsOfNthElement(currentPage, elementName, elementType, subElementName, subElementType, subSubElementName, subSubElementType, nth);
+            // if (subSubElements == null) return FailureListString($"Failed at getting the sub sub element!");
+            // var returnList = new List<string>();
+            // foreach(var subsubElement in subSubElements)
+            // {
+            //     string? text = null;
+            //     if (attribute == "")  text = SeleniumUtil.GetElementText(subsubElement);
+            //     else
+            //     {
+            //         text = SeleniumUtil.GetElementAttributeValue(subsubElement, attribute);
+            //     }
+            //     if (text != null) returnList.Add(text);
+            // }
+            // return returnList;
+        }                    
+
+        private static List<IPage>? GetTheListOfSubElementsofNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, int nth = 0 )
+        {
+            return null;
+            // var element = GetTheNthElement(currentPage, elementName, elementType); 
+            // if (element == null) return null;
+            
+            // var sublocator = GetDictionaryLocator.GetElementLocator(subElementName, currentPage, subElementType);
+            // if (sublocator == null) return null;
+
+            // return SeleniumUtil.GetElementsUnder(element, sublocator);
+        }    
+
+        private static IPage? GetTheNthElement(FormBase currentPage, string elementName, string elementType, int nth = 0)
+        {
+            var elements = GetTheElements.GetElements(currentPage, elementName, elementType);
+            return null;
+            // if (elements == null) return null;
+            // var numberOfElements = elements.Count();  
+            // if (nth == 0) return elements[numberOfElements - 1];
+            // nth--;
+            // return elements[numberOfElements - nth];
+        }
+
+        public static int? GetTheNumberOfSubElementsOfElement(FormBase currentPage, string elementName, string elementType)
+        {
+            return null;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return null;
+            // var subElements = GetSubElementsOfElement(element, elementType);
+            // if (subElements == null) return null;
+            // return subElements.Count();
+        }
+
+        public static int? GetTheNumberOfSubElementsOfNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, int nth = 0)
+        {
+            return null;
+            // var listOfElements = GetTheListOfSubElementsofNthElement(currentPage, elementName, elementType, subElementName, subElementType, nth);
+            // if (listOfElements == null) return FailureInt($"Failed to get list of elements!");
+            // return listOfElements.Count();
+        }
+
+        public static int? GetTheNumberOfSubSubElementsOfNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, string subSubElementName, string subSubElementType, int nth = 0)
+        {
+            return null;
+            // var listOfElements = GetTheListOfSubSubElementsofNthElement(currentPage, elementName, elementType, subElementName, subElementType, subSubElementName, subSubElementType, nth);
+            // if (listOfElements == null) return FailureInt($"Failed to get list of elements!");
+            // return listOfElements.Count();
+        }
+
+        private static IPage? GetTheSubElementOfNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, int nth = 0 )
+        {
+            return null;
+            // var element = GetTheNthElement(currentPage, elementName, elementType);
+            // if (element == null) return null;
+            
+            // var locator = GetDictionaryLocator.GetElementLocator(subElementName, currentPage, subElementType);
+            // if (locator == null) return null;
+
+            // return SeleniumUtil.GetElementUnderElement(element, locator);
+        }
+
+        private static IPage? GetTheSubSubElementofNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, string subSubElementName, string subSubElementType, int nth = 0 )
+        {
+            return null;
+            // var element = GetTheNthElement(currentPage, elementName, elementType); 
+            // if (element == null) return null;
+            
+            // var sublocator = GetDictionaryLocator.GetElementLocator(subElementName, currentPage, subElementType);
+            // if (sublocator == null) return null;
+
+            // var subElement = SeleniumUtil.GetElementUnderElement(element, sublocator);
+            // if (subElement == null) return null;
+
+            // var subSubLocator = GetDictionaryLocator.GetElementLocator(subSubElementName, currentPage, subSubElementType);
+            // if (subSubLocator == null) return null;
+
+            // return SeleniumUtil.GetElementUnderElement(subElement, subSubLocator);
+        }
+
+        private static List<IPage>? GetTheListOfSubSubElementsofNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, string subSubElementName, string subSubElementType, int nth = 0 )
+        {
+            return null;
+            // var element = GetTheNthElement(currentPage, elementName, elementType); 
+            // if (element == null) return null;
+            
+            // var sublocator = GetDictionaryLocator.GetElementLocator(subElementName, currentPage, subElementType);
+            // if (sublocator == null) return null;
+
+            // var subElement = SeleniumUtil.GetElementUnderElement(element, sublocator);
+            // if (subElement == null) return null;
+
+            // var subSubLocator = GetDictionaryLocator.GetElementLocator(subSubElementName, currentPage, subSubElementType);
+            // if (subSubLocator == null) return null;
+
+            // return SeleniumUtil.GetElementsUnder(subElement, subSubLocator);
+        }
+
+        public static int? GetWidthOfElement(FormBase currentPage, string elementName, string elementType)
+        {
+            DebugOutput.OutputMethod("GetText", $"{currentPage.Name}, {elementName}, {elementType}");
+            return null;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return FailureInt($"Failed to get element! {elementName} of type {elementType} in page {currentPage.Name}");
+            // return SeleniumUtil.GetWidthOfElement(element);
+        }
+
+        public static bool IsElementDisplayed(FormBase currentPage, string elementName, string elementType, int timeout = 0)
+        {
+            DebugOutput.OutputMethod("IsElementDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {timeout}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType, timeout);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its display status");
+            // SeleniumUtil.MoveToElement(element);
+            // if (SeleniumUtil.IsDisplayed(element, false, timeout))
+            // {
+            //     if (TargetConfiguration.Configuration.SelfHeal) CreateSelfHealModel(currentPage, element, elementName, elementType);
+            //     return true;
+            // }
+            // DebugOutput.Log($"Element exists - just not displayed!");
+            // return false;
+        }        
+
+        public static bool IsElementExpanded(FormBase currentPage, string elementName, string elementType)
+        {
+            DebugOutput.OutputMethod("IsElementExpanded", $"{currentPage.Name}, {elementName}, {elementType}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its display status");
+            // var expansionElement = GetTheElement.GetExpansion(element);
+            // if (expansionElement == null) return Failure($"Failed to find expansion element under {element}");
+            // var attributeValue = SeleniumUtil.GetElementAttributeValue(expansionElement, "aria-expanded");
+            // if (attributeValue == null) return Failure($"Failed to get attribute from expansion element {expansionElement}");
+            // DebugOutput.Log($"We got attribute value of {attributeValue}");
+            // if (attributeValue.ToLower() == "true") return true;
+            // return false;
+        }
+
+        public static bool IsElementExists(FormBase currentPage, string elementName, string elementType, int timeout)
+        {
+            DebugOutput.OutputMethod("IsElementDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {timeout}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType, timeout);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its display status");
+            // return true;
+        }
+
+        public static bool IsElementGroupDisplayed(FormBase currentPage, string elementName, string elementType, string groupName)
+        {
+            DebugOutput.OutputMethod("IsElementGroupDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {groupName}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its display status");
+            // var groupElement = GetTheElement.GetGroup(element, groupName);
+            // if (groupElement == null) return Failure($"Failed to get the group element under element!");
+            // return SeleniumUtil.IsDisplayed(groupElement);
+        }
+
+        public static bool IsElementGroupExpanded(FormBase currentPage, string elementName, string elementType, string groupName)
+        {
+            DebugOutput.OutputMethod("IsElementGroupDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {groupName}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its display status");
+            // var groupElement = GetTheElement.GetGroup(element, groupName);
+            // if (groupElement == null) return Failure($"Failed to get the group element under element!");
+            // var groupExpandedElement = GetTheElement.GetGroupExpanded(groupElement);
+            // if (groupElement == null) return Failure($"Failed to find the group expanded elemtent");
+            // return true;
+        }        
+
+        public static bool IsElementNotDisplayed(FormBase currentPage, string elementName, string elementType, int timeout = 0)
+        {
+            DebugOutput.OutputMethod("IsElementDisplayedNot", $"{currentPage.Name}, {elementName}, {elementType}, {timeout}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return true;
+            // DebugOutput.Log($"We have an element!");
+            // if (!SeleniumUtil.IsDisplayed(element)) return true;
+            // DebugOutput.Log($"The element is displayed, but this is INSTANT");
+            // int counter = 0;
+            // int negativeTimeout = timeout;
+            // if (negativeTimeout == 0) negativeTimeout = TargetConfiguration.Configuration.NegativeTimeout;
+            // while (SeleniumUtil.IsDisplayed(element))
+            // {
+            //     if (counter >= negativeTimeout) return Failure($"We have waited {negativeTimeout} seconds - and elementName {elementName} is still displayed!");
+            //     Thread.Sleep(1000);
+            //     counter++;
+            // }
+            // DebugOutput.Log($"Finally gone, waited {counter} seconds");
+            // return true;
+        }
+
+        public static bool IsElementEnabled(FormBase currentPage, string elementName, string elementType)
+        {
+            DebugOutput.OutputMethod("IsEnabled", $"{currentPage.Name}, {elementName}, {elementType}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know if enabled or not!");
+            // return SeleniumUtil.IsEnabled(element);
+        }
+
+        public static bool IsElementGroupNotExpanded(FormBase currentPage, string elementName, string elementType, string groupName)
+        {
+            DebugOutput.OutputMethod("IsElementGroupDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {groupName}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its display status");
+            // var groupElement = GetTheElement.GetGroup(element, groupName);
+            // if (groupElement == null) return Failure($"Failed to get the group element under element!");
+            // var groupExpandedElement = GetTheElement.GetGroupExpanded(groupElement);
+            // if (groupElement == null) return true;
+            // return Failure($"Failed to find the group expanded elemtent");;
+        }        
+
+        public static bool IsElementReadOnly(FormBase currentPage, string elementName, string elementType)
+        {
+            DebugOutput.OutputMethod("IsReadOnly", $"{currentPage.Name}, {elementName}, {elementType}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know if enabled or not!");
+            // return SeleniumUtil.IsEnabled(element);
+        }
+
+        public static bool IsElementSelected(FormBase currentPage, string elementName, string elementType)
+        {
+            DebugOutput.OutputMethod("IsSelected", $"{currentPage.Name}, {elementName}, {elementType}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its selected or not!");
+            // return SeleniumUtil.IsSelected(element);
+        }
+
+        public static bool IsElementsParentElementDisplayed(FormBase currentPage, string elementName, string elementType)
+        {
+            var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            return false;
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its display status");
+            // var parentElement = GetTheElement.GetParent(element);
+            // if (parentElement == null) return Failure($"No PARENT element found above {elementName} of type {elementType} in page {currentPage} so do not know its display status");
+            // if (parentElement.Displayed)
+            // {
+            //     // if (TargetConfiguration.Configuration.SelfHeal) CreateSelfHealModel(currentPage, element, elementName, elementType);
+            //     return true;
+            // }
+            // DebugOutput.Log($"PARENT Element exists - just not displayed!");
+            // return false;
+        }
+
+        public static bool IsElementUnderElementstringTagstringTextDisplayed(FormBase currentPage, string elementName, string elementType, string tag, string text)
+        {
+            DebugOutput.OutputMethod("IsElementUnderElementstringTagDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {tag} {text}");
+            return false;
+            // var locator = string.TagName(tag);
+            // return IsElementUnderElementstringLocatorstringTextDisplayed(currentPage, elementName, elementType, locator, text);
+        }
+
+        public static bool IsElementUnderElementstringClassstringTextDisplayed(FormBase currentPage, string elementName, string elementType, string classWanted, string text)
+        {
+            DebugOutput.OutputMethod("IsElementUnderElementstringTagDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {classWanted} {text}");
+            return false;
+            // var locator = string.ClassName(classWanted);
+            // return IsElementUnderElementstringLocatorstringTextDisplayed(currentPage, elementName, elementType, locator, text);
+        }        
+
+        public static bool IsElementUnderElementstringLocatorstringTextDisplayed(FormBase currentPage, string elementName, string elementType, string locator, string text)
+        {
+            DebugOutput.OutputMethod("IsElementUnderElementstringTagDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {locator} {text}");
+            return false;
+            // var subElement = GetTheElement.GetSubElementstringText(currentPage, elementName, elementType, locator, text, 0);
+            // if (subElement == null) return Failure($"Failed to find the sub element string {locator} with text {text} under {elementName}");
+            // return SeleniumUtil.IsDisplayed(subElement);
+        }
+
+        public static bool IsDriverActive()
+        {
+            DebugOutput.OutputMethod("IsDriverNull", $"");
+            return false;
+            // if (SeleniumUtil.webDriver == null) return false;
+            // return true;            
+        }
+
+        public static bool IsSubElementDisplayed(FormBase currentPage, string elementName, string elementType, string subElementName)
+        {
+            DebugOutput.OutputMethod("IsSubElementDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {subElementName} ");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its selected or not!");
+            // var subElements = GetSubElementsOfElement(element, elementType);
+            // if (subElements == null) return Failure($"FAiled to get sub elements if this!");
+            // foreach (var e in subElements)
+            // {
+            //     var text = SeleniumUtil.GetElementText(e);
+            //     if (text == subElementName) return SeleniumUtil.IsDisplayed(e);
+            // }
+            // DebugOutput.Log($"To get here - no sub element found!");
+            // return false;
+        }
+
+        public static bool MouseOverElement(FormBase currentPage, string elementName, string elementType)
+        {
+            DebugOutput.OutputMethod("MouseOver", $"{currentPage.Name}, {elementName}, {elementType}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its selected or not!");
+            // return SeleniumUtil.MoveToElement(element);
+        }
+
+        public static bool MoveSliderElement(FormBase currentPage, string elementName, string elementType, int value)
+        {
+            DebugOutput.OutputMethod("MoveSliderElement", $"{currentPage.Name}, {elementName}, {elementType} {value}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its selected or not!");
+            // return SeleniumUtil.MoveSliderElement(element, value);
+        }
+
+        public static bool NavigateToURL(string url)
+        {
+            DebugOutput.OutputMethod("NavigateToURL", $"{url}");
+            return false;
+            // return SeleniumUtil.NavigateToURL(url);
+        }
+
+        public static bool RightClickElement(FormBase currentPage, string elementName, string elementType)
+        {
+            DebugOutput.OutputMethod("RightClick", $"{currentPage.Name}, {elementName}, {elementType}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its selected or not!");
+            // return SeleniumUtil.RightClick(element);
+        }
+
+        public static bool SelectingFrom(FormBase currentPage, string elementName, string elementType, string selecting, bool topOptionAlreadySelected = false, bool textEntry = true, int timeout = 0)
+        {
+            DebugOutput.OutputMethod("SelectingFrom", $"{currentPage.Name}, {elementName}, {elementType}, {selecting}, {topOptionAlreadySelected}, {textEntry}, {timeout}");
+            return false;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its selected or not!");
+            // bool alreadyOpen = false;
+            // foreach (var locator in GetSubLocators.DropDownItemLocators)
+            // {
+            //     var allOptions = SeleniumUtil.GetElementsUnder(element, locator, 5);
+            //     if (allOptions.Count > 0) alreadyOpen = true;
+            // }
+            // if (!alreadyOpen)
+            // {
+            //     if (!SeleniumUtil.Click(element)) return Failure($"It is not open, so we click - but failed!");
+            // }
+            // var howManyWaysToFindOptions = GetSubLocators.DropDownItemLocators.Length;
+            // if (textEntry)
+            // {
+            //     if (SeleniumUtil.EnterText(element, selecting))
+            //     {
+            //         return SeleniumUtil.SendKey(element, "enter");
+            //     }
+            // }
+            // foreach (var locator in GetSubLocators.DropDownItemLocators)
+            // {
+            //     var allOptions = SeleniumUtil.GetElementsUnder(element, locator, 5);
+            //     DebugOutput.Log($"There are {allOptions.Count()} options under this dropdown! {locator}");
+            //     if (allOptions.Count > 0)
+            //     {
+            //         int optionCounter = 0;
+            //         if (!topOptionAlreadySelected)
+            //         {
+            //             optionCounter = 1;
+            //         }
+            //         bool found = false;
+            //         foreach (var option in allOptions)
+            //         {
+            //             var text = SeleniumUtil.GetElementAttributeValue(option, "Name");
+            //             if (selecting == text)
+            //             {
+            //                 DebugOutput.Log($"Match on NAME");
+            //                 found = true;
+            //                 if (SeleniumUtil.Click(option)) return true;
+            //             }
+            //             text = SeleniumUtil.GetElementText(option);
+            //             if (selecting == text)
+            //             {
+            //                 DebugOutput.Log($"Match on TEXT");
+            //                 found = true;
+            //                 if (SeleniumUtil.Click(option)) return true;
+            //             }
+            //             if (found)
+            //             {
+            //                 DebugOutput.Log($"We have a match at option {optionCounter} but failed to click on it (sometimes the option is displayed behind 1 element)");
+            //                 for (int i = 0; i < optionCounter; i++)
+            //                 {
+            //                     SeleniumUtil.SendKey(element, "down arrow");
+            //                     Thread.Sleep(100);
+            //                 }
+            //                 return SeleniumUtil.SendKey(element, "enter");
+            //             }
+            //             optionCounter++;
+            //         }
+            //     }
+            //     else
+            //     {
+            //         DebugOutput.Log($"no options to select for locator {locator}!");
+            //     }
+            // }
+            // string subLocator = string.XPath($"//*[contains(., '{selecting}')]");
+            // var allElements = SeleniumUtil.GetWebElementsUnder(element, subLocator);
+            // if (allElements.Count > 0)
+            // {
+            //     DebugOutput.Log($"WE have something! {allElements.Count}");
+            //     return SeleniumUtil.Click(allElements[allElements.Count-1]);
+            // }
+            // allElements = SeleniumUtil.GetAllElementsUnderElement(element);
+            // DebugOutput.Log($"FOUND {allElements.Count()} elements under the dropdown!");
+            // foreach(var newElement in allElements)
+            // {
+            //     var newElementName = SeleniumUtil.GetElementAttributeValue(newElement, "Name");
+            //     DebugOutput.Log($"NAME = {newElementName}");
+            //     if (elementName == selecting)
+            //     {
+            //         DebugOutput.Log($"Found string name");
+            //         return SeleniumUtil.Click(newElement);
+            //     }
+            // }
+            // DebugOutput.Log($"The option {selecting} was simply not found!");
+            // return false;
+        }
+
+        public static bool SetWindowSize(string size)
+        {
+            return false;
+            // return SeleniumUtil.SetWindowSize(size);
+        } 
+
+        public static bool SetWindowSize(int length, int height)
+        {
+            DebugOutput.OutputMethod("SetWindowSize", $"{length}, {height}");         
+            return false;
+            // return SeleniumUtil.SetWindowSize(length, height);
+        }
+
+        public static bool SwapTabstringNumber(int tabNumber)
+        {
+            DebugOutput.OutputMethod("SwapTabstringNumber", $"{tabNumber}"); 
+            return false;
+            // return  SeleniumUtil.SwapTabstringNumber(tabNumber);
+        }
+
+        public static bool WaitForElementToBeDisplayed(FormBase currentPage, string elementName, string elementType, int timeout = 0)
+        {
+            DebugOutput.OutputMethod($"WaitForElementToBeDisplayed", $"{currentPage.Name} {elementName} {elementType} {timeout} ");
+            return false;
+            // if (timeout == 0) timeout = TargetConfiguration.Configuration.PositiveTimeout;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType, timeout);
+            // int counter = 0;
+            // if (element == null)
+            // {
+            //     while (element == null)
+            //     {
+            //         if (counter > timeout) return Failure($"Failed, even after waiting {timeout} seconds - no element {elementName} let alone displayed");
+            //         Thread.Sleep(1000);
+            //         element = GetTheElement.GetElement(currentPage, elementName, elementType, timeout);
+            //         counter++;
+            //     }
+            // }
+            // if (SeleniumUtil.IsDisplayed(element)) return true;
+            // while (!SeleniumUtil.IsDisplayed(element))
+            // {
+            //     if (counter > timeout) return Failure($"Got the element for {elementName} but its still not displayed! even after {counter} seconds");
+            //     Thread.Sleep(1000);
+            //     counter++;
+            // }
+            // return true;
+        }
+
+        public static bool WaitForElementToNotBeDisplayed(FormBase currentPage, string elementName, string elementType, int timeout = 0)
+        {
+            return false;
+            // if (timeout == 0) timeout = TargetConfiguration.Configuration.NegativeTimeout;
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType, timeout);
+            // if (element == null)
+            // {
+            //     Thread.Sleep(1000);
+            //     element = GetTheElement.GetElement(currentPage, elementName, elementType, timeout);
+            //     if (element == null)
+            //     {
+            //         DebugOutput.Log($"We waited 1 seconds - and still no element evenfound!");
+            //         return true;
+            //     }
+            // }
+            // int counter = 0;
+            // while (SeleniumUtil.IsDisplayed(element))
+            // {
+            //     if (counter > timeout) return Failure($"The element {elementName} is still displayed, even after {timeout} seconds");
+            //     Thread.Sleep(1000);
+            //     counter++;
+            // }
+            // DebugOutput.Log($"Its gone!");
+            // return true;
+        }
+
+        public static bool WaitForTextNotToChange(FormBase currentPage, string elementName, string elementType, string generationString = "", int waitTime = 0)
+        {
+            return false;
+            // if (waitTime == 0) waitTime = TargetConfiguration.Configuration.PositiveTimeout;
+            // DebugOutput.OutputMethod("WaitForTextNotToChange", $"{currentPage.Name} {elementName} {elementType} {generationString} {waitTime}");  
+            // var element = GetTheElement.GetElement(currentPage, elementName, elementType);
+            // if (element == null) return Failure($"We failed even findind the element!");
+            // return WaitForTextNotToChange(element, generationString, waitTime); 
+        }
+
+        public static bool WaitForTextNotToChange(IPage element, string generationString = "", int waitTime = 0)
+        {
+            return false;
+            // if (waitTime == 0) waitTime = TargetConfiguration.Configuration.PositiveTimeout;
+            // DebugOutput.OutputMethod("WaitForTextNotToChange", $"{element} {generationString} {waitTime}");   
+            // var answerText = SeleniumUtil.GetElementText(element);
+            // int timeoutCounter = 0;
+            // while (answerText == null)
+            // {
+            //     if (timeoutCounter >= waitTime) return Failure($"Timed out waiting with null!");
+            //     Thread.Sleep(1000);
+            //     answerText = SeleniumUtil.GetElementText(element);
+            //     timeoutCounter++;
+            // }
+            // timeoutCounter = 0;
+            // while (answerText?.Contains(generationString) == true)
+            // {
+            //     if (timeoutCounter >= waitTime) return Failure($"Timed out waiting with {generationString} text displayed {answerText}!");
+            //     Thread.Sleep(1000);
+            //     answerText = SeleniumUtil.GetElementText(element);
+            //     timeoutCounter++;
+            // }
+            // var tempAnswer = answerText;
+            // Thread.Sleep(1000);
+            // answerText = SeleniumUtil.GetElementText(element);
+            // timeoutCounter = 0;
+            // while (tempAnswer != answerText)
+            // {
+            //     if (timeoutCounter >= waitTime) return Failure($"Timed out waiting STILL CHANGING {tempAnswer} {answerText}!");
+            //     tempAnswer = answerText;
+            //     Thread.Sleep(1000);
+            //     answerText = SeleniumUtil.GetElementText(element);
+            //     if (tempAnswer == answerText) return true;
+            //     timeoutCounter++;
+            // }
+            // DebugOutput.Log($"It never changed in 1 second");
+            // return true;
+        }
+
+        public static bool WaitForTextNotToChangeInLastElement(FormBase currentPage, string elementName, string elementType, string generationString = "", int waitTime = 0)
+        {
+            return false;
+            // if (waitTime == 0) waitTime = TargetConfiguration.Configuration.PositiveTimeout;
+            // DebugOutput.OutputMethod("WaitForTextNotToChangeInLastElement", $"{currentPage.Name} {elementName} {elementType} {generationString} {waitTime}");  
+            // var elements = GetTheElements.GetElements(currentPage, elementName, elementType, waitTime);
+            // if (elements == null) return Failure($"No elments found with {currentPage.Name} {elementName} {elementType}");
+            // return WaitForTextNotToChange(elements[elements.Count() - 1]);
+        }
+
+        public static bool WebShutdown()
+        {
+            DebugOutput.OutputMethod("WebShutdown", $"");   
+            return false;
+            // if (SeleniumUtil.webDriver != null)
+            // {
+            //     SeleniumUtil.webDriver.Close();                
+            //     SeleniumUtil.webDriver.Quit();
+            //     Thread.Sleep(1000);
+            // }
+            // if (SeleniumUtil.webDriver != null)
+            // {
+            //     SeleniumUtil.webDriver.Close();                
+            //     SeleniumUtil.webDriver.Quit();
+            //     SeleniumUtil.webDriver.Dispose();
+            //     SeleniumUtil.webDriver = null;
+            // }
+            // Thread.Sleep(1000);
+            // if (SeleniumUtil.webDriver != null) return Failure($"FAILED TO FORCE CLOSE WEB DRIVER!");
+            // return true;
+        }
+
+
+        
+        ///
+        ///  FAILURE HANDLIN
+        ///  
+
+        /// <summary>
+        /// Send a failure with a boolean
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="pass"></param>
+        /// <returns>false is a fail</returns>
+        private static bool Failure(string message, bool pass = false)
+        {
+            CombinedSteps.Failure("***FAILURE IN ElementInteraction*** > " + message);
+            return pass;
+        }
+
+        /// <summary>
+        /// Send a failure with a string
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="pass"></param>
+        /// <returns>null is a fail</returns>
+        private static string? FailureString(string message, string? pass = null)
+        {
+            CombinedSteps.Failure("***FAILURE IN ElementInteraction FailureString*** > " + message);
+            return pass;
+        }
+
+        /// <summary>
+        /// Send a failure with a number
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="pass"></param>
+        /// <returns>null is a fail</returns>
+        private static int? FailureInt(string message, int? pass = null)
+        {
+            CombinedSteps.Failure("***FAILURE IN ElementInteraction FailureInt*** > " + message);
+            return pass;
+        }
+
+        /// <summary>
+        /// Send a failure with an empty list
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="pass"></param>
+        /// <returns>null is a fail</returns>
+        private static List<string>? FailureListString(string message, List<string>? pass = null)
+        {
+            CombinedSteps.Failure("***FAILURE IN ElementInteraction FailureListString*** > " + message);
+            if (pass == null) return null;
+            if (pass.Count() == 0) return null;
+            return pass;
+        }
+        
+        
+
+
+
+
+    }
+}

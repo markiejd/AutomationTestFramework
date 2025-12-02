@@ -1,0 +1,425 @@
+
+using Core.Configuration;
+using Core.FileIO;
+using Core.Logging;
+using Newtonsoft.Json;
+// using OpenQA.Selenium;
+
+namespace Generic.Steps.Helpers.Classes
+{
+    public class SelfHealModel
+    {
+        public string PageName { get; set; } = string.Empty;
+        public string ElementName { get; set; } = string.Empty;
+        public string ElementType { get; set; } = string.Empty;
+        public string? ElementKnownLocator { get; set; } 
+        public string? ElementXPathString { get; set; }
+        public string? ElementText { get; set; }
+        public string? ElementTag { get; set; }
+        public bool ElementEnabled { get; set; } = true;
+
+
+        // |{text}|{tagName}|{size}|{enabled}|
+    }
+
+    public static class SelfHeal
+    {
+
+        public static string CreateJsonString(SelfHealModel model)
+        {
+            DebugOutput.Log($"CreateJsonString {model.PageName} {model.ElementName} {model.ElementType}");
+            return JsonConvert.SerializeObject(model, Newtonsoft.Json.Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+        }
+
+        public static SelfHealModel? CreateModelFromJson(string jsonString)
+        {
+            var model = new SelfHealModel();
+            model = JsonConvert.DeserializeObject<SelfHealModel>(jsonString);
+            return model;
+        }
+
+        public static bool WriteToFile(SelfHealModel model)
+        {
+            var osFile = GetElementFileDetails(model.PageName);
+            return AppendFile(osFile, model);
+        }
+
+        public static SelfHealModel? GetSelfHealModel(string pageName, string elementName, string elementType)
+        {
+            var osFile = GetElementFileDetails(pageName);
+            if (!FileUtils.OSFileCheck(osFile)) return null;
+            var textFileAsLines = FileUtils.OSGetFileContentsAsListOfStringByLine(osFile);
+            if (textFileAsLines == null) return null;
+            DebugOutput.Log($"WE have {textFileAsLines.Count()} lines in the CURRENT file LENG");
+            foreach(var line in textFileAsLines)
+            {
+                var checkModel = CreateModelFromJson(line);
+                if (checkModel == null) return null;
+                if (checkModel.PageName.ToLower() == pageName.ToLower())
+                {
+                    if (checkModel.ElementName.ToLower() == elementName.ToLower())
+                    {
+                        if (checkModel.ElementType.ToLower() == elementType.ToLower())
+                        {
+                            DebugOutput.Log($"We have found the model from the line!");
+                            return checkModel;
+                        }
+                    }
+                }
+            }
+            DebugOutput.Log($"To get here means we did not find anything for this element!");
+            return null;
+        }
+        
+        private static string GetElementFileDetails(string pageName)
+        {
+            var outputLocation = "/AppTargets/Forms/" + TargetConfiguration.Configuration.AreaPath + "/SelfHeal/" + pageName + "/";
+            var OSSelfHelpDirectory = FileUtils.GetCorrectDirectory(outputLocation);
+            DebugOutput.Log($"This is nice {OSSelfHelpDirectory}");
+            if (!FileUtils.OSDirectoryCheck(OSSelfHelpDirectory)) FileUtils.OSDirectoryCreation(OSSelfHelpDirectory);
+            var OSSelfHelpFile = OSSelfHelpDirectory + "Elements.txt";
+            DebugOutput.Log($"This is nice FILE {OSSelfHelpFile}");
+            return OSSelfHelpFile;
+        }
+
+        private static bool AppendFile(string osFile, SelfHealModel model)
+        {            
+            DebugOutput.Log($"AppendFile {osFile} {model.PageName} {model.ElementName} {model.ElementType}");
+
+            // do if NEW file
+            if (!FileUtils.OSFileCheck(osFile))
+            {
+                DebugOutput.Log($"This is a new page !");
+                if (!FileUtils.OSFileCreation(osFile))
+                {
+                    DebugOutput.Log($"Failed to create file {osFile}");
+                    return false;
+                }
+                DebugOutput.Log($"File is created, its new, so we can just populate it!");
+                var inputLine = CreateJsonString(model);
+                return !FileUtils.OSAppendLineToFile(osFile, inputLine);
+            }
+            DebugOutput.Log($"We already have {osFile} so we need to append it - if new!");
+            var linesFromFile = FileUtils.OSGetFileContentsAsListOfStringByLine(osFile);
+            if (linesFromFile == null)
+            {
+                DebugOutput.Log($"If this file is new - it should have written the first line above!");
+                return false;
+            }
+            DebugOutput.Log($"The file has {linesFromFile.Count()} LINES!");
+            var newLinesForFile = new List<string>();
+            DebugOutput.Log($"is this element ALREADY in the file?");
+            bool change = false;
+            foreach(var line in linesFromFile)
+            {
+                change = false;
+                DebugOutput.Log($"Json reads as {line}");
+                var lineModel = CreateModelFromJson(line);
+                if (lineModel == null)
+                {
+                    DebugOutput.Log($"We failed to make a model from the json {line}");
+                    return false;
+                }
+                if (lineModel == model)
+                {
+                    DebugOutput.Log($"found the element model and are IDENTICAL! so nothing to change!");
+                    return true;
+                }
+                if (lineModel.PageName == model.PageName)
+                {
+                    DebugOutput.Log($"Page name the same!");
+                    if (lineModel.ElementName == model.ElementName)
+                    {
+                        DebugOutput.Log($"Element name the same!");
+                        if (lineModel.ElementType == lineModel.ElementType)
+                        {
+                            DebugOutput.Log($"Type the same - YET THE MODEL IS DIFFERENT - THIS IS A CHANGE! we do not store the old line from text file");
+                            change = true;
+                        }
+                    }
+                }
+                if (!change) newLinesForFile.Add(line);
+            }    
+            DebugOutput.Log($"Lets add the changed line or the NEW line!");        
+            var modelJson = CreateJsonString(model);
+            newLinesForFile.Add(modelJson);
+            DebugOutput.Log($"We have the whole file in newLinesForFile - clear the contents of the file!");
+
+            if (!FileUtils.OSClearContentsOfAFile(osFile)) return false;
+            DebugOutput.Log($"Now to populate!");
+            
+            foreach (var line in newLinesForFile)
+            {
+                if (!FileUtils.OSAppendLineToFile(osFile, line)) return false;
+            }
+            DebugOutput.Log($"File should be updated!");
+            return true;
+
+
+            // var newFileLines = new List<string>();
+            // bool replaced = false;
+            // foreach (var line in textFileAsLines)
+            // {
+            //     DebugOutput.Log($"FOR THE LOVE OF CHEES! {line}");
+            //     var checkModel = ConvertJsonStringToModel(line);
+            //     if (checkModel == null) return false;
+            //     var x = checkModel.PageName.ToLower();
+            //     DebugOutput.Log($"COMPARING '{checkModel.PageName.ToLower()}' to '{model.PageName.ToLower()}' AND {checkModel.ElementName.ToLower()} to {model.ElementName.ToLower()}");
+            //     if (checkModel.PageName.ToLower() == model.PageName.ToLower())
+            //     {
+            //         DebugOutput.Log($"match page name");
+            //         if (checkModel.ElementName.ToLower() == model.ElementName.ToLower())
+            //         {
+            //             DebugOutput.Log($"match element name");
+            //             DebugOutput.Log($"This is a replacement!");
+            //             replaced = true;       
+            //         }
+            //     }
+            //     else
+            //     {
+            //         DebugOutput.Log($"This line has nothing");
+            //         newFileLines.Add(line);
+            //     }
+            // }
+            // if (!replaced)
+            // {
+            //     newFileLines.Add(jsonString);
+            //     DebugOutput.Log($"ADDED THIS LINE {jsonString}");
+            // } 
+            // DebugOutput.Log($"WE NOW have {textFileAsLines.Count()} XXXX lines in the file currently LENG");
+            // try
+            // {
+            //     if (!FileUtils.OSFileDeletion(osFile)) return false;
+            //     DebugOutput.Log($"We putting in {newFileLines.Count()} lines!");
+            //     foreach (var line in newFileLines)
+            //     {
+            //         FileUtils.OSAppendLineToFile(osFile, line);                
+            //     }
+            // }
+            // catch (Exception e)
+            // {
+            //     DebugOutput.Log($"FAiled to rewrite {e}");
+            //     return false;
+            // }
+            // DebugOutput.Log($"All successful!");
+            // return true;
+        }
+        
+        // private static bool AppendFile(string osFile, string input)
+        // {
+        //     DebugOutput.OutputMethod("AppendFile", input);
+        //     if (!FileUtils.OSFileCheck(osFile)) return false;
+        //     var textFileAsLines = FileUtils.OSGetFileContentsAsListOfStringByLine(osFile);
+        //     if (textFileAsLines == null) return false;
+        //     DebugOutput.Log($"WE have {textFileAsLines.Count()} lines in the file currently LENG");
+        //     if (textFileAsLines.Count() == 0)
+        //     {
+        //         DebugOutput.Log($"THE FIRST LINE!");
+        //         FileUtils.OSAppendLineToFile(osFile, input);
+        //         return true;
+        //     }
+        //     var newFileLines = new List<string>();
+        //     bool replaced = false;
+        //     foreach (var line in textFileAsLines)
+        //     {
+        //         // there is already so many lines.
+        //         var lineAttributes = StringValues.BreakUpByDelimitedToList(line);
+        //         var inputAttributes = StringValues.BreakUpByDelimitedToList(input);
+        //         // 0 - TYPE
+        //         // 1 - elementname
+        //         // 2 - colour
+        //         // 3 - colour
+        //         // 4 - size
+        //         // 5 - XPATH
+        //         // 6 - Selenium
+        //         // 7 - system object
+        //         // 8 - Text
+        //         // 9 - tag
+        //         // 10 - x by y
+        //         // 11 - Enabled
+        //         // 12 - Locator as POM
+        //         if (lineAttributes[0] == inputAttributes[0] && 
+        //                 lineAttributes[1] == inputAttributes[1] && 
+        //                 lineAttributes[5] == inputAttributes[5] && 
+        //                 lineAttributes[12] == inputAttributes[12])
+        //         {
+        //             newFileLines.Add(input);
+        //             replaced = true;
+        //         }
+        //         else newFileLines.Add(line);
+        //     }
+        //     if (!replaced) newFileLines.Add(input);
+        //     DebugOutput.Log($"WE NOW have {newFileLines.Count()} lines in the file currently");
+        //     if (!FileUtils.OSFileDeletion(osFile)) return false;
+        //     try
+        //     {
+        //         foreach (var line in newFileLines)
+        //         {
+        //             CreateFileIfRequired(osFile);
+        //             FileUtils.OSAppendLineToFile(osFile, line);                
+        //         }
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         DebugOutput.Log($"FAiled to rewrite {e}");
+        //         return false;
+        //     }
+        //     return true;
+        // }
+        
+        
+
+        // private static string GetElementName(string elementName)
+        // {
+        //     elementName = elementName.ToLower();
+        //     elementName = elementName.Replace(" ","");
+        //     return elementName;
+        // }
+
+        // private static string GetPageName(FormBase currentPage)
+        // {
+        //     var pageName = currentPage.Name;
+        //     pageName = pageName.Replace(" page","");
+        //     return pageName;
+        // }
+
+        // public static string? GetTagForElementFromDB(FormBase currentPage, string elementName, string type)
+        // {
+        //     elementName = GetElementName(elementName);
+        //     var pageName = GetPageName(currentPage);
+
+        //     var osFileName = GetElementFileDetails(pageName);
+        //     if (!FileUtils.OSFileCheck(osFileName)) return null;
+
+        //     var fileContentsList = FileUtils.OSGetFileContentsAsListOfStringByLine(osFileName);
+        //     if (fileContentsList == null || fileContentsList.Count == 0) return null;
+        //     DebugOutput.Log($"Number of elemnts in self help {fileContentsList.Count()}");
+        //     foreach (var line in fileContentsList)
+        //     {
+        //         var attributes = StringValues.BreakUpByDelimitedToList(line);
+        //         DebugOutput.Log($"Comparing {attributes[1]} with {elementName} = return {attributes[5]}");
+        //         if (attributes[1] == elementName) return attributes[9];
+        //     }
+        //     DebugOutput.Log($"No tag either?!");
+        //     return null;
+        // }
+
+        // /// <summary>
+        // /// Looks for a file in Forms\<APP>\SelfHeal\<Page>\Elements.txt  
+        // /// Then tries and finds the name of the element 
+        // /// </summary>
+        // /// <param name="currentPage"></param>
+        // /// <param name="elementName"></param>
+        // /// <param name="elementType"></param>
+        // /// <returns>if finds the element, returns the line, if not returns null</returns>
+        // public static string? GetSelfHealLineFromDB(FormBase currentPage, string elementName, string elementType)
+        // {
+        //     elementName = GetElementName(elementName);
+        //     var pageName = GetPageName(currentPage);
+
+        //     var osFileName = GetElementFileDetails(pageName);
+        //     if (!FileUtils.OSFileCheck(osFileName)) return null;
+
+        //     var fileContentsList = FileUtils.OSGetFileContentsAsListOfStringByLine(osFileName);
+        //     if (fileContentsList == null || fileContentsList.Count == 0) return null;
+        //     DebugOutput.Log($"Number of elemnts in self help {fileContentsList.Count()}");
+        //     foreach (var line in fileContentsList)
+        //     {
+        //         var attributes = StringValues.BreakUpByDelimitedToList(line);
+        //         DebugOutput.Log($"Comparing {attributes[1]} with {elementName} = return {line}");
+        //         if (attributes[1] == elementName) return line;
+        //     }
+        //     DebugOutput.Log($"No Details found at all for {elementName} in Page {pageName}");
+        //     return null;
+        // }
+
+        // public static string? GetXPathForElementFromDB(FormBase currentPage, string elementName, string type)
+        // {
+        //     elementName = GetElementName(elementName);
+        //     var pageName = GetPageName(currentPage);
+
+        //     var osFileName = GetElementFileDetails(pageName);
+        //     if (!FileUtils.OSFileCheck(osFileName)) return null;
+
+        //     var fileContentsList = FileUtils.OSGetFileContentsAsListOfStringByLine(osFileName);
+        //     if (fileContentsList == null || fileContentsList.Count == 0) return null;
+        //     DebugOutput.Log($"Number of elemnts in self help {fileContentsList.Count()}");
+        //     foreach (var line in fileContentsList)
+        //     {
+        //         var attributes = StringValues.BreakUpByDelimitedToList(line);
+        //         DebugOutput.Log($"Comparing {attributes[1]} with {elementName} = return {attributes[5]}");
+        //         if (attributes[1] == elementName) return attributes[5];
+        //     }
+        //     DebugOutput.Log($"No XPATH help at all!");
+        //     return null;
+        // }
+
+
+        // public static void GetElementInformation(FormBase currentPage, IWebElement element, string elementName, string type = "UKNOWN")
+        // {
+        //     elementName = GetElementName(elementName);
+        //     var pageName = GetPageName(currentPage);
+        //     var locator = PageDicContains(currentPage, elementName);
+
+        //     var osFileName = GetElementFileDetails(pageName);
+        //     CreateFileIfRequired(osFileName);
+
+        //     var cssValueColour = element.GetCssValue("color");
+        //     var cssValueBackgroundColour = element.GetCssValue("background-color");
+        //     var cssValueFontSize = element.GetCssValue("font-size");
+        //     var xPath = SeleniumUtil.GetFullXPathOfElement(element);
+        //     var typeFullName = element.GetType().FullName;
+        //     var typeBaseType = element.GetType().BaseType;
+        //     var text = element.Text;
+        //     var tagName = element.TagName;
+        //     var size = element.Size;
+        //     var enabled = element.Enabled;
+        //     var app = TargetConfiguration.Configuration.AreaPath;
+        //     DebugOutput.Log($"GetElementInformation {app}|{pageName}|{type}|{elementName}|{cssValueColour}|{cssValueBackgroundColour}|{cssValueFontSize}|{xPath}|{typeFullName}|{typeBaseType}|{text}|{tagName}|{size}|{enabled}|{locator}");
+            
+        //     var input = $"{type.ToUpper()}|{elementName.ToLower()}|{cssValueColour}|{cssValueBackgroundColour}|{cssValueFontSize}|{xPath}|{typeFullName}|{typeBaseType}|{text}|{tagName}|{size}|{enabled}|{locator}";
+        //     if (!AppendFile(osFileName, input)) DebugOutput.Log($"**********SELF HEAL FAIL**************");
+        //     return;
+        // }
+        
+        // private static By? PageDicContains(FormBase currentPage, string elementName)
+        // {
+        //     elementName = GetElementName(elementName);
+        //     var pageName = GetPageName(currentPage);
+        //     DebugOutput.Log($"Does the Current Page {currentPage.Name} contain the element {elementName}");
+        //     if (currentPage.Elements.ContainsKey(elementName))
+        //     {
+        //         DebugOutput.Log($"IT DOES! Found it!");
+        //         return currentPage.Elements[elementName];
+        //     }
+        //     DebugOutput.Log($"Nope - not in this page at least!");
+        //     return null;
+        // }
+
+        // private static string GetElementFileDetails(string pageName)
+        // {
+        //     var outputLocation = "/AppTargets/Forms/" + TargetConfiguration.Configuration.AreaPath + "/SelfHeal/" + pageName + "/";
+        //     var OSSelfHelpDirectory = FileUtils.GetCorrectDirectory(outputLocation);
+        //     DebugOutput.Log($"This is nice {OSSelfHelpDirectory}");
+        //     if (!FileUtils.OSDirectoryCheck(OSSelfHelpDirectory)) FileUtils.OSDirectoryCreation(OSSelfHelpDirectory);
+        //     var OSSelfHelpFile = OSSelfHelpDirectory + "Elements.txt";
+        //     DebugOutput.Log($"This is nice FILE {OSSelfHelpFile}");
+        //     return OSSelfHelpFile;
+        // }
+
+        // private static bool CreateFileIfRequired(string file)
+        // {
+        //     if (!FileUtils.OSFileCheck(file))
+        //     {
+        //         FileUtils.OSFileCreation(file);
+        //     } 
+        //     return FileUtils.OSFileCheck(file);
+        // }
+
+
+
+
+
+
+    }
+}

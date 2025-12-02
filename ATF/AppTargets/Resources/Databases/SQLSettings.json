@@ -1,0 +1,12 @@
+{
+    "dataSource": "192.168.105.125",
+    "initialCatalog": "Master",
+    "id": "sa",
+    "password": "ENTERPASSWORD HERE",
+    "connectTimeout": 30,
+    "Encrypt": false,
+    "TrustServerCertificate": false,
+    "ApplicationIntent": "READONLY",
+    "MultiSubnetFailover": false,
+    "MultipleActiveResultSets": true
+}

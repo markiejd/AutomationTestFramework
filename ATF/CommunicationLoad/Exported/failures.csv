@@ -1,0 +1,5 @@
+endpoint,method,error,occurrences
+/repos/octocat/Hello-World,GET,HTTPError(&#x27;429 Client Error: too many requests for url: /repos/octocat/Hello-World&#x27;),21
+/,GET,HTTPError(&#x27;403 Client Error: rate limit exceeded for url: /&#x27;),35
+/repos/octocat/Hello-World,GET,HTTPError(&#x27;403 Client Error: rate limit exceeded for url: /repos/octocat/Hello-World&#x27;),83
+/,GET,HTTPError(&#x27;429 Client Error: too many requests for url: /&#x27;),10
