@@ -3,7 +3,7 @@ using Core.Logging;
 using Core.Transformations;
 using Generic.Steps;
 using Generic.Steps.Helpers.Interfaces;
-using TechTalk.SpecFlow;
+using Reqnroll;
 
 namespace Generic.Elements.Steps.OS
 {

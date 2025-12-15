@@ -2,7 +2,7 @@ using Core;
 using Core.Logging;
 using Generic.Steps.Helpers.Interfaces;
 using Microsoft.Extensions.DependencyModel.Resolution;
-using TechTalk.SpecFlow;
+using Reqnroll;
 
 namespace Generic.Steps.Helpers.Classes
 {

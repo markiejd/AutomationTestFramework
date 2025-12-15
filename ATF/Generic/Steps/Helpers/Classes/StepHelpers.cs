@@ -1,6 +1,6 @@
 ﻿using Core;
 using Generic.Steps.Helpers.Interfaces;
-using TechTalk.SpecFlow;
+using Reqnroll;
 
 namespace Generic.Steps.Helpers.Classes
 {

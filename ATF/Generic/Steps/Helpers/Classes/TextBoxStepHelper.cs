@@ -2,7 +2,7 @@
 using Core.Logging;
 using Generic.Steps.Helpers.Interfaces;
 using OpenQA.Selenium;
-using TechTalk.SpecFlow;
+using Reqnroll;
 
 namespace Generic.Steps.Helpers.Classes
 {

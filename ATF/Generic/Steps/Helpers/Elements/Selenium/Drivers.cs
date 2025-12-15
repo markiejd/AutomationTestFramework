@@ -1,4 +1,3 @@
-
 using System.Runtime.InteropServices;
 using Core;
 using Core.Configuration;
@@ -11,6 +10,8 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.IE;
+using WebDriverManager;
+using WebDriverManager.DriverConfigs.Impl;
 
 namespace Generic.Steps.Helpers.Classes
 {
@@ -71,6 +72,10 @@ namespace Generic.Steps.Helpers.Classes
         {
             DebugOutput.Log($"proc - ChromeDriver");
             DebugOutput.Log($"READING CHOMRE {ChromeInstance.Languages}");
+            
+            // Automatically download and manage Chrome driver
+            new DriverManager().SetUpDriver(new ChromeConfig());
+            
             ChromeOptions options = new ChromeOptions();
             
             // Determine the download directory based on the operating system
@@ -115,6 +120,10 @@ namespace Generic.Steps.Helpers.Classes
         public static void EdgeDriver()
         {
             DebugOutput.Log($"proc - EdgeDriver");
+            
+            // Automatically download and manage Edge driver
+            new DriverManager().SetUpDriver(new EdgeConfig());
+            
             EdgeOptions options = new EdgeOptions();
             var repoDirectory = FileUtils.GetRepoDirectory();
             var downloadDirectory = Path.Combine(repoDirectory, "AppSpecFlow", "TestResults", "Downloads");
@@ -126,19 +135,27 @@ namespace Generic.Steps.Helpers.Classes
             options.AddUserProfilePreference("download.default_directory", downloadDirectory);
             options.AddUserProfilePreference("download.prompt_for_download", false); // Disable download prompts
 
-            SeleniumUtil.webDriver = new EdgeDriver(EdgeDriverService.CreateDefaultService(@"C:\drivers\", "msedgedriver.exe"), options);
+            SeleniumUtil.webDriver = new EdgeDriver(options);
         }
 
         public static void FireFoxDriver()
         {
             DebugOutput.Log($"proc - FireFoxDriver");
+            
+            // Automatically download and manage Firefox driver
+            new DriverManager().SetUpDriver(new FirefoxConfig());
+            
             SeleniumUtil.webDriver = new FirefoxDriver();
         }
 
         public static void InternetExplorerDriver()
         {
             DebugOutput.Log($"proc - InternetExplorerDriver");
-            SeleniumUtil.webDriver = new InternetExplorerDriver(@"C:\drivers\");
+            
+            // Automatically download and manage IE driver
+            new DriverManager().SetUpDriver(new InternetExplorerConfig());
+            
+            SeleniumUtil.webDriver = new InternetExplorerDriver();
             Thread.Sleep(TargetConfiguration.Configuration.PositiveTimeout * 1000 * TargetConfiguration.Configuration.TimeoutMultiplie);
         }
 

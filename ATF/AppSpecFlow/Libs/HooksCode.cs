@@ -5,6 +5,7 @@ using Core.Jira;
 using Core.Logging;
 using Core.Transformations;
 using Generic.Steps.Helpers.Classes;
+using Reqnroll;
 
 namespace AppSpecFlow.Libs
 {

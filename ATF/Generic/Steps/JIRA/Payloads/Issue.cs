@@ -1,6 +1,6 @@
 using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json;
-using TechTalk.SpecFlow.Bindings.Discovery;
+using Reqnroll.Bindings.Discovery;
 
 namespace Generic.Steps.JIRA
 {

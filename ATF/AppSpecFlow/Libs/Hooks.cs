@@ -1,5 +1,4 @@
-﻿
-using System.Reflection;
+﻿using System.Reflection;
 using AppXAPI;
 using BoDi;
 using Core;
@@ -11,6 +10,7 @@ using Generic.Steps;
 using Generic.Steps.Helpers.Classes;
 using Generic.Steps.Helpers.Interfaces;
 using Core.FileIO;
+using Reqnroll;
 
 namespace AppSpecFlow.Libs
 {

@@ -2,7 +2,7 @@
 using Core.Logging;
 using Core.Transformations;
 using Generic.Steps.Helpers.Interfaces;
-using TechTalk.SpecFlow;
+using Reqnroll;
 
 namespace Generic.Steps.Helpers.Classes
 {

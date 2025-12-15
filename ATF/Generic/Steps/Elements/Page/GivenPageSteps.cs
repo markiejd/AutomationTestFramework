@@ -1,12 +1,11 @@
-﻿
-using Core;
+﻿using Core;
 using Core.Configuration;
 using Core.Logging;
 using Generic.Steps;
 using Generic.Steps.Helpers.Classes;
 using Generic.Steps.Helpers.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TechTalk.SpecFlow;
+using Reqnroll;
 
 namespace Generic.Elements.Steps.Page
 {

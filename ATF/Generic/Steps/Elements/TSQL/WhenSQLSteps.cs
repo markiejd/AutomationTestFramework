@@ -6,7 +6,7 @@ using Generic.Steps;
 using Generic.Steps.Helpers.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.DevTools;
-using TechTalk.SpecFlow;
+using Reqnroll;
 
 namespace Generic.Elements.Steps.TSQL
 {
