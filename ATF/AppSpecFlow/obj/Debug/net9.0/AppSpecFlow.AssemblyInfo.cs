@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AppSpecFlow")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f821c98feeb6753cb5c5323faeaf9b799677f0d0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6901b9ed052e4fddafbc3eb43758a28d736cd0e1")]
 [assembly: System.Reflection.AssemblyProductAttribute("AppSpecFlow")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AppSpecFlow")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
