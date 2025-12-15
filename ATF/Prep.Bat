@@ -15,7 +15,7 @@ REM Echo the lowercase result
 ECHO %input%
 
 REM Check the result and echo messages
-IF "%input%"=="targets" (
+IF "%input%"=="targets" ( 
     ECHO Targets Building
     cd targets
     dotnet build
