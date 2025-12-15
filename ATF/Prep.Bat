@@ -4,7 +4,7 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 REM Check if a parameter is passed
 IF "%~1"=="" (
     echo No parameter provided.
-    GOTO :EOF
+    GOTO :EOF 
 )
 
 REM Convert the parameter to lowercase
