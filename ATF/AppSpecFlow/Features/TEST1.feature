@@ -6,3 +6,5 @@ Feature: TEST1 TEST2
   
 Scenario Outline: TEST1-TEST2 
    Given Browser Is Open
+   When I Navigate To "https://www.saucedemo.com/"
+   Then Wait 3 Seconds
