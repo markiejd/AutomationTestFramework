@@ -9,8 +9,7 @@
         "./Generic/Steps/AIChatBot/*Steps.cs",
         "./Generic/Steps/Elements/*/*.cs",
         "./AppSpecFlow/AppSteps/Steps.cs",
-        "./AppSpecFlow/AppSteps/App/AppSteps.cs",
-        "./AppSpecFlow/AppSteps/App/*/*Steps.cs"
+        "./AppSpecFlow/AppSteps/App/AppSteps.cs"
     ],    
     "files.exclude":    {    
         "**/.git": true,
