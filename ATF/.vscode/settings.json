@@ -8,8 +8,8 @@
         "./Generic/Steps/JIRA/*.cs",
         "./Generic/Steps/AIChatBot/*Steps.cs",
         "./Generic/Steps/Elements/*/*.cs",
-        "./AppSpecFlow/AppSteps/App/AppSteps.cs",
         "./AppSpecFlow/AppSteps/Steps.cs",
+        "./AppSpecFlow/AppSteps/App/AppSteps.cs",
         "./AppSpecFlow/AppSteps/App/*/*Steps.cs"
     ],    
     "files.exclude":    {    
