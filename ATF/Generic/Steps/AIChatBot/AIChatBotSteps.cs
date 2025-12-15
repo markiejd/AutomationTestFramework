@@ -1,11 +1,10 @@
-
 using Core;
 using Core.Configuration;
 using Core.Logging;
 using Generic.Steps.AIChatBots.QandAResponse;
 using Generic.Steps.Helpers.Classes;
 using Generic.Steps.Helpers.Interfaces;
-using TechTalk.SpecFlow;
+using Reqnroll;
 
 namespace Generic.Steps.AIChatBots
 {

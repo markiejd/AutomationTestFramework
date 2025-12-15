@@ -13,8 +13,8 @@
     <PackageReference Include="Azure.Storage.Blobs" Version="12.22.2" />
     <!-- Microsoft Net Test Sdk Version 17.11.1 -->
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
-    <!-- SpecFlow MsTest Version 4.0.13-beta -->
-    <PackageReference Include="SpecFlow.MsTest" Version="4.0.16-beta" />
+    <!-- Reqnroll MsTest Version 1.x (replaces SpecFlow) -->
+    <PackageReference Include="Reqnroll.MsTest" Version="1.0.0" />
     <!-- MsTest TestAdapter 3.6.1 -->
     <PackageReference Include="MSTest.TestAdapter" Version="3.0.0" />
     <!-- MsTest TestFramework 3.6.1 -->

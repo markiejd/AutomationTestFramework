@@ -1,0 +1,17 @@
+{
+  "bindingCulture": {
+    "language": "en-us"
+  },
+  "language": {
+    "feature": "en-us"
+  },
+  "runtime": {
+    "missingOrPendingStepsOutcome": "Error",
+    "stopAtFirstError": true
+  },
+  "stepAssemblies": [
+    {
+      "assembly": "Generic"
+    }
+  ]
+}

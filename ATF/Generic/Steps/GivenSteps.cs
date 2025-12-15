@@ -1,9 +1,8 @@
-﻿
-using Core.Configuration;
+﻿using Core.Configuration;
 using Core.Logging;
 using Core.UnitTests;
 using Generic.Steps.Helpers.Interfaces;
-using TechTalk.SpecFlow;
+using Reqnroll;
 using Core;
 using Core.FileIO;
 using Core.Transformations;
