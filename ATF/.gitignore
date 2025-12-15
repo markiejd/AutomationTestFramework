@@ -1,0 +1,72 @@
+# Ignore compiled files and folders
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.cache
+*.nuget
+*.log
+*.tmp
+*.user
+*.suo
+*.csproj.nuget.*
+*.db
+*.mdf
+*.ldf
+*.sqlite
+*.sqlite3
+
+# Ignore test output
+TestOutput/
+TestResults/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore other temporary files
+*.bak
+*.swp
+*.orig
+*.rej
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+*.ipr
+*.iws
+*.idea/
+
+# Ignore AssemblyInfo files and related build artifacts
+**/obj/**/*.AssemblyInfo.cs
+**/obj/**/*.AssemblyInfoInputs.cache
+**/obj/**/*.csproj.AssemblyReference.cache
+
+
+# BDDTests
+./AppSpecFlow/TestOutput/*.csv
+./AppSpecFlow/TestOutput/*.png
+./AppSpecFlow/TestOutput/*.json
+./AppSpecFlow/TestOutput/*.jpg
+./AppSpecFlow/TestOutput/*.xls
+./AppSpecFlow/TestOutput/*.xlsx
+./AppSpecFlow/TestOutput/**/*.png
+./AppSpecFlow/TestOutput/*/*.png
+./AppSpecFlow/Features/*.cs
+./AppSpecFlow/Features/*/*.cs
+./AppSpecFlow/Features/**/*.cs
+
+# API Output
+./AppXAPI/APIOutFiles/*.json
+./AppXAPI/APIOutFiles/*.html
+./AppXAPI/APIOutFiles/*.csv
+./AppXAPI/APIOutFiles/*.xlsm
+./AppXAPI/APIOutFiles/*.txt
+./Core/.vscode/temp.json
+
+# Temp files
+./AppSpecFlow/Features/temp.feature
+./Core/Batch/temp/*.bat
