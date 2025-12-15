@@ -1,0 +1,41 @@
+# Ignore compiled files and folders
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.cache
+*.nuget
+*.log
+*.tmp
+*.user
+*.suo
+*.csproj.nuget.*
+*.db
+*.mdf
+*.ldf
+*.sqlite
+*.sqlite3
+
+# Ignore test output
+TestOutput/
+TestResults/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore other temporary files
+*.bak
+*.swp
+*.orig
+*.rej
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+*.ipr
+*.iws
+*.idea/
