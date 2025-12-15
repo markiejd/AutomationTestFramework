@@ -3,7 +3,6 @@ using Core.Logging;
 using Core.Transformations;
 using Core.FileIO;
 using Core.Images;
-using Microsoft.Playwright;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
