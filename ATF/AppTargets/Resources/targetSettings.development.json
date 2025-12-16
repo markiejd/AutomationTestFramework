@@ -4,7 +4,7 @@
   "AreaPath": "Swaglabs",
   "AzureOpenAI": false,
   "AzureOpenAIDeployment": "",
-  "Browser": "edge",
+  "Browser": "chrome",
   "DateFormat": "UK",
   "Debug": 7,
   "HandleBugs": true,
