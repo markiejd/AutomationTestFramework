@@ -1,20 +1,24 @@
-﻿
-using System;
+﻿using System;
 using System.Diagnostics;
 using Core;
 using Core.Configuration;
 using Core.Logging;
 using Core.Transformations;
 using OpenQA.Selenium;
-using OpenQA.Selenium.DevTools.V126.Fetch;
 
 namespace Generic.Steps.Helpers.Classes
 {
     /// <summary>
+    /// Centralized Selenium interaction layer.
     /// THIS IS THE BLOCK OF SELENIUM - Never pass selenium out of here!
+    /// Keep direct WebDriver/IWebElement usage inside this class so the rest
+    /// of the framework remains Selenium-agnostic.
     /// </summary>
     public static class ElementInteraction
     {
+        // ------------------ Alert & dialog helpers ------------------
+        // Group: methods that interact with browser alerts and dialogs
+
         public static bool AlertIsDisplayed(string alertMessage)
         {
             return SeleniumUtil.AlertDisplayed(alertMessage);
@@ -34,6 +38,9 @@ namespace Generic.Steps.Helpers.Classes
         {
             return SeleniumUtil.AlertInput(text);
         }
+
+        // ------------------ Click / Interaction helpers ------------------
+        // Group: methods that perform clicks, selections, dragging, navigation
 
         public static bool ClearTextFromElement(FormBase currentPage, string elementName, string elementType)
         {
@@ -79,7 +86,7 @@ namespace Generic.Steps.Helpers.Classes
             var labelElement = SeleniumUtil.GetElementUnderElement(parentElement, labelElementLocator, 1);
             if (labelElement == null) return Failure($"Even the parents, sub, {labelElementLocator} nope, doesn't exist!");
             return SeleniumUtil.Click(labelElement);
-        }        
+        }
 
         public static bool ClickOnElementEnterTextSendKey(FormBase currentPage, string elementName, string elementType, string text, string key)
         {
@@ -163,7 +170,7 @@ namespace Generic.Steps.Helpers.Classes
             }
             return Failure($"Failed to find it - not really surprising was it?!");
         }
-        
+
         public static bool ClickOnSubSubElementByNumberUnderElement(FormBase currentPage, string elementName, string elementType, string subElementType, int number)
         {
             DebugOutput.OutputMethod("ClickOnSubElementByTextUnderElement", $"{currentPage.Name}, {elementName}, {elementType}, {subElementType}, {number}");
@@ -177,9 +184,9 @@ namespace Generic.Steps.Helpers.Classes
         public static bool ClickOnSubElementByTextUnderElement(FormBase currentPage, string elementName, string elementType, string subElementText)
         {
             DebugOutput.OutputMethod("ClickOnSubElementByTextUnderElement", $"{currentPage.Name}, {elementName}, {elementType}, {subElementText}");
-            
+
             By locator = By.XPath($".//*[text()='{subElementText}']");
-            var subElement= GetTheElement.GetSubElementByText(currentPage, elementName, elementType, locator, subElementText, 0);
+            var subElement = GetTheElement.GetSubElementByText(currentPage, elementName, elementType, locator, subElementText, 0);
             if (subElement == null) return Failure($"Failed to find the sub element!");
             if (SeleniumUtil.Click(subElement)) return true;
             DebugOutput.Log($"failed to click but it is there.. maybe the parent is the clickable part as we found the text!");
@@ -234,7 +241,7 @@ namespace Generic.Steps.Helpers.Classes
                 {
                     if (SeleniumUtil.GetElementText(itemElement).Contains(item))
                     {
-                        return SeleniumUtil.Click(itemElement);                        
+                        return SeleniumUtil.Click(itemElement);
                     }
                 }
             }
@@ -281,6 +288,30 @@ namespace Generic.Steps.Helpers.Classes
             SeleniumUtil.webDriver = null;
         }
 
+        /// <summary>
+        /// Gracefully shutdown the web driver and clear references.
+        /// Returns true on success, false on failure.
+        /// </summary>
+        public static bool WebShutdown()
+        {
+            DebugOutput.OutputMethod("WebShutdown");
+            try
+            {
+                if (SeleniumUtil.webDriver != null)
+                {
+                    // attempt to quit the driver
+                    SeleniumUtil.webDriver.Quit();
+                    SeleniumUtil.webDriver = null;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                DebugOutput.Log($"WebShutdown failed: {ex.Message}");
+                return Failure($"WebShutdown failed: {ex.Message}");
+            }
+        }
+
         public static bool CreateSelfHealModel(FormBase currentPage, IWebElement element, string elementName, string elementType)
         {
             DebugOutput.OutputMethod($"CreateSelfHealModel", $"{currentPage.Name} {element} {elementName} {elementType}");
@@ -324,6 +355,9 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.EnterText(element, text, key);
         }
 
+        // ------------------ Getters / Query helpers ------------------
+        // Group: methods that retrieve text, attributes, counts, selection
+
         public static string? GetAttributeValueOfSubElementByNameOfElement(FormBase currentPage, string elementName, string elementType, string subElementName, string attribute)
         {
             DebugOutput.OutputMethod("GetAttributeValueOfSubElementByNameOfElement", $"{currentPage.Name}, {elementName}, {elementType} {subElementName}");
@@ -343,7 +377,7 @@ namespace Generic.Steps.Helpers.Classes
             }
             if (wantedElement == null) return FailureString($"FAiled to find a sub element, of which we found some, that equaled {subElementName}");
             return SeleniumUtil.GetElementAttributeValue(wantedElement, attribute);
-        }        
+        }
 
         public static string? GetLabelFromElement(FormBase currentPage, string elementName, string elementType, By labelLocator)
         {
@@ -371,14 +405,12 @@ namespace Generic.Steps.Helpers.Classes
             DebugOutput.Log($"We have a placeholder text of '{placeHolderText}'");
             return placeHolderText;
         }
-        
 
         public static int? GetTheNumberOfTabsOpenInBrowser()
         {
             DebugOutput.OutputMethod("GetNumberOfTabsOpenInBrowser", $"");
             return SeleniumUtil.GetNumberOfTabsOpenInBrowser();
         }
-
 
         public static string? GetSelectionValue(FormBase currentPage, string elementName, string elementType)
         {
@@ -397,7 +429,7 @@ namespace Generic.Steps.Helpers.Classes
                 var optionElements = SeleniumUtil.GetElementsUnder(element, optionLocator);
                 if (optionElements.Count > 0)
                 {
-                    foreach(var option in optionElements)
+                    foreach (var option in optionElements)
                     {
                         if (SeleniumUtil.IsSelected(option)) return SeleniumUtil.GetElementText(option);
                     }
@@ -408,10 +440,10 @@ namespace Generic.Steps.Helpers.Classes
 
         public static List<string>? GetSelectionValues(FormBase currentPage, string elementName, string elementType)
         {
-            DebugOutput.OutputMethod("GetSelectorValue", $"{currentPage.Name}, {elementName}, {elementType}");  
-            var listOfPossibleValues = new List<string>();        
+            DebugOutput.OutputMethod("GetSelectorValue", $"{currentPage.Name}, {elementName}, {elementType}");
+            var listOfPossibleValues = new List<string>();
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
-            if (element == null) return FailureListString($"Failed to get element! {elementName} of type {elementType} in page {currentPage.Name}");  
+            if (element == null) return FailureListString($"Failed to get element! {elementName} of type {elementType} in page {currentPage.Name}");
             foreach (var optionLocator in GetSubLocators.DropDownItemLocators)
             {
                 var optionElements = SeleniumUtil.GetElementsUnder(element, optionLocator);
@@ -473,7 +505,7 @@ namespace Generic.Steps.Helpers.Classes
                 text = SeleniumUtil.GetElementText(element);
             }
             if (text == null) return FailureString($"Failed to get any text from element! {elementName} of type {elementType} in page {currentPage.Name}");
-            return text;            
+            return text;
         }
 
         public static string? GetTextFromLastElement(FormBase currentPage, string elementName, string elementType)
@@ -526,7 +558,7 @@ namespace Generic.Steps.Helpers.Classes
                 if (subElements != null)
                 {
                     if (subElements.Count > 0) return subElements;
-                } 
+                }
             }
             DebugOutput.Log("Nothing returned!");
             return null;
@@ -574,11 +606,10 @@ namespace Generic.Steps.Helpers.Classes
                 case "tab": return GetSubElementsOfElement(element, GetSubLocators.TabLocator);
 
                 case "table": return GetSubElementsOfElement(element, GetSubLocators.TableBodyRowLocator);
-                
+
                 case "tree": return GetSubElementsOfElement(element, GetSubLocators.TreeNodeLocator);
             }
         }
-
 
         private static List<IWebElement>? GetSubElementsOfElement(IWebElement element, By[] locators)
         {
@@ -589,7 +620,7 @@ namespace Generic.Steps.Helpers.Classes
                 if (subElements != null)
                 {
                     if (subElements.Count > 0) return subElements;
-                } 
+                }
             }
             DebugOutput.Log("Nothing returned!");
             return null;
@@ -599,20 +630,20 @@ namespace Generic.Steps.Helpers.Classes
         {
             DebugOutput.OutputMethod("GetSubSubElementsOfNthElement", $"{currentPage.Name}, {elementName}, {elementType}");
             // get list elements - ANSWER 
-            var nthElement = GetTheNthElement(currentPage, elementName, elementType, nth);   
+            var nthElement = GetTheNthElement(currentPage, elementName, elementType, nth);
             if (nthElement == null)
             {
                 DebugOutput.Log($"Failed to find ANY nth element {currentPage.Name} {elementName} {elementType}");
                 return null;
             }
             // answers citation wrapper
-            var sublocator = GetDictionaryLocator.GetElementLocator(subElementName, currentPage, subElementType);   
+            var sublocator = GetDictionaryLocator.GetElementLocator(subElementName, currentPage, subElementType);
             if (sublocator == null)
             {
                 DebugOutput.Log($"Failed to get LOCATOR for sub locator {subElementName} {subElementType}");
                 return null;
             }
-            var subElement = SeleniumUtil.GetElementUnderElement(nthElement, sublocator); 
+            var subElement = SeleniumUtil.GetElementUnderElement(nthElement, sublocator);
             if (subElement == null)
             {
                 DebugOutput.Log($"o sub element found {subElementName} {subElementType}");
@@ -654,10 +685,10 @@ namespace Generic.Steps.Helpers.Classes
             var subSubElements = GetSubSubElementsOfNthElement(currentPage, elementName, elementType, subElementName, subElementType, subSubElementName, subSubElementType, nth);
             if (subSubElements == null) return FailureListString($"Failed at getting the sub sub element!");
             var returnList = new List<string>();
-            foreach(var subsubElement in subSubElements)
+            foreach (var subsubElement in subSubElements)
             {
                 string? text = null;
-                if (attribute == "")  text = SeleniumUtil.GetElementText(subsubElement);
+                if (attribute == "") text = SeleniumUtil.GetElementText(subsubElement);
                 else
                 {
                     text = SeleniumUtil.GetElementAttributeValue(subsubElement, attribute);
@@ -665,24 +696,24 @@ namespace Generic.Steps.Helpers.Classes
                 if (text != null) returnList.Add(text);
             }
             return returnList;
-        }                    
+        }
 
-        private static List<IWebElement>? GetTheListOfSubElementsofNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, int nth = 0 )
+        private static List<IWebElement>? GetTheListOfSubElementsofNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, int nth = 0)
         {
-            var element = GetTheNthElement(currentPage, elementName, elementType); 
+            var element = GetTheNthElement(currentPage, elementName, elementType);
             if (element == null) return null;
-            
+
             var sublocator = GetDictionaryLocator.GetElementLocator(subElementName, currentPage, subElementType);
             if (sublocator == null) return null;
 
             return SeleniumUtil.GetElementsUnder(element, sublocator);
-        }    
+        }
 
         private static IWebElement? GetTheNthElement(FormBase currentPage, string elementName, string elementType, int nth = 0)
         {
             var elements = GetTheElements.GetElements(currentPage, elementName, elementType);
             if (elements == null) return null;
-            var numberOfElements = elements.Count();  
+            var numberOfElements = elements.Count();
             if (nth == 0) return elements[numberOfElements - 1];
             nth--;
             return elements[numberOfElements - nth];
@@ -718,11 +749,11 @@ namespace Generic.Steps.Helpers.Classes
             return listOfElements.Count();
         }
 
-        private static IWebElement? GetTheSubElementOfNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, int nth = 0 )
+        private static IWebElement? GetTheSubElementOfNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, int nth = 0)
         {
             var element = GetTheNthElement(currentPage, elementName, elementType);
             if (element == null) return null;
-            
+
             var locator = GetDictionaryLocator.GetElementLocator(subElementName, currentPage, subElementType);
             if (locator == null) return null;
 
@@ -730,7 +761,7 @@ namespace Generic.Steps.Helpers.Classes
         }
 
         private static List<IWebElement>? GetTheSubSubElementsOfElement(FormBase currentPage, string elementName, string elementType, string subType)
-        {            
+        {
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return null;
             var subElements = GetSubElementsOfElement(element, elementType, subType);
@@ -740,13 +771,12 @@ namespace Generic.Steps.Helpers.Classes
             if (subSubElement == null) return null;
             return subSubElement;
         }
-        
 
-        private static IWebElement? GetTheSubSubElementofNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, string subSubElementName, string subSubElementType, int nth = 0 )
+        private static IWebElement? GetTheSubSubElementofNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, string subSubElementName, string subSubElementType, int nth = 0)
         {
-            var element = GetTheNthElement(currentPage, elementName, elementType); 
+            var element = GetTheNthElement(currentPage, elementName, elementType);
             if (element == null) return null;
-            
+
             var sublocator = GetDictionaryLocator.GetElementLocator(subElementName, currentPage, subElementType);
             if (sublocator == null) return null;
 
@@ -759,11 +789,11 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.GetElementUnderElement(subElement, subSubLocator);
         }
 
-        private static List<IWebElement>? GetTheListOfSubSubElementsofNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, string subSubElementName, string subSubElementType, int nth = 0 )
+        private static List<IWebElement>? GetTheListOfSubSubElementsofNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, string subSubElementName, string subSubElementType, int nth = 0)
         {
-            var element = GetTheNthElement(currentPage, elementName, elementType); 
+            var element = GetTheNthElement(currentPage, elementName, elementType);
             if (element == null) return null;
-            
+
             var sublocator = GetDictionaryLocator.GetElementLocator(subElementName, currentPage, subElementType);
             if (sublocator == null) return null;
 
@@ -1206,16 +1236,16 @@ namespace Generic.Steps.Helpers.Classes
         public static bool WaitForTextNotToChange(FormBase currentPage, string elementName, string elementType, string generationString = "", int waitTime = 0)
         {
             if (waitTime == 0) waitTime = TargetConfiguration.Configuration.PositiveTimeout;
-            DebugOutput.OutputMethod("WaitForTextNotToChange", $"{currentPage.Name} {elementName} {elementType} {generationString} {waitTime}");  
+            DebugOutput.OutputMethod("WaitForTextNotToChange", $"{currentPage.Name} {elementName} {elementType} {generationString} {waitTime}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"We failed even findind the element!");
-            return WaitForTextNotToChange(element, generationString, waitTime); 
+            return WaitForTextNotToChange(element, generationString, waitTime);
         }
 
         public static bool WaitForTextNotToChange(IWebElement element, string generationString = "", int waitTime = 0)
         {
             if (waitTime == 0) waitTime = TargetConfiguration.Configuration.PositiveTimeout;
-            DebugOutput.OutputMethod("WaitForTextNotToChange", $"{element} {generationString} {waitTime}");   
+            DebugOutput.OutputMethod("WaitForTextNotToChange", $"{element} {generationString} {waitTime}");
             var answerText = SeleniumUtil.GetElementText(element);
             int timeoutCounter = 0;
             while (answerText == null)
@@ -1252,48 +1282,14 @@ namespace Generic.Steps.Helpers.Classes
         public static bool WaitForTextNotToChangeInLastElement(FormBase currentPage, string elementName, string elementType, string generationString = "", int waitTime = 0)
         {
             if (waitTime == 0) waitTime = TargetConfiguration.Configuration.PositiveTimeout;
-            DebugOutput.OutputMethod("WaitForTextNotToChangeInLastElement", $"{currentPage.Name} {elementName} {elementType} {generationString} {waitTime}");  
+            DebugOutput.OutputMethod("WaitForTextNotToChangeInLastElement", $"{currentPage.Name} {elementName} {elementType} {generationString} {waitTime}");
             var elements = GetTheElements.GetElements(currentPage, elementName, elementType, waitTime);
             if (elements == null) return Failure($"No elments found with {currentPage.Name} {elementName} {elementType}");
             return WaitForTextNotToChange(elements[elements.Count() - 1]);
         }
 
-        public static bool WebShutdown()
-        {
-            DebugOutput.OutputMethod("WebShutdown", $"");   
-            if (SeleniumUtil.webDriver == null) return true;
-            DebugOutput.Log($"We have a web driver at least at selenium level!");
-            try
-            {
-                if (SeleniumUtil.webDriver != null)
-                {
-                    SeleniumUtil.webDriver.Close();                
-                    SeleniumUtil.webDriver.Quit();
-                    Thread.Sleep(1000);
-                }
-                if (SeleniumUtil.webDriver != null)
-                {
-                    SeleniumUtil.webDriver.Close();                
-                    SeleniumUtil.webDriver.Quit();
-                    SeleniumUtil.webDriver.Dispose();
-                    SeleniumUtil.webDriver = null;
-                }
-                Thread.Sleep(1000);
-                if (SeleniumUtil.webDriver != null) return Failure($"FAILED TO FORCE CLOSE WEB DRIVER!");
-                return true;
-            }
-            catch
-            {
-                DebugOutput.Log($"NO RESON!");
-                return true;
-            }
-        }
-
-
-        
-        ///
-        ///  FAILURE HANDLIN
-        ///  
+        // ------------------ Failure handling helpers ------------------
+        // Centralized failure reporting methods that return typed defaults
 
         /// <summary>
         /// Send a failure with a boolean
@@ -1344,11 +1340,5 @@ namespace Generic.Steps.Helpers.Classes
             if (pass.Count() == 0) return null;
             return pass;
         }
-        
-        
-
-
-
-
     }
 }
