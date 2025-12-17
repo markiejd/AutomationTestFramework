@@ -1,4 +1,6 @@
-using System.Diagnostics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Core.Configuration;
 using Core.FileIO;
 using Core.Logging;
@@ -7,419 +9,239 @@ using OpenQA.Selenium;
 
 namespace Generic.Steps.Helpers.Classes
 {
+    /// <summary>
+    /// Represents a persisted element for the self-heal mechanism.
+    /// Only a subset of element properties are stored.
+    /// </summary>
     public class SelfHealModel
     {
+        /// <summary>Page identifier where the element lives.</summary>
         public string PageName { get; set; } = string.Empty;
+
+        /// <summary>Logical name of the element.</summary>
         public string ElementName { get; set; } = string.Empty;
+
+        /// <summary>Type/category of the element (e.g. Button, Input).</summary>
         public string ElementType { get; set; } = string.Empty;
-        public By? ElementKnownLocator { get; set; } 
+
+        /// <summary>Known locator (POM) when available. May be null and is ignored during serialization when null.</summary>
+        public By? ElementKnownLocator { get; set; }
+
+        /// <summary>Computed XPath string for the element when available.</summary>
         public string? ElementXPathString { get; set; }
+
+        /// <summary>Visible text of the element, if any.</summary>
         public string? ElementText { get; set; }
+
+        /// <summary>Tag name of the element, if known.</summary>
         public string? ElementTag { get; set; }
+
+        /// <summary>Whether the element was enabled when recorded.</summary>
         public bool ElementEnabled { get; set; } = true;
-
-
-        // |{text}|{tagName}|{size}|{enabled}|
     }
 
+    /// <summary>
+    /// Utilities for reading and writing SelfHealModel entries to disk.
+    /// The persistent format is JSON, one model per line in Elements.txt.
+    /// </summary>
     public static class SelfHeal
     {
+        private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore
+        };
 
+        /// <summary>
+        /// Serializes a SelfHealModel into a compact JSON string (omits nulls).
+        /// </summary>
         public static string CreateJsonString(SelfHealModel model)
         {
             DebugOutput.Log($"CreateJsonString {model.PageName} {model.ElementName} {model.ElementType}");
-            return JsonConvert.SerializeObject(model, Newtonsoft.Json.Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            return JsonConvert.SerializeObject(model, Formatting.None, SerializerSettings);
         }
 
+        /// <summary>
+        /// Deserializes a JSON line into a SelfHealModel. Returns null on failure.
+        /// </summary>
         public static SelfHealModel? CreateModelFromJson(string jsonString)
         {
-            var model = new SelfHealModel();
-            model = JsonConvert.DeserializeObject<SelfHealModel>(jsonString);
-            return model;
+            if (string.IsNullOrWhiteSpace(jsonString)) return null;
+
+            try
+            {
+                var model = JsonConvert.DeserializeObject<SelfHealModel>(jsonString);
+                if (model == null)
+                {
+                    DebugOutput.Log($"CreateModelFromJson: Deserialization returned null for input: {jsonString}");
+                }
+                return model;
+            }
+            catch (Exception ex)
+            {
+                DebugOutput.Log($"CreateModelFromJson: Failed to deserialize json. Error: {ex.Message}");
+                return null;
+            }
         }
 
+        /// <summary>
+        /// Writes or updates a SelfHealModel entry for the given page.
+        /// </summary>
         public static bool WriteToFile(SelfHealModel model)
         {
             var osFile = GetElementFileDetails(model.PageName);
             return AppendFile(osFile, model);
         }
 
+        /// <summary>
+        /// Reads the first matching model for the given page / element name / type. Returns null if not found.
+        /// </summary>
         public static SelfHealModel? GetSelfHealModel(string pageName, string elementName, string elementType)
         {
             var osFile = GetElementFileDetails(pageName);
             if (!FileUtils.OSFileCheck(osFile)) return null;
+
             var textFileAsLines = FileUtils.OSGetFileContentsAsListOfStringByLine(osFile);
             if (textFileAsLines == null) return null;
-            DebugOutput.Log($"WE have {textFileAsLines.Count()} lines in the CURRENT file LENG");
-            foreach(var line in textFileAsLines)
+
+            DebugOutput.Log($"WE have {textFileAsLines.Count} lines in the file");
+
+            foreach (var line in textFileAsLines)
             {
                 var checkModel = CreateModelFromJson(line);
-                if (checkModel == null) return null;
-                if (checkModel.PageName.ToLower() == pageName.ToLower())
+                if (checkModel == null) continue; // skip malformed lines
+
+                if (string.Equals(checkModel.PageName, pageName, StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(checkModel.ElementName, elementName, StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(checkModel.ElementType, elementType, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (checkModel.ElementName.ToLower() == elementName.ToLower())
-                    {
-                        if (checkModel.ElementType.ToLower() == elementType.ToLower())
-                        {
-                            DebugOutput.Log($"We have found the model from the line!");
-                            return checkModel;
-                        }
-                    }
+                    DebugOutput.Log($"Found matching model for page:{pageName} element:{elementName} type:{elementType}");
+                    return checkModel;
                 }
             }
-            DebugOutput.Log($"To get here means we did not find anything for this element!");
+
+            DebugOutput.Log($"No matching model found for page:{pageName} element:{elementName} type:{elementType}");
             return null;
         }
-        
+
+        // Build the expected file path for a page's Elements.txt
         private static string GetElementFileDetails(string pageName)
         {
             var outputLocation = "/AppTargets/Forms/" + TargetConfiguration.Configuration.AreaPath + "/SelfHeal/" + pageName + "/";
             var OSSelfHelpDirectory = FileUtils.GetCorrectDirectory(outputLocation);
-            DebugOutput.Log($"This is nice {OSSelfHelpDirectory}");
+            DebugOutput.Log($"SelfHeal directory: {OSSelfHelpDirectory}");
             if (!FileUtils.OSDirectoryCheck(OSSelfHelpDirectory)) FileUtils.OSDirectoryCreation(OSSelfHelpDirectory);
             var OSSelfHelpFile = OSSelfHelpDirectory + "Elements.txt";
-            DebugOutput.Log($"This is nice FILE {OSSelfHelpFile}");
+            DebugOutput.Log($"SelfHeal file: {OSSelfHelpFile}");
             return OSSelfHelpFile;
         }
 
+        /// <summary>
+        /// Appends or replaces a model line in the file. If the exact model already exists nothing is changed.
+        /// If the page/name/type exists but other properties differ the old line is replaced.
+        /// </summary>
         private static bool AppendFile(string osFile, SelfHealModel model)
-        {            
+        {
             DebugOutput.Log($"AppendFile {osFile} {model.PageName} {model.ElementName} {model.ElementType}");
 
-            // do if NEW file
+            // If file does not exist, create and add the first line.
             if (!FileUtils.OSFileCheck(osFile))
             {
-                DebugOutput.Log($"This is a new page !");
+                DebugOutput.Log("Creating new self-heal file.");
                 if (!FileUtils.OSFileCreation(osFile))
                 {
                     DebugOutput.Log($"Failed to create file {osFile}");
                     return false;
                 }
-                DebugOutput.Log($"File is created, its new, so we can just populate it!");
+
                 var inputLine = CreateJsonString(model);
-                return !FileUtils.OSAppendLineToFile(osFile, inputLine);
+                // Return the result of the append operation (true on success).
+                return FileUtils.OSAppendLineToFile(osFile, inputLine);
             }
-            DebugOutput.Log($"We already have {osFile} so we need to append it - if new!");
+
             var linesFromFile = FileUtils.OSGetFileContentsAsListOfStringByLine(osFile);
             if (linesFromFile == null)
             {
-                DebugOutput.Log($"If this file is new - it should have written the first line above!");
+                DebugOutput.Log("Existing file could not be read.");
                 return false;
             }
-            DebugOutput.Log($"The file has {linesFromFile.Count()} LINES!");
+
+            DebugOutput.Log($"The file has {linesFromFile.Count} lines.");
+
             var newLinesForFile = new List<string>();
-            DebugOutput.Log($"is this element ALREADY in the file?");
-            bool change = false;
-            foreach(var line in linesFromFile)
+
+            foreach (var line in linesFromFile)
             {
-                change = false;
-                DebugOutput.Log($"Json reads as {line}");
                 var lineModel = CreateModelFromJson(line);
                 if (lineModel == null)
                 {
-                    DebugOutput.Log($"We failed to make a model from the json {line}");
-                    return false;
+                    // Keep malformed lines to avoid data loss, but log.
+                    DebugOutput.Log($"Skipping malformed line: {line}");
+                    newLinesForFile.Add(line);
+                    continue;
                 }
-                if (lineModel == model)
+
+                // If page/name/type match, decide whether to replace or keep original.
+                if (string.Equals(lineModel.PageName, model.PageName, StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(lineModel.ElementName, model.ElementName, StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(lineModel.ElementType, model.ElementType, StringComparison.OrdinalIgnoreCase))
                 {
-                    DebugOutput.Log($"found the element model and are IDENTICAL! so nothing to change!");
-                    return true;
-                }
-                if (lineModel.PageName == model.PageName)
-                {
-                    DebugOutput.Log($"Page name the same!");
-                    if (lineModel.ElementName == model.ElementName)
+                    // If the models are fully equal, keep the original.
+                    if (AreModelsEqual(lineModel, model))
                     {
-                        DebugOutput.Log($"Element name the same!");
-                        if (lineModel.ElementType == lineModel.ElementType)
-                        {
-                            DebugOutput.Log($"Type the same - YET THE MODEL IS DIFFERENT - THIS IS A CHANGE! we do not store the old line from text file");
-                            change = true;
-                        }
+                        DebugOutput.Log("Found identical model already stored; nothing to change.");
+                        newLinesForFile.Add(line);
+                    }
+                    else
+                    {
+                        // Different data for same page/name/type -> replace (i.e. skip old line)
+                        DebugOutput.Log("Found same page/name/type but different data; will replace old entry.");
+                        // do not add the old line (it will be replaced)
                     }
                 }
-                if (!change) newLinesForFile.Add(line);
-            }    
-            DebugOutput.Log($"Lets add the changed line or the NEW line!");        
+                else
+                {
+                    // Different element -> keep the line
+                    newLinesForFile.Add(line);
+                }
+            }
+
+            // Add the new/updated model line.
             var modelJson = CreateJsonString(model);
             newLinesForFile.Add(modelJson);
-            DebugOutput.Log($"We have the whole file in newLinesForFile - clear the contents of the file!");
 
-            if (!FileUtils.OSClearContentsOfAFile(osFile)) return false;
-            DebugOutput.Log($"Now to populate!");
-            
-            foreach (var line in newLinesForFile)
+            // Clear and rewrite file
+            if (!FileUtils.OSClearContentsOfAFile(osFile))
             {
-                if (!FileUtils.OSAppendLineToFile(osFile, line)) return false;
+                DebugOutput.Log("Failed to clear file before rewrite.");
+                return false;
             }
-            DebugOutput.Log($"File should be updated!");
+
+            foreach (var nl in newLinesForFile)
+            {
+                if (!FileUtils.OSAppendLineToFile(osFile, nl))
+                {
+                    DebugOutput.Log($"Failed to write line during rewrite: {nl}");
+                    return false;
+                }
+            }
+
+            DebugOutput.Log("Self-heal file updated successfully.");
             return true;
-
-
-            // var newFileLines = new List<string>();
-            // bool replaced = false;
-            // foreach (var line in textFileAsLines)
-            // {
-            //     DebugOutput.Log($"FOR THE LOVE OF CHEES! {line}");
-            //     var checkModel = ConvertJsonStringToModel(line);
-            //     if (checkModel == null) return false;
-            //     var x = checkModel.PageName.ToLower();
-            //     DebugOutput.Log($"COMPARING '{checkModel.PageName.ToLower()}' to '{model.PageName.ToLower()}' AND {checkModel.ElementName.ToLower()} to {model.ElementName.ToLower()}");
-            //     if (checkModel.PageName.ToLower() == model.PageName.ToLower())
-            //     {
-            //         DebugOutput.Log($"match page name");
-            //         if (checkModel.ElementName.ToLower() == model.ElementName.ToLower())
-            //         {
-            //             DebugOutput.Log($"match element name");
-            //             DebugOutput.Log($"This is a replacement!");
-            //             replaced = true;       
-            //         }
-            //     }
-            //     else
-            //     {
-            //         DebugOutput.Log($"This line has nothing");
-            //         newFileLines.Add(line);
-            //     }
-            // }
-            // if (!replaced)
-            // {
-            //     newFileLines.Add(jsonString);
-            //     DebugOutput.Log($"ADDED THIS LINE {jsonString}");
-            // } 
-            // DebugOutput.Log($"WE NOW have {textFileAsLines.Count()} XXXX lines in the file currently LENG");
-            // try
-            // {
-            //     if (!FileUtils.OSFileDeletion(osFile)) return false;
-            //     DebugOutput.Log($"We putting in {newFileLines.Count()} lines!");
-            //     foreach (var line in newFileLines)
-            //     {
-            //         FileUtils.OSAppendLineToFile(osFile, line);                
-            //     }
-            // }
-            // catch (Exception e)
-            // {
-            //     DebugOutput.Log($"FAiled to rewrite {e}");
-            //     return false;
-            // }
-            // DebugOutput.Log($"All successful!");
-            // return true;
         }
-        
-        // private static bool AppendFile(string osFile, string input)
-        // {
-        //     DebugOutput.OutputMethod("AppendFile", input);
-        //     if (!FileUtils.OSFileCheck(osFile)) return false;
-        //     var textFileAsLines = FileUtils.OSGetFileContentsAsListOfStringByLine(osFile);
-        //     if (textFileAsLines == null) return false;
-        //     DebugOutput.Log($"WE have {textFileAsLines.Count()} lines in the file currently LENG");
-        //     if (textFileAsLines.Count() == 0)
-        //     {
-        //         DebugOutput.Log($"THE FIRST LINE!");
-        //         FileUtils.OSAppendLineToFile(osFile, input);
-        //         return true;
-        //     }
-        //     var newFileLines = new List<string>();
-        //     bool replaced = false;
-        //     foreach (var line in textFileAsLines)
-        //     {
-        //         // there is already so many lines.
-        //         var lineAttributes = StringValues.BreakUpByDelimitedToList(line);
-        //         var inputAttributes = StringValues.BreakUpByDelimitedToList(input);
-        //         // 0 - TYPE
-        //         // 1 - elementname
-        //         // 2 - colour
-        //         // 3 - colour
-        //         // 4 - size
-        //         // 5 - XPATH
-        //         // 6 - Selenium
-        //         // 7 - system object
-        //         // 8 - Text
-        //         // 9 - tag
-        //         // 10 - x by y
-        //         // 11 - Enabled
-        //         // 12 - Locator as POM
-        //         if (lineAttributes[0] == inputAttributes[0] && 
-        //                 lineAttributes[1] == inputAttributes[1] && 
-        //                 lineAttributes[5] == inputAttributes[5] && 
-        //                 lineAttributes[12] == inputAttributes[12])
-        //         {
-        //             newFileLines.Add(input);
-        //             replaced = true;
-        //         }
-        //         else newFileLines.Add(line);
-        //     }
-        //     if (!replaced) newFileLines.Add(input);
-        //     DebugOutput.Log($"WE NOW have {newFileLines.Count()} lines in the file currently");
-        //     if (!FileUtils.OSFileDeletion(osFile)) return false;
-        //     try
-        //     {
-        //         foreach (var line in newFileLines)
-        //         {
-        //             CreateFileIfRequired(osFile);
-        //             FileUtils.OSAppendLineToFile(osFile, line);                
-        //         }
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         DebugOutput.Log($"FAiled to rewrite {e}");
-        //         return false;
-        //     }
-        //     return true;
-        // }
-        
-        
 
-        // private static string GetElementName(string elementName)
-        // {
-        //     elementName = elementName.ToLower();
-        //     elementName = elementName.Replace(" ","");
-        //     return elementName;
-        // }
+        // Helper: compare important fields for equality (case-insensitive for strings)
+        private static bool AreModelsEqual(SelfHealModel a, SelfHealModel b)
+        {
+            if (a == null || b == null) return false;
+            return string.Equals(a.PageName, b.PageName, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(a.ElementName, b.ElementName, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(a.ElementType, b.ElementType, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(a.ElementXPathString ?? string.Empty, b.ElementXPathString ?? string.Empty, StringComparison.Ordinal)
+                && string.Equals(a.ElementText ?? string.Empty, b.ElementText ?? string.Empty, StringComparison.Ordinal)
+                && string.Equals(a.ElementTag ?? string.Empty, b.ElementTag ?? string.Empty, StringComparison.Ordinal)
+                && a.ElementEnabled == b.ElementEnabled;
+        }
 
-        // private static string GetPageName(FormBase currentPage)
-        // {
-        //     var pageName = currentPage.Name;
-        //     pageName = pageName.Replace(" page","");
-        //     return pageName;
-        // }
-
-        // public static string? GetTagForElementFromDB(FormBase currentPage, string elementName, string type)
-        // {
-        //     elementName = GetElementName(elementName);
-        //     var pageName = GetPageName(currentPage);
-
-        //     var osFileName = GetElementFileDetails(pageName);
-        //     if (!FileUtils.OSFileCheck(osFileName)) return null;
-
-        //     var fileContentsList = FileUtils.OSGetFileContentsAsListOfStringByLine(osFileName);
-        //     if (fileContentsList == null || fileContentsList.Count == 0) return null;
-        //     DebugOutput.Log($"Number of elemnts in self help {fileContentsList.Count()}");
-        //     foreach (var line in fileContentsList)
-        //     {
-        //         var attributes = StringValues.BreakUpByDelimitedToList(line);
-        //         DebugOutput.Log($"Comparing {attributes[1]} with {elementName} = return {attributes[5]}");
-        //         if (attributes[1] == elementName) return attributes[9];
-        //     }
-        //     DebugOutput.Log($"No tag either?!");
-        //     return null;
-        // }
-
-        // /// <summary>
-        // /// Looks for a file in Forms\<APP>\SelfHeal\<Page>\Elements.txt  
-        // /// Then tries and finds the name of the element 
-        // /// </summary>
-        // /// <param name="currentPage"></param>
-        // /// <param name="elementName"></param>
-        // /// <param name="elementType"></param>
-        // /// <returns>if finds the element, returns the line, if not returns null</returns>
-        // public static string? GetSelfHealLineFromDB(FormBase currentPage, string elementName, string elementType)
-        // {
-        //     elementName = GetElementName(elementName);
-        //     var pageName = GetPageName(currentPage);
-
-        //     var osFileName = GetElementFileDetails(pageName);
-        //     if (!FileUtils.OSFileCheck(osFileName)) return null;
-
-        //     var fileContentsList = FileUtils.OSGetFileContentsAsListOfStringByLine(osFileName);
-        //     if (fileContentsList == null || fileContentsList.Count == 0) return null;
-        //     DebugOutput.Log($"Number of elemnts in self help {fileContentsList.Count()}");
-        //     foreach (var line in fileContentsList)
-        //     {
-        //         var attributes = StringValues.BreakUpByDelimitedToList(line);
-        //         DebugOutput.Log($"Comparing {attributes[1]} with {elementName} = return {line}");
-        //         if (attributes[1] == elementName) return line;
-        //     }
-        //     DebugOutput.Log($"No Details found at all for {elementName} in Page {pageName}");
-        //     return null;
-        // }
-
-        // public static string? GetXPathForElementFromDB(FormBase currentPage, string elementName, string type)
-        // {
-        //     elementName = GetElementName(elementName);
-        //     var pageName = GetPageName(currentPage);
-
-        //     var osFileName = GetElementFileDetails(pageName);
-        //     if (!FileUtils.OSFileCheck(osFileName)) return null;
-
-        //     var fileContentsList = FileUtils.OSGetFileContentsAsListOfStringByLine(osFileName);
-        //     if (fileContentsList == null || fileContentsList.Count == 0) return null;
-        //     DebugOutput.Log($"Number of elemnts in self help {fileContentsList.Count()}");
-        //     foreach (var line in fileContentsList)
-        //     {
-        //         var attributes = StringValues.BreakUpByDelimitedToList(line);
-        //         DebugOutput.Log($"Comparing {attributes[1]} with {elementName} = return {attributes[5]}");
-        //         if (attributes[1] == elementName) return attributes[5];
-        //     }
-        //     DebugOutput.Log($"No XPATH help at all!");
-        //     return null;
-        // }
-
-
-        // public static void GetElementInformation(FormBase currentPage, IWebElement element, string elementName, string type = "UKNOWN")
-        // {
-        //     elementName = GetElementName(elementName);
-        //     var pageName = GetPageName(currentPage);
-        //     var locator = PageDicContains(currentPage, elementName);
-
-        //     var osFileName = GetElementFileDetails(pageName);
-        //     CreateFileIfRequired(osFileName);
-
-        //     var cssValueColour = element.GetCssValue("color");
-        //     var cssValueBackgroundColour = element.GetCssValue("background-color");
-        //     var cssValueFontSize = element.GetCssValue("font-size");
-        //     var xPath = SeleniumUtil.GetFullXPathOfElement(element);
-        //     var typeFullName = element.GetType().FullName;
-        //     var typeBaseType = element.GetType().BaseType;
-        //     var text = element.Text;
-        //     var tagName = element.TagName;
-        //     var size = element.Size;
-        //     var enabled = element.Enabled;
-        //     var app = TargetConfiguration.Configuration.AreaPath;
-        //     DebugOutput.Log($"GetElementInformation {app}|{pageName}|{type}|{elementName}|{cssValueColour}|{cssValueBackgroundColour}|{cssValueFontSize}|{xPath}|{typeFullName}|{typeBaseType}|{text}|{tagName}|{size}|{enabled}|{locator}");
-            
-        //     var input = $"{type.ToUpper()}|{elementName.ToLower()}|{cssValueColour}|{cssValueBackgroundColour}|{cssValueFontSize}|{xPath}|{typeFullName}|{typeBaseType}|{text}|{tagName}|{size}|{enabled}|{locator}";
-        //     if (!AppendFile(osFileName, input)) DebugOutput.Log($"**********SELF HEAL FAIL**************");
-        //     return;
-        // }
-        
-        // private static By? PageDicContains(FormBase currentPage, string elementName)
-        // {
-        //     elementName = GetElementName(elementName);
-        //     var pageName = GetPageName(currentPage);
-        //     DebugOutput.Log($"Does the Current Page {currentPage.Name} contain the element {elementName}");
-        //     if (currentPage.Elements.ContainsKey(elementName))
-        //     {
-        //         DebugOutput.Log($"IT DOES! Found it!");
-        //         return currentPage.Elements[elementName];
-        //     }
-        //     DebugOutput.Log($"Nope - not in this page at least!");
-        //     return null;
-        // }
-
-        // private static string GetElementFileDetails(string pageName)
-        // {
-        //     var outputLocation = "/AppTargets/Forms/" + TargetConfiguration.Configuration.AreaPath + "/SelfHeal/" + pageName + "/";
-        //     var OSSelfHelpDirectory = FileUtils.GetCorrectDirectory(outputLocation);
-        //     DebugOutput.Log($"This is nice {OSSelfHelpDirectory}");
-        //     if (!FileUtils.OSDirectoryCheck(OSSelfHelpDirectory)) FileUtils.OSDirectoryCreation(OSSelfHelpDirectory);
-        //     var OSSelfHelpFile = OSSelfHelpDirectory + "Elements.txt";
-        //     DebugOutput.Log($"This is nice FILE {OSSelfHelpFile}");
-        //     return OSSelfHelpFile;
-        // }
-
-        // private static bool CreateFileIfRequired(string file)
-        // {
-        //     if (!FileUtils.OSFileCheck(file))
-        //     {
-        //         FileUtils.OSFileCreation(file);
-        //     } 
-        //     return FileUtils.OSFileCheck(file);
-        // }
-
-
-
-
-
-
+        // Note: legacy/experimental methods and large commented blocks were removed to improve readability.
     }
 }
