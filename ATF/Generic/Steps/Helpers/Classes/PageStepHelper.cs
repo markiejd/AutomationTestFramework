@@ -1,5 +1,4 @@
-﻿
-using Core;
+﻿using Core;
 using Core.Configuration;
 using Core.Logging;
 using Core.Transformations;
@@ -9,15 +8,24 @@ using Reqnroll;
 
 namespace Generic.Steps.Helpers.Classes
 {
+    /// <summary>
+    /// Represents a collection of page elements (currently unused, reserved for future implementation).
+    /// </summary>
     public class PageElements
     {
         // public List<string>? ElementKeys { get; set; }  
         // public List<By>? ElementLocators { get; set; }
     }
 
+    /// <summary>
+    /// Helper class for page-level operations in automated testing.
+    /// Manages page navigation, element interaction, and page state verification.
+    /// Implements the IPageStepHelper interface for step definitions.
+    /// </summary>
     public class PageStepHelper : StepHelper, IPageStepHelper
     {
         private readonly ITargetForms targetForms;
+        
         public PageStepHelper(FeatureContext featureContext, ITargetForms targetForms) : base(featureContext)
         {
             this.targetForms = targetForms;
@@ -28,6 +36,10 @@ namespace Generic.Steps.Helpers.Classes
         // private readonly string[] messageLocatorStart = { $"//*[contains(text(),'" };
         // private readonly string imageOutputDir = @"AppSpecFlow\TestOutput\PageImages";
 
+        /// <summary>
+        /// Gets the name of the current page registered in the context.
+        /// </summary>
+        /// <returns>The current page name, or "NO PAGE REGISTERED" if no page is set.</returns>
         public string GetCurrentPageName()
         {
             DebugOutput.Log($"proc - GetCurrentPageName");
@@ -36,6 +48,12 @@ namespace Generic.Steps.Helpers.Classes
         }
 
 
+        /// <summary>
+        /// Compares the current page image with a previously saved baseline image.
+        /// (Currently returns false - implementation pending)
+        /// </summary>
+        /// <param name="pageName">The name of the page to compare images for.</param>
+        /// <returns>True if images match or are successfully processed, false otherwise.</returns>
         public bool ComparePageImage(string pageName)
         {
             DebugOutput.Log($"proc - ComparePageImage '{pageName}'");
@@ -70,6 +88,12 @@ namespace Generic.Steps.Helpers.Classes
             // return true;
         }
 
+        /// <summary>
+        /// Retrieves all element keys defined for a specific page.
+        /// (Currently returns empty list - full implementation pending)
+        /// </summary>
+        /// <param name="pageName">The name of the page to retrieve keys for.</param>
+        /// <returns>A list of element key names for the specified page.</returns>
         public List<string> GetAllPageKeys(string pageName)
         {
             DebugOutput.OutputMethod($"GetAllPageKeys", pageName);
@@ -203,19 +227,33 @@ namespace Generic.Steps.Helpers.Classes
         //     }
         // }
 
+        /// <summary>
+        /// Checks if a page exists in the target forms collection.
+        /// </summary>
+        /// <param name="pageName">The name of the page to check.</param>
+        /// <returns>True if the page exists, false otherwise.</returns>
         public bool IsExists(string pageName)
         {
             DebugOutput.Log($"proc - IsExists {pageName}");
             pageName = GetPageName(pageName);
             DebugOutput.Log($"proc - IsExists {pageName}");
+            // Attempt to retrieve the form and verify it exists
             var pageElement = GetForm(pageName);
             if (pageElement == null) return false;
             return true;
         }
 
+        /// <summary>
+        /// Verifies if a page is currently displayed within the specified timeout.
+        /// Uses a default positive timeout if none is provided.
+        /// </summary>
+        /// <param name="pageName">The name of the page to check.</param>
+        /// <param name="timeOut">Optional timeout in milliseconds (uses configuration default if 0).</param>
+        /// <returns>True if the page is displayed, false otherwise.</returns>
         public bool IsDisplayed(string pageName, int timeOut = 0)
         {
             DebugOutput.Log($"proc - IsDisplayed {pageName}");
+            // Use default positive timeout from configuration if not specified
             if (timeOut == 0)
             {
                 timeOut = TargetConfiguration.Configuration.PositiveTimeout;
@@ -223,7 +261,9 @@ namespace Generic.Steps.Helpers.Classes
             pageName = GetPageName(pageName);
             DebugOutput.Log($"proc - IsDisplayed {pageName}");
             
+            // Retrieve the expected page from target forms
             var expectedPage = targetForms[pageName];
+            // Check if the ID element exists and wait for it to be displayed
             if (ElementInteraction.IsElementExists(expectedPage, "ID", "textbox", TargetConfiguration.Configuration.PositiveTimeout))
             {
                 DebugOutput.Log($"ID Element exists");
@@ -234,9 +274,17 @@ namespace Generic.Steps.Helpers.Classes
             return false;
         }
 
+        /// <summary>
+        /// Verifies if a page is NOT displayed (hidden) within the specified timeout.
+        /// Uses a default negative timeout if none is provided.
+        /// </summary>
+        /// <param name="pageName">The name of the page to check.</param>
+        /// <param name="timeOut">Optional timeout in milliseconds (uses configuration default if 0).</param>
+        /// <returns>True if the page is not displayed, false otherwise.</returns>
         public bool IsNotDisplayed(string pageName, int timeOut = 0)
         {
             DebugOutput.Log($"proc - IsNotDisplayed {pageName} {timeOut}");
+            // Use default negative timeout from configuration if not specified
             if (timeOut == 0)
             {
                 timeOut = TargetConfiguration.Configuration.NegativeTimeout;
@@ -245,11 +293,20 @@ namespace Generic.Steps.Helpers.Classes
         }
 
 
+        /// <summary>
+        /// Checks if a specific text message is displayed on the current page.
+        /// Uses XPath to locate elements containing the specified text.
+        /// </summary>
+        /// <param name="message">The text message to search for (supports variable replacement).</param>
+        /// <returns>True if the message is found and displayed, false otherwise.</returns>
         public bool IsMessageDisplayed(string message)
         {
+            // Apply any configured text replacements (e.g., variable substitution)
             message = StringValues.TextReplacementService(message);
             DebugOutput.Log($"proc - IsMessageDisplayed {message}");
+            // Create XPath locator to find elements containing the specified text
             By locator = By.XPath($"//*[contains(text(),'{message}')]");
+            // Attempt to find the element with a short timeout
             var element = SeleniumUtil.GetElement(locator, 1);
             if (element == null)
             {
@@ -257,9 +314,15 @@ namespace Generic.Steps.Helpers.Classes
                 return false;
             }
             DebugOutput.Log($"Message {message} found by XPATH");
+            // Verify the element is actually displayed
             return SeleniumUtil.IsDisplayed(element, false, 2);
         }
 
+        /// <summary>
+        /// Sets the current page context to the specified page name.
+        /// Attempts to find the page with and without the application area path prefix.
+        /// </summary>
+        /// <param name="pageName">The name of the page to set as current.</param>
         public void SetCurrentPage(string pageName)
         {
             pageName = GetPageName(pageName);
@@ -267,6 +330,7 @@ namespace Generic.Steps.Helpers.Classes
             string pageNameNew = "";
             try
             {
+                // Attempt to retrieve the page using the normalized page name
                 expectedPage = targetForms[pageName];
                 CurrentPage = expectedPage;
             }
@@ -274,6 +338,7 @@ namespace Generic.Steps.Helpers.Classes
             {
                 try
                 {
+                    // If not found, try with the full area path prefix
                     pageNameNew = TargetConfiguration.Configuration.AreaPath + " " + pageName;
                     expectedPage = targetForms[pageNameNew];
                     CurrentPage = expectedPage;
@@ -286,6 +351,12 @@ namespace Generic.Steps.Helpers.Classes
             DebugOutput.Log($"Current page now set to {CurrentPage}");
         }
 
+        /// <summary>
+        /// Resizes the browser window to the specified dimensions.
+        /// </summary>
+        /// <param name="width">The desired window width in pixels (default: 800).</param>
+        /// <param name="height">The desired window height in pixels (default: 600).</param>
+        /// <returns>True if the window was successfully resized, false otherwise.</returns>
         public bool SetCurrentPageSize(int width = 800, int height = 600)
         {
             return ElementInteraction.SetWindowSize(width, height);
@@ -295,6 +366,12 @@ namespace Generic.Steps.Helpers.Classes
 
         //PRIVATE METHODS BELOW
 
+        /// <summary>
+        /// Retrieves a form/page object from the target forms collection by name.
+        /// Attempts to normalize the page name and handles exceptions gracefully.
+        /// </summary>
+        /// <param name="pageName">The name of the page to retrieve.</param>
+        /// <returns>The FormBase object if found, null otherwise.</returns>
         private FormBase? GetForm(string pageName)
         {
             pageName = GetPageName(pageName);
@@ -311,6 +388,13 @@ namespace Generic.Steps.Helpers.Classes
             return expectPage;
         }
 
+        /// <summary>
+        /// Captures screenshots of all elements in a page and optionally compares them with existing images.
+        /// (Currently returns false - full implementation pending)
+        /// </summary>
+        /// <param name="pageName">The name of the page containing elements to capture.</param>
+        /// <param name="update">If true, compares new images with existing ones and logs discrepancies.</param>
+        /// <returns>True if all images were successfully processed, false otherwise.</returns>
         public bool GetImagesOfAllElementsInPageFile(string pageName, bool update = false)
         {
             DebugOutput.Log($"Sel - GetImagesOfAllElementsInPageFile {pageName} {update}");
@@ -397,21 +481,35 @@ namespace Generic.Steps.Helpers.Classes
         //     return new PageElements { ElementKeys = elementKeys, ElementLocators = elementLocators };
         // }
 
+        /// <summary>
+        /// Normalizes a page name by removing application area path prefixes and cleaning up naming conventions.
+        /// Converts the name to lowercase and appends the application area path as a prefix.
+        /// </summary>
+        /// <param name="pageName">The original page name to normalize.</param>
+        /// <returns>The normalized page name in the format: "{app}{pageName}" without "page" suffix.</returns>
         private string GetPageName(string pageName)
         {
             DebugOutput.Log($"Proc - GetCorrectPageName {pageName}");  
             var app = TargetConfiguration.Configuration.AreaPath;
+            // Remove existing application path prefixes (case variations)
             if (pageName.Contains(app)) pageName = pageName.Replace(app, "");
             if (pageName.Contains(app.ToLower())) pageName = pageName.Replace(app.ToLower(), "");
             if (pageName.Contains(app.ToUpper())) pageName = pageName.Replace(app.ToUpper(), "");
             DebugOutput.Log($"Leaves us with {pageName}");
+            // Construct the normalized page name with app prefix
             var newPageName = app.ToLower() + pageName;
+            // Remove common "Page" suffix variations
             newPageName = newPageName.Replace(" Page","");
             newPageName = newPageName.Replace(" page","");
             DebugOutput.Log($"NEW PAGE RETURNED Is {newPageName}");
             return newPageName;
         }
 
+        /// <summary>
+        /// Retrieves the application area path from the current configuration.
+        /// </summary>
+        /// <param name="lowerCase">If true, returns the application path in lowercase.</param>
+        /// <returns>The application area path, or null if configuration is not available.</returns>
         private string? GetApplication(bool lowerCase = false)
         {
             if (TargetConfiguration.Configuration.AreaPath == null) return null;
@@ -421,6 +519,12 @@ namespace Generic.Steps.Helpers.Classes
         }
 
 
+        /// <summary>
+        /// Checks if a message is displayed by searching for elements with a matching Name attribute.
+        /// (Currently returns false - part of multi-strategy message detection approach)
+        /// </summary>
+        /// <param name="message">The text to search for in element names.</param>
+        /// <returns>True if found by exact name match, false otherwise.</returns>
         private bool IsMessageDisplayedName(string message)
         {
             DebugOutput.Log($"proc - IsMessageDisplayedName {message}");
@@ -433,6 +537,12 @@ namespace Generic.Steps.Helpers.Classes
         }
 
 
+        /// <summary>
+        /// Checks if a message is displayed by searching for elements with a partial Name match using CSS selector.
+        /// Falls back to broader name matching if no exact partial match is found.
+        /// </summary>
+        /// <param name="message">The text to search for as part of element names.</param>
+        /// <returns>True if found by partial name match, false otherwise.</returns>
         private bool IsMessageDisplayedPartOfName(string message)
         {
             DebugOutput.Log($"proc - IsMessageDisplayedPartOfName {message}");
@@ -445,6 +555,12 @@ namespace Generic.Steps.Helpers.Classes
         }
 
 
+        /// <summary>
+        /// Checks if a message is displayed by searching through a list of all element names on the page.
+        /// This is a broad fallback strategy for message detection.
+        /// </summary>
+        /// <param name="message">The text to search for within element names.</param>
+        /// <returns>True if the message is found in any element name on the page, false otherwise.</returns>
         private bool IsMessageDisplayedPartOfAnyName(string message)
         {
             return false;

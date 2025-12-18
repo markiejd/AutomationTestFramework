@@ -16,6 +16,9 @@ namespace AppSpecFlow.AppSteps
     [Binding]
     public class Steps : StepsBase
     {
+        /// <summary>
+        /// Step bindings for AppSpecFlow - orchestrates feature file creation and precondition data handling.
+        /// </summary>
         public Steps(IStepHelpers helpers,
             GivenSteps givenSteps,
             ThenSteps thenSteps,
@@ -60,15 +63,29 @@ namespace AppSpecFlow.AppSteps
 
         private bool Failure(string proc, string message, bool pass = false)
         {
-            DebugOutput.Log($"We are failing in Steps.cs PROC '{proc}' wuth the message '{message}");
+            // fixed typo in log string and made message clearer
+            DebugOutput.Log($"We are failing in Steps.cs PROC '{proc}' with the message '{message}'");
             CombinedSteps.Failure(proc);
             return pass;
         }
 
+        /// <summary>
+        /// Ensure the given directory exists. Attempt to create if it does not.
+        /// Returns true when directory exists (after creation attempt if necessary), false otherwise.
+        /// </summary>
+        private bool EnsureDirectory(string proc, string directory)
+        {
+            if (FileUtils.DirectoryCheck(directory)) return true;
+            DebugOutput.Log($"Directory not found - creating: {directory}");
+            if (!FileUtils.DirectoryCreation(directory)) return Failure(proc, $"Failed to create directory {directory}");
+            if (!FileUtils.DirectoryCheck(directory)) return Failure(proc, $"Directory does not exist after creation: {directory}");
+            return true;
+        }
 
         [Given(@"STEPS HERE")]
         public void GivenSTEPSHERE()
         {
+            // placeholder step used by features when no action is required
             DebugOutput.Log("NOTHING HERE");
         }
 
@@ -86,17 +103,14 @@ namespace AppSpecFlow.AppSteps
         [Given(@"Feature File Created In Directory ""(.*)"" Named As ""(.*)"" Using PreCondition Data ""(.*)""")]
         public bool GivenFeatureFileCreatedInDirectoryNamedAsUsingPreConditionData(string featureFileDirectory, string testNumber, string preConditionDataLocation)
         {
+            // Creates a single feature file from CSV precondition data
             featureFileDirectory = "/AppSpecFlow/Features" + featureFileDirectory;
             var proc = $"Given Feature File Created In Directory {featureFileDirectory} Named As {testNumber} Using PreCondition Data {preConditionDataLocation}";
             if (CombinedSteps.OuputProc(proc))
             {
                 if (!FileUtils.FileCheck(preConditionDataLocation)) return Failure(proc, $"Failed to find PreConditionDataLocation {preConditionDataLocation}");
-                if (!FileUtils.DirectoryCheck(featureFileDirectory))
-                {
-                    DebugOutput.Log($"Diretory not found - need to create it!");
-                    if (!FileUtils.DirectoryCreation(featureFileDirectory)) return Failure(proc, $"Failed to create directory {featureFileDirectory}");
-                    if (!FileUtils.DirectoryCheck(featureFileDirectory)) return Failure(proc, "How?  I created it above - how can it not exist!");
-                }
+                if (!EnsureDirectory(proc, featureFileDirectory)) return false;
+
                 List<string>? csvDataLines = new();
                 var csvFileOSLocation = FileUtils.GetCorrectDirectory(preConditionDataLocation);
                 csvDataLines = CommaDelimited.GetCommaDelimitedData(csvFileOSLocation, true);
@@ -114,17 +128,14 @@ namespace AppSpecFlow.AppSteps
         [Given(@"Feature Files Created In Directory ""(.*)"" Named As ""(.*)"" Using PreCondition Data ""(.*)""")]
         public bool GivenFeatureFilesCreatedInDirectoryNamedAsUsingPreConditionData(string featureFileDirectory, string testNumbers, string preConditionDataLocation)
         {
+            // Creates multiple feature files (named) from precondition CSV data
             featureFileDirectory = "/AppSpecFlow/Features" + featureFileDirectory;
             var proc = $"Given Feature Files Created In Directory {featureFileDirectory} Named As {testNumbers} Using PreCondition Data {preConditionDataLocation}";
             if (CombinedSteps.OuputProc(proc))
             {
                 if (!FileUtils.FileCheck(preConditionDataLocation)) return Failure(proc, $"Failed to find PreConditionDataLocation {preConditionDataLocation}");
-                if (!FileUtils.DirectoryCheck(featureFileDirectory))
-                {
-                    DebugOutput.Log($"Diretory not found - need to create it!");
-                    if (!FileUtils.DirectoryCreation(featureFileDirectory)) return Failure(proc, $"Failed to create directory {featureFileDirectory}");
-                    if (!FileUtils.DirectoryCheck(featureFileDirectory)) return Failure(proc, "How?  I created it above - how can it not exist!");
-                }
+                if (!EnsureDirectory(proc, featureFileDirectory)) return false;
+
                 var numberOfTestFiles = StringValues.BreakUpByDelimitedToList(testNumbers, "|");
                 var testFilesRequired = numberOfTestFiles.Count;
                 var numberOfTestsPerFeature = 1;
@@ -138,14 +149,14 @@ namespace AppSpecFlow.AppSteps
                     DebugOutput.Log($"We got CSV of {csvDataLines.Count} LINES");
                     if (csvDataLines.Count > 20)
                     {
-                        DebugOutput.Log($"We going to break you up!");
+                        DebugOutput.Log($"We are going to break you up!");
                         if (testFilesRequired > 1) testFilesRequired--;
                         numberOfTestsPerFeature = csvDataLines.Count / testFilesRequired;
                         remainder = csvDataLines.Count % testFilesRequired;
                     }
                     else
                     {
-                        DebugOutput.Log($"We not breaking you up!");
+                        DebugOutput.Log($"We are not breaking you up!");
                         numberOfTestsPerFeature = csvDataLines.Count;
                     }
                 }
@@ -165,17 +176,14 @@ namespace AppSpecFlow.AppSteps
         [Given(@"Feature Files Created In Directory ""(.*)"" Based On PreCondition Data ""(.*)""")]
         public bool GivenFeatureFilesCreatedInDirectoryBasedOnPreConditionData(string featureFileDirectory, string preConditionDataLocation)
         {
+            // Create feature files based on CSV filename
             featureFileDirectory = "/AppSpecFlow/Features" + featureFileDirectory;
             var proc = $"Given Feature Files Created In Directory {featureFileDirectory} Based On PreCondition Data {preConditionDataLocation}";
             if (CombinedSteps.OuputProc(proc))
             {
                 if (!FileUtils.FileCheck(preConditionDataLocation)) return Failure(proc, $"Failed to find PreConditionDataLocation {preConditionDataLocation}");
-                if (!FileUtils.DirectoryCheck(featureFileDirectory))
-                {
-                    DebugOutput.Log($"Diretory not found - need to create it!");
-                    if (!FileUtils.DirectoryCreation(featureFileDirectory)) return Failure(proc, $"Failed to create directory {featureFileDirectory}");
-                    if (!FileUtils.DirectoryCheck(featureFileDirectory)) return Failure(proc, "How?  I created it above - how can it not exist!");
-                }
+                if (!EnsureDirectory(proc, featureFileDirectory)) return false;
+
                 // Read the CSV File
                 var csvFileOSLocation = FileUtils.GetCorrectDirectory(preConditionDataLocation);
                 var csvDataLines = CommaDelimited.GetCommaDelimitedData(csvFileOSLocation);
@@ -193,17 +201,14 @@ namespace AppSpecFlow.AppSteps
         [Given(@"Variant Feature Files Created In Directory ""(.*)"" Based On PreCondition Data ""(.*)""")]
         public bool GivenVariantFeatureFilesCreatedInDirectoryBasedOnPreConditionData(string featureFileDirectory, string preConditionDataLocation)
         {
+            // Create variant feature files (variants generated by FeatureFileListOfCSV)
             featureFileDirectory = "/AppSpecFlow/Features" + featureFileDirectory;
             var proc = $"Given Variant Feature Files Created In Directory {featureFileDirectory} Based On PreCondition Data {preConditionDataLocation}";
             if (CombinedSteps.OuputProc(proc))
             {
                 if (!FileUtils.FileCheck(preConditionDataLocation)) return Failure(proc, $"Failed to find PreConditionDataLocation {preConditionDataLocation}");
-                if (!FileUtils.DirectoryCheck(featureFileDirectory))
-                {
-                    DebugOutput.Log($"Diretory not found - need to create it!");
-                    if (!FileUtils.DirectoryCreation(featureFileDirectory)) return Failure(proc, $"Failed to create directory {featureFileDirectory}");
-                    if (!FileUtils.DirectoryCheck(featureFileDirectory)) return Failure(proc, "How?  I created it above - how can it not exist!");
-                }
+                if (!EnsureDirectory(proc, featureFileDirectory)) return false;
+
                 // Read the CSV File
                 var csvFileOSLocation = FileUtils.GetCorrectDirectory(preConditionDataLocation);
                 var csvDataLines = CommaDelimited.GetCommaDelimitedData(csvFileOSLocation);
@@ -224,17 +229,14 @@ namespace AppSpecFlow.AppSteps
         [Given(@"Feature Files Created In Directory ""(.*)"" Named As ""(.*)"" Using PreCondition Data ""(.*)"" Using API")]
         public bool GivenFeatureFilesCreatedInDirectoryNamedAsUsingPreConditionDataUsingAPI(string featureFileDirectory, string testNumbers, string preConditionDataLocation)
         {
+            // Create API feature files named as provided
             featureFileDirectory = "/AppSpecFlow/Features" + featureFileDirectory;
             var proc = $"Given Feature Files Created In Directory {featureFileDirectory} Named As {testNumbers} Using PreCondition Data {preConditionDataLocation}";
             if (CombinedSteps.OuputProc(proc))
             {
                 if (!FileUtils.FileCheck(preConditionDataLocation)) return Failure(proc, $"Failed to find PreConditionDataLocation {preConditionDataLocation}");
-                if (!FileUtils.DirectoryCheck(featureFileDirectory))
-                {
-                    DebugOutput.Log($"Diretory not found - need to create it!");
-                    if (!FileUtils.DirectoryCreation(featureFileDirectory)) return Failure(proc, $"Failed to create directory {featureFileDirectory}");
-                    if (!FileUtils.DirectoryCheck(featureFileDirectory)) return Failure(proc, "How?  I created it above - how can it not exist!");
-                }
+                if (!EnsureDirectory(proc, featureFileDirectory)) return false;
+
                 var numberOfTestFiles = StringValues.BreakUpByDelimitedToList(testNumbers, "|");
                 var testFilesRequired = numberOfTestFiles.Count;
                 var numberOfTestsPerFeature = 1;
@@ -248,14 +250,14 @@ namespace AppSpecFlow.AppSteps
                     DebugOutput.Log($"We got CSV of {csvDataLines.Count} LINES");
                     if (csvDataLines.Count > 20)
                     {
-                        DebugOutput.Log($"We going to break you up!");
+                        DebugOutput.Log($"We are going to break you up!");
                         if (testFilesRequired > 1) testFilesRequired--;
                         numberOfTestsPerFeature = csvDataLines.Count / testFilesRequired;
                         remainder = csvDataLines.Count % testFilesRequired;
                     }
                     else
                     {
-                        DebugOutput.Log($"We not breaking you up!");
+                        DebugOutput.Log($"We are not breaking you up!");
                         numberOfTestsPerFeature = csvDataLines.Count;
                     }
                 }
@@ -274,17 +276,14 @@ namespace AppSpecFlow.AppSteps
         [Given(@"Feature Files Created In Directory ""(.*)"" Named As ""(.*)"" Using PreCondition Data ""(.*)"" Using API With Variants")]
         public bool GivenFeatureFilesCreatedInDirectoryNamedAsUsingPreConditionDataUsingAPIWithVariants(string featureFileDirectory, string testNumbers, string preConditionDataLocation)
         {
+            // Create API variant feature files
             featureFileDirectory = "/AppSpecFlow/Features" + featureFileDirectory;
             var proc = $"Given Feature Files Created In Directory {featureFileDirectory} Named As {testNumbers} Using PreCondition Data {preConditionDataLocation}";
             if (CombinedSteps.OuputProc(proc))
             {
                 if (!FileUtils.FileCheck(preConditionDataLocation)) return Failure(proc, $"Failed to find PreConditionDataLocation {preConditionDataLocation}");
-                if (!FileUtils.DirectoryCheck(featureFileDirectory))
-                {
-                    DebugOutput.Log($"Diretory not found - need to create it!");
-                    if (!FileUtils.DirectoryCreation(featureFileDirectory)) return Failure(proc, $"Failed to create directory {featureFileDirectory}");
-                    if (!FileUtils.DirectoryCheck(featureFileDirectory)) return Failure(proc, "How?  I created it above - how can it not exist!");
-                }
+                if (!EnsureDirectory(proc, featureFileDirectory)) return false;
+
                 var numberOfTestFiles = StringValues.BreakUpByDelimitedToList(testNumbers, "|");
                 var testFilesRequired = numberOfTestFiles.Count;
                 var numberOfTestsPerFeature = 1;
@@ -298,14 +297,14 @@ namespace AppSpecFlow.AppSteps
                     DebugOutput.Log($"We got CSV of {csvDataLines.Count} LINES");
                     if (csvDataLines.Count > 20)
                     {
-                        DebugOutput.Log($"We going to break you up!");
+                        DebugOutput.Log($"We are going to break you up!");
                         if (testFilesRequired > 1) testFilesRequired--;
                         numberOfTestsPerFeature = csvDataLines.Count / testFilesRequired;
                         remainder = csvDataLines.Count % testFilesRequired;
                     }
                     else
                     {
-                        DebugOutput.Log($"We not breaking you up!");
+                        DebugOutput.Log($"We are not breaking you up!");
                         numberOfTestsPerFeature = csvDataLines.Count;
                     }
                 }
@@ -327,6 +326,7 @@ namespace AppSpecFlow.AppSteps
         [Given(@"PreCondition Data ""([^""]*)"" Exists")]
         public void GivenPreConditionDataExists(string nameOfPreconditionDataDirectory)
         {
+            // Validate that a named precondition data directory exists
             var proc = $"Given PreConditionData {nameOfPreconditionDataDirectory} Exists";
             if (CombinedSteps.OuputProc(proc))
             {
@@ -343,6 +343,7 @@ namespace AppSpecFlow.AppSteps
         [When(@"I Create PreCondition Data (.*)")]
         public static void WhenICreatePreConditionData(int preConditionNumber)
         {
+            // Create a numbered precondition data directory based on template
             var proc = $"When I Create PreConditionData {preConditionNumber}";
             if (CombinedSteps.OuputProc(proc))
             {
@@ -369,6 +370,7 @@ namespace AppSpecFlow.AppSteps
         [When(@"I Use PreCondition Data ""([^""]*)""")]
         public static void WhenIUsePreConditionData(string nameOfPreconditionDataDirectory)
         {
+            // Replace current local data with named precondition data
             var proc = $"When I Use PreConditionData {nameOfPreconditionDataDirectory}";
             if (CombinedSteps.OuputProc(proc))
             {
@@ -400,13 +402,6 @@ namespace AppSpecFlow.AppSteps
                 return;
             }
         }
-
-        
-
-
-
-
-
 
     }
 }

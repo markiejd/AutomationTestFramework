@@ -1,4 +1,3 @@
-
 using Core;
 using Core.Configuration;
 using Core.Logging;
@@ -7,15 +6,20 @@ using OpenQA.Selenium;
 
 namespace Generic.Steps.Helpers.Classes
 {
+    /// <summary>
+    /// Utility methods to retrieve IWebElement instances from a page/form.
+    /// This class will try the configured POM locator first and then attempt
+    /// various fallback/self-heal strategies when enabled.
+    /// </summary>
     public static class GetTheElement
     {
-        
         /// <summary>
         /// Get Element - using Self Heal if POM Locator Fails
         /// </summary>
-        /// <param name="currentPage"></param>
-        /// <param name="elementName"></param>
-        /// <param name="elementType"></param>
+        /// <param name="currentPage">The page/form object which contains POM locators.</param>
+        /// <param name="elementName">The friendly name of the element as defined in the POM.</param>
+        /// <param name="elementType">Type hint used to apply special lookup rules (e.g. link, tab, spinner).</param>
+        /// <param name="timeout">Optional timeout in seconds for the lookup. Default is 0 (immediate).</param>
         /// <returns>element if found, null if not, even after self heal</returns>
         public static IWebElement? GetElement(FormBase currentPage, string elementName, string elementType, int timeout = 0)
         {
@@ -24,7 +28,7 @@ namespace Generic.Steps.Helpers.Classes
             var locator = GetDictionaryLocator.GetElementLocator(elementName, currentPage, elementType);
             if (locator == null)
             {
-                switch(elementType.ToLower())
+                switch (elementType.ToLower())
                 {
                     default:
                     {
@@ -35,14 +39,14 @@ namespace Generic.Steps.Helpers.Classes
                     {
                         DebugOutput.Log($"We are looking for a datepicker - so we will try Tag name mat-datepicker-content");
                         locator = By.TagName("mat-datepicker-content");
-                        element =  SeleniumUtil.GetElement(locator, timeout);
-                        break;                        
+                        element = SeleniumUtil.GetElement(locator, timeout);
+                        break;
                     }
                     case "link":
                     {
                         var stringXPath = $"//*[text()='{elementName}']";
                         locator = By.XPath(stringXPath);
-                        element =  SeleniumUtil.GetElement(locator, timeout);
+                        element = SeleniumUtil.GetElement(locator, timeout);
                         break;
                     }
                     case "spinner":
@@ -67,7 +71,7 @@ namespace Generic.Steps.Helpers.Classes
                     {
                         var stringXPath = $"//Window[contains(@Name,'{elementName}')]";
                         locator = By.XPath("//Window/");
-                        element =  SeleniumUtil.GetElement(locator, timeout);
+                        element = SeleniumUtil.GetElement(locator, timeout);
                         break;
                     }
                 }
@@ -80,7 +84,7 @@ namespace Generic.Steps.Helpers.Classes
             if (element == null)
             {
                 DebugOutput.Log($"START GET ELEMENT {DateTime.UtcNow} {locator}");
-                element =  SeleniumUtil.GetElement(locator, timeout);
+                element = SeleniumUtil.GetElement(locator, timeout);
                 DebugOutput.Log($"END GET ELEMENT {DateTime.UtcNow}");
             }
             if (element != null) return element;
@@ -106,6 +110,9 @@ namespace Generic.Steps.Helpers.Classes
             return null;
         }
 
+        /// <summary>
+        /// Try multiple locators in sequence and return the first matching element.
+        /// </summary>
         private static IWebElement? GetElementMultipleLocators(By[] locators, int timeout = 0)
         {
             foreach (var locator in locators)
@@ -119,12 +126,21 @@ namespace Generic.Steps.Helpers.Classes
             return null;
         }
 
+        /// <summary>
+        /// Convenience method to find an element by an XPath string.
+        /// NOTE: Method name contains a historical typo (ByXPathSring) kept for compatibility.
+        /// </summary>
+        /// <param name="xPath">XPath string to locate the element.</param>
+        /// <param name="timeout">Timeout in seconds for the lookup.</param>
         public static IWebElement? ByXPathSring(string xPath, int timeout)
         {
             By xPathLocator = By.XPath(xPath);
             return SeleniumUtil.GetElement(xPathLocator, timeout);
         }
 
+        /// <summary>
+        /// Accordion/expansion controls commonly use a known class name - try that first.
+        /// </summary>
         public static IWebElement? GetExpansion(IWebElement element)
         {
             By expansionElementLocator = By.ClassName("accordion-toggle");
@@ -140,7 +156,7 @@ namespace Generic.Steps.Helpers.Classes
         }
 
         public static IWebElement? GetGroupExpanded(IWebElement groupElement)
-        {            
+        {
             var groupExpandedXPath = GetSubLocators.AccordionSubElementExpanded[GetSubLocators.AccordionVersionNumber];
             By groupExpandedLocator = By.ClassName(groupExpandedXPath);
             if (groupExpandedXPath.Contains($"/")) groupExpandedLocator = By.XPath(groupExpandedXPath);
@@ -152,6 +168,9 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.GetElementParent(element);
         }
 
+        /// <summary>
+        /// Find sub-element by matching its visible text.
+        /// </summary>
         public static IWebElement? GetSubElementByText(FormBase currentPage, string elementName, string elementType, By locator, string text, int timeout = 0)
         {
             var element = GetElement(currentPage, elementName, elementType);
@@ -166,6 +185,9 @@ namespace Generic.Steps.Helpers.Classes
             return null;
         }
 
+        /// <summary>
+        /// Try to locate an element by tag name and optionally match its exact text value.
+        /// </summary>
         private static IWebElement? GetElementUsingTagAndText(string? elementTag, string? elementText)
         {
             if (elementTag == null) return null;
@@ -182,6 +204,10 @@ namespace Generic.Steps.Helpers.Classes
             return null;
         }
 
+        /// <summary>
+        /// Locate element by exact visible text using an XPath expression.
+        /// Handles single-quote characters in the text by using XPath concat() where necessary.
+        /// </summary>
         private static IWebElement? GetElementUsingText(string? text)
         {
             if (text == null) return null;
@@ -190,12 +216,14 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.GetElement(xPathLocator, 1);
         }
 
+        /// <summary>
+        /// Locate element using the provided XPath string.
+        /// </summary>
         private static IWebElement? GetElementUsingXPath(string? xPath)
         {
             if (xPath == null) return null;
             By xPathLocator = By.XPath(xPath);
             return SeleniumUtil.GetElement(xPathLocator, 1);
         }
-
     }
 }

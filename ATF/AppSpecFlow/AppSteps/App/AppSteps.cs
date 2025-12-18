@@ -1,4 +1,3 @@
-
 using System.Diagnostics;
 using AppXAPI;
 using Core;
@@ -12,12 +11,20 @@ using Generic.Elements.Steps.Textbox;
 using Generic.Steps;
 using Generic.Steps.Helpers.Interfaces;
 using OpenQA.Selenium.DevTools;
+
 namespace AppSpecFlow.AppSteps
 {
 
+    /// <summary>
+    /// AppSteps contains SpecFlow step implementations that interact with ADF, files and generic UI steps.
+    /// Comments were added to clarify responsibilities of the most important methods. No behavior changes made.
+    /// </summary>
     [Binding]
     public class AppSteps : StepsBase
     {
+        /// <summary>
+        /// Constructor - wires up helper step classes used by the step definitions.
+        /// </summary>
         public AppSteps(IStepHelpers helpers,
             GivenSteps givenSteps,
             WhenSteps whenSteps,
@@ -56,13 +63,17 @@ namespace AppSpecFlow.AppSteps
         private ThenTableSteps ThenTableSteps { get; }
         private WhenTextBoxSteps WhenTextBoxSteps { get; }
 
-        private string ADFSI003Directory = "Upload of Customer and Contract detail_SI003";
-        private string ADFMI003Directory = "Account Billing Preferences & Account Adjustments Preferences Upload_MI003";
-        private string ADFBL002Directory = "TEIP Invoice data_BL002";
-        private string ADFBL001Directory = "SPID Core Corrections Upload_BL001";
-        private string ADFMI007Directory = "Tariff Data Upload & Tariff standing data_MI007";
+        // ADF ingestion directory names - marked readonly since these are constants for the class
+        private readonly string ADFSI003Directory = "Upload of Customer and Contract detail_SI003";
+        private readonly string ADFMI003Directory = "Account Billing Preferences & Account Adjustments Preferences Upload_MI003";
+        private readonly string ADFBL002Directory = "TEIP Invoice data_BL002";
+        private readonly string ADFBL001Directory = "SPID Core Corrections Upload_BL001";
+        private readonly string ADFMI007Directory = "Tariff Data Upload & Tariff standing data_MI007";
 
 
+        /// <summary>
+        /// Step to deliberately fail the test with a message (used for debugging/flags).
+        /// </summary>
         [Then(@"FAIL here because ""(.*)""")]
         public void ThenFAILherebecause(string args1)
         {
@@ -70,7 +81,7 @@ namespace AppSpecFlow.AppSteps
             CombinedSteps.Failure(args1);
         }
 
-        private string GetADFDateDirectoryStructure()
+                private string GetADFDateDirectoryStructure()
         {
             // we need to get todays date broken into yyyy mm dd
             var today = DateTime.Today;
@@ -82,6 +93,9 @@ namespace AppSpecFlow.AppSteps
             return directoryDateStructure;
         }
 
+        /// <summary>
+        /// Insert today's date into a filename before the extension. Handles rejected/incomplete naming rules.
+        /// </summary>
         private string GetFileNameWithDateStamp(string fileName, string processType = "Upload", string ingestionType = "BL001")
         {
             DebugOutput.OutputMethod("GetFileNameWithDateStamp", $"{fileName}, {processType} {ingestionType}");
@@ -118,6 +132,9 @@ namespace AppSpecFlow.AppSteps
         }
       
 
+        /// <summary>
+        /// Map a short ingestion type to the ADF directory name used in this project.
+        /// </summary>
         private string GetIngestionTypeDirectory(string ingestionType)
         {
             DebugOutput.OutputMethod("GetIngestionTypeDirectory", $"{ingestionType}");
@@ -156,7 +173,7 @@ namespace AppSpecFlow.AppSteps
             }   
         }
 
-        private string? FindFileInADF(string newFileName, string fullDirectoryStructure)
+                private string? FindFileInADF(string newFileName, string fullDirectoryStructure)
         {
             DebugOutput.OutputMethod("FindFileInADF", $"{newFileName} {fullDirectoryStructure}");
             // get all files in the directory
@@ -182,6 +199,9 @@ namespace AppSpecFlow.AppSteps
             return null;
         }
 
+        /// <summary>
+        /// Extract the full file name (including timestamp) from a joined string of files returned by ADF listing.
+        /// </summary>
         private string IsFileFoundInStringOfFiles(string newFileNameWithoutExtension, string? allFiles, string extensionType = ".csv")
         {
             DebugOutput.OutputMethod("IsFileFoundInArrayOfFiles", $"'{newFileNameWithoutExtension}' '{allFiles}'");
@@ -226,6 +246,9 @@ namespace AppSpecFlow.AppSteps
             return fullFileNameWithTimeStamp;
         }
 
+        /// <summary>
+        /// Download a file from ADF to a local test results folder, then delete it from ADF when successful.
+        /// </summary>
         private bool DownloadAFileFromADF(string processType, string ingestionType, string fullDirectoryStructure, string fullFileNameWithTimeStamp)
         {
             DebugOutput.OutputMethod("DownloadAFileFromADF", $"");
@@ -264,6 +287,9 @@ namespace AppSpecFlow.AppSteps
         }
 
 
+        /// <summary>
+        /// Wait for a file to appear in ADF, then download it. Respects PositiveTimeout * 6.
+        /// </summary>
         private bool ThenWaitForFileInADF(string fileName, string processType = "Upload", string ingestionType = "SI003")
         {
             DebugOutput.OutputMethod("ThenWaitForFileInADF", $"{fileName}, {processType} {ingestionType}");
@@ -369,7 +395,9 @@ namespace AppSpecFlow.AppSteps
 
 
 
-
+        /// <summary>
+        /// Upload a local repo file into ADF input directory. Ensures file existence and sets AZURE_STORAGE_FILESYSTEM.
+        /// </summary>
         public bool InputFileForingestion(string fileToBeUploaded, string ADFInputDirectory)
         {
             DebugOutput.OutputMethod("InputFileForingestion", $"{fileToBeUploaded}, {ADFInputDirectory}");
@@ -549,6 +577,7 @@ namespace AppSpecFlow.AppSteps
                 DebugOutput.Log($"File to be deleted {allNamedFiles[0]} was deleted");
             }
         }
+
 
 
 
@@ -1028,7 +1057,6 @@ namespace AppSpecFlow.AppSteps
                 }
             }
         }
-
 
 
 

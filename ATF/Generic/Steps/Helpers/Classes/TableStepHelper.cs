@@ -11,66 +11,136 @@ namespace Generic.Steps.Helpers.Classes
 {
     public class TableStepHelper : StepHelper, ITableStepHelper
     {
+        /// <summary>
+        /// Reference to the target forms service for form interactions
+        /// </summary>
         private readonly ITargetForms targetForms;
+
+        /// <summary>
+        /// Initializes a new instance of the TableStepHelper class
+        /// </summary>
+        /// <param name="featureContext">The current feature context from Reqnroll</param>
+        /// <param name="targetForms">Service for handling target form interactions</param>
         public TableStepHelper(FeatureContext featureContext, ITargetForms targetForms) : base(featureContext)
         {
             this.targetForms = targetForms;
         }
 
-        // int versionNumber = 0;
+        /// <summary>
+        /// Table Configuration Locators and Settings
+        /// </summary>
+        
+        /// <summary>
+        /// Defines which column should never be empty - used as primary identifier for table rows
+        /// </summary>
+        private readonly int TablePrimaryColumnNumber = TargetLocator.Configuration.TablePrimaryColumnNumber;
 
-        // int primaryColumnForTable = 1;
-
-        //Everything below this is part of the table
-        private readonly int TablePrimaryColumnNumber = TargetLocator.Configuration.TablePrimaryColumnNumber;  //what column can never be empty
-        //The header row
-        //All the column headers
+        /// <summary>
+        /// Locator for the entire table header element
+        /// </summary>
         private readonly By[] TableHeadLocator = LocatorValues.locatorParser(TargetLocator.Configuration.TableHeadLocator);
-        //The indivdual header cells
+
+        /// <summary>
+        /// Locators for individual header cells (column headers)
+        /// </summary>
         private readonly By[] TableHeadCellsLocator = LocatorValues.locatorParser(TargetLocator.Configuration.TableHeadCellsLocator);
 
-        //The data rows
-        //All the data rows
+        /// <summary>
+        /// Locators for the table body container(s)
+        /// </summary>
         private readonly By[] TableBodyLocator = LocatorValues.locatorParser(TargetLocator.Configuration.TableBodyLocator);
-        //The individual row 
+
+        /// <summary>
+        /// Locators for individual data rows within the table body
+        /// </summary>
         private readonly By[] TableBodyRowLocator = LocatorValues.locatorParser(TargetLocator.Configuration.TableBodyRowLocator);
-        //The elment under a individual row that contains the highlighter
+
+        /// <summary>
+        /// Locators for sub-elements within rows that indicate selection/highlighting state
+        /// </summary>
         private readonly By[] TableBodyRowSubLocator = LocatorValues.locatorParser(TargetLocator.Configuration.TableBodyRowSubLocator);
-        //The Cells in the row
+
+        /// <summary>
+        /// Locators for individual cells within table rows
+        /// </summary>
         private readonly By[] TableBodyCellsLocator = LocatorValues.locatorParser(TargetLocator.Configuration.TableBodyCellsLocator);
 
-
+        /// <summary>
+        /// Locators for the pagination "next page" button
+        /// </summary>
         private readonly By[] TableNextPageButton = LocatorValues.locatorParser(TargetLocator.Configuration.TableNextPageButton);
+
+        /// <summary>
+        /// Locators for the pagination "previous page" button
+        /// </summary>
         private readonly By[] TablePreviousPageButton = LocatorValues.locatorParser(TargetLocator.Configuration.TablePreviousPageButton);
 
+        /// <summary>
+        /// Locators for the table filter/search input element
+        /// </summary>
         private readonly By[] TableFilterLocator = LocatorValues.locatorParser(TargetLocator.Configuration.TableFilterLocator);
 
+        /// <summary>
+        /// List of supported table actions (e.g., "view", "edit", "delete")
+        /// </summary>
         private readonly string[] TableActions = TargetLocator.Configuration.TableActions;
+
+        /// <summary>
+        /// Locators for action buttons/elements corresponding to each TableAction
+        /// </summary>
         private readonly By[] TableActionsLocator = LocatorValues.locatorParser(TargetLocator.Configuration.TableActionsLocator);
 
+        /// <summary>
+        /// Text variations that indicate an empty table state with no data to display
+        /// </summary>
         private readonly string[] EmptyTableText = {"No data to display", "Nobody found for the specified search criteria"};
 
+        /// <summary>
+        /// Generic locator for hyperlink elements within table cells
+        /// </summary>
         private readonly By LinkLocator = By.TagName("a");
 
+        /// <summary>
+        /// Generic locator for button elements within table cells
+        /// </summary>
         private readonly By ButtonLocator = By.TagName("button");
 
+        /// <summary>
+        /// Determines whether a specific row contains a visible action button/element.
+        /// </summary>
+        /// <param name="tableName">Table name from page object map.</param>
+        /// <param name="action">Action keyword (e.g. view/edit/delete).</param>
+        /// <param name="columnName">Header name to search in.</param>
+        /// <param name="value">Cell value to match.</param>
+        /// <returns>True if action element is found and visible in the matched row.</returns>
         public bool DoesRowContainAction(string tableName, string action, string columnName, string value)
         {
-            DebugOutput.Log($"Proc - ActionRowByValueInColumnName {tableName} {action} {columnName} {value}");
+            DebugOutput.Log($"Proc - DoesRowContainAction {tableName} {action} {columnName} {value}");
+
+            // Validate action configured in TableActions
             if (!TableActions.Contains(action.ToLower()))
             {
                 DebugOutput.Log($"We do not know of action {action}");
                 return false;
             }
+
+            // Resolve table and column
             var tableElement = GetTableElement(tableName);
-            if (tableElement == null) return false;
+            if (tableElement == null) 
+                return false;
+
             var columnNumber = GetColumnNumberFromTitle(tableElement, columnName);
-            if (columnNumber < 0) return false;
+            if (columnNumber < 0) 
+                return false;
+
+            // Find row index matching the value in the target column
             var rowNumber = GetRowNumberWhereValueIsFoundInColumnNumber(tableElement, columnNumber, value);
-            if (rowNumber < 0) return false;
+            if (rowNumber < 0) 
+                return false;
+
             DebugOutput.Log($"Found row number {rowNumber}");
             var allColumnElements = GetAllRows(tableElement);
-            var rowElement = allColumnElements[rowNumber - 1];
+            var rowElement = allColumnElements[rowNumber - 1]; // human -> zero-based index
             DebugOutput.Log($"Find the locator for action");
             int counter = 0;
             By locator;
@@ -78,13 +148,16 @@ namespace Generic.Steps.Helpers.Classes
             {
                 if (doAction == action)
                 {
+                    // Try configured locator first
                     locator = TableActionsLocator[counter];
                     var element = SeleniumUtil.GetElementUnderElement(rowElement, locator, 1);
+
                     if (element != null)
                     {
-                        DebugOutput.Log($"");
+                        DebugOutput.Log($"Found action element using configured locator");
                         return element.Displayed;
                     }
+                    // Fallback: scan for RadButton and check Name attribute
                     By test = By.ClassName("RadButton");
                     var allElements = SeleniumUtil.GetElementsUnder(rowElement, test, 1);
                     DebugOutput.Log($"That is {allElements.Count} ELEMENT FOUND under ROW {rowElement}");
@@ -107,6 +180,9 @@ namespace Generic.Steps.Helpers.Classes
             return false;
         }
 
+        /// <summary>
+        /// Checks whether a specific cell contains a link element.
+        /// </summary>
         public bool DoesRowColumnNumberContainsLink(string tableName, int rowNumber, int columnNumber)
         {
             DebugOutput.Log($"DoesRowColumnNumberContainsLink {tableName} {rowNumber} {columnNumber} ");
@@ -121,6 +197,9 @@ namespace Generic.Steps.Helpers.Classes
             return false;
         }
 
+        /// <summary>
+        /// Gets the first link element within a cell, if present.
+        /// </summary>
         private IWebElement? GetCellLink(IWebElement cellElement)
         {
             DebugOutput.Log($"GetCellLink {cellElement}");
@@ -133,6 +212,9 @@ namespace Generic.Steps.Helpers.Classes
             return linkElement;
         }
 
+        /// <summary>
+        /// Gets the first button element within a cell, if present.
+        /// </summary>
         private IWebElement? GetCellButton(IWebElement cellElement)
         {
             DebugOutput.Log($"GetCellButton {cellElement}");
@@ -145,6 +227,10 @@ namespace Generic.Steps.Helpers.Classes
             return buttonElement;
         }
 
+        /// <summary>
+        /// Returns the IWebElement for a specific cell in the table.
+        /// </summary>
+        /// <remarks>Row/column are human 1-based and converted to zero-based.</remarks>
         private IWebElement? GetCellElement(string tableName, int rowNumber, int columnNumber)
         {
             DebugOutput.Log($"GetCellElement {tableName} {rowNumber} {columnNumber} ");
@@ -153,15 +239,18 @@ namespace Generic.Steps.Helpers.Classes
             var rowElements = GetAllVisibleRows(tableElement);
             if (rowElements.Count < 1) return null;
             DebugOutput.Log($"We have {rowElements.Count} rows in this table");
-            int computerRowNumber = rowNumber - 1;
+            int computerRowNumber = rowNumber - 1; // zero-based index
             var allCellElementsInARow = GetAllCellsInRow(rowElements[computerRowNumber]);
             DebugOutput.Log($"We have {allCellElementsInARow} cells in this row");
-            int computerColumnNumber = columnNumber - 1;
+            int computerColumnNumber = columnNumber - 1; // zero-based index
             DebugOutput.Log($"We are taking cell {computerColumnNumber} from the row,  remember that I count from 0!");
             var cellElement = allCellElementsInARow[computerColumnNumber];
             return cellElement;
         }
 
+        /// <summary>
+        /// Executes an action (e.g., view/edit/delete) against the row where a column contains a specific value.
+        /// </summary>
         public bool ActionRowByValueInColumnName(string tableName, string action, string columnName, string value)
         {
             DebugOutput.Log($"ActionRowByValueInColumnName {tableName} {action} {columnName} {value}");
@@ -177,10 +266,13 @@ namespace Generic.Steps.Helpers.Classes
             DebugOutput.Log($"We have all these rows {allRows.Count()}");
             var rowNumber = GetRowNumberWhereValueIsFoundInColumnNumber(allRows, columnNumber, value);
             DebugOutput.Log($"Found in row number {rowNumber}");
-            var rowElement = allRows[rowNumber - 1];
+            var rowElement = allRows[rowNumber - 1]; // convert to zero-based
             return DoActionInRow(rowElement, action);
         }
 
+        /// <summary>
+        /// Executes an action against a row by its number (1-based).
+        /// </summary>
         public bool ActionRowByNumber(string tableName, string action, int rowNumber)
         {
             DebugOutput.Log($"ActionRowByNumber {tableName} {action} {rowNumber}");
@@ -194,6 +286,9 @@ namespace Generic.Steps.Helpers.Classes
             return DoActionInRow(rowElement, action);
         }
 
+        /// <summary>
+        /// Clicks the appropriate action element in the given row using configured locators or a fallback.
+        /// </summary>
         private bool DoActionInRow(IWebElement rowElement, string action)
         {
             DebugOutput.Log($"DoActionInRow {rowElement} {action} ");
@@ -207,6 +302,7 @@ namespace Generic.Steps.Helpers.Classes
                     var element = SeleniumUtil.GetElementUnderElement(rowElement, locator, 1);
                     if (element == null)
                     {
+                        // Fallback: search RadButton instances and match by Name attribute
                         By test = By.ClassName("RadButton");
                         var allElements = SeleniumUtil.GetElementsUnder(rowElement, test, 1);
                         DebugOutput.Log($"That is {allElements.Count} ELEMENT FOUND under ROW {rowElement}");
@@ -220,7 +316,6 @@ namespace Generic.Steps.Helpers.Classes
                             {
                                 DebugOutput.Log($"MATCH!");
                                 return SeleniumUtil.Click(eachElement);
-                                //eachElement.Click();
                             }
                             newCounter++;
                         }
@@ -234,6 +329,9 @@ namespace Generic.Steps.Helpers.Classes
             return false;             
         }
 
+        /// <summary>
+        /// Clicks a link inside a specific cell.
+        /// </summary>
         public bool ClikcOnLinkInTableColumnRow(string tableName, int columnNumber, int rowNumber)
         {
             DebugOutput.Log($"Proc - ClikcOnLinkInTableColumnRow {tableName} {columnNumber} {rowNumber}");
@@ -244,6 +342,9 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.Click(linkElement);
         }
 
+        /// <summary>
+        /// Clicks a button inside a specific cell.
+        /// </summary>
         public bool ClickOnButtonInTableColumnRow(string tableName, int columnNumber, int rowNumber)
         {
             DebugOutput.Log($"Proc - ClickOnButtonInTableColumnRow {tableName} {columnNumber} {rowNumber}");
@@ -254,6 +355,9 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.Click(buttonElement);
         }
 
+        /// <summary>
+        /// Clicks a checkbox input inside a specific cell.
+        /// </summary>
         public bool ClickOnCheckBoxInTableColumnRow(string tableName, int rowNumber, int columnNumber)
         {
             DebugOutput.Log($"Proc - ClickOnCheckBoxInTableColumnRow {tableName} {columnNumber} {rowNumber}");
@@ -264,16 +368,22 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.Click(checkboxElement);
         }
 
+        /// <summary>
+        /// Clicks on a row by its number.
+        /// </summary>
         public bool ClickOnRow(int rowNumber, string tableName)
         {
             DebugOutput.Log($"Proc - GetRowNumberWhereValueIsFoundInColumnNumber {tableName} {rowNumber}");
             return ElementInteraction.ClickOnSubSubElementByNumberUnderElement(CurrentPage, tableName, "table", "table.body", rowNumber);
         }
 
+        /// <summary>
+        /// Finds the 1-based row number in a list of rows where the specified column equals the value.
+        /// </summary>
         private int GetRowNumberWhereValueIsFoundInColumnNumber(List<IWebElement> allRowElements, int columnNumber, string value)
         {
             DebugOutput.Log($"Proc - GetRowNumberWhereValueIsFoundInColumnNumber LIST {allRowElements.Count} {columnNumber} {value}");
-            int counter = 1;
+            int counter = 1; // 1-based row index
             foreach (var row in allRowElements)
             {
                 var getAllCellsInRow = GetAllCellsInRow(row);
@@ -302,6 +412,9 @@ namespace Generic.Steps.Helpers.Classes
 
         }
 
+        /// <summary>
+        /// Finds the 1-based row number within a table element where the specified column equals the value.
+        /// </summary>
         private int GetRowNumberWhereValueIsFoundInColumnNumber(IWebElement tableElement, int columnNumber, string value)
         {
             DebugOutput.Log($"Proc - GetRowNumberWhereValueIsFoundInColumnNumber {tableElement} {columnNumber} {value}");
@@ -325,6 +438,7 @@ namespace Generic.Steps.Helpers.Classes
             int counter = 0;
             while (counter < numberOfPossibleFilters && filterTextBox is null)
             {
+                // Try each configured filter locator until one resolves
                 filterTextBox = SeleniumUtil.GetElement(TableFilterLocator[counter],1);
                 counter++;
             }
@@ -332,23 +446,26 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.EnterText(filterTextBox, value);
         }
 
-        // / <summary>
-        // / Is the table displayed
-        // / </summary>
-        // / <param name="tableName"></param>
-        // / <returns></returns>
+        /// <summary>
+        /// Checks whether a table is displayed within an optional timeout.
+        /// </summary>
         public bool IsDisplayed(string tableName, int timeoOut = 0)
         {
             return ElementInteraction.IsElementDisplayed(CurrentPage, tableName, "Table", timeoOut);
         }
 
-
+        /// <summary>
+        /// Checks whether a column exists by its header title.
+        /// </summary>
         public bool IsColumnExist(string tableName, string columnName)
         {
             DebugOutput.Log($"Proc - IsColumnExist {tableName} {columnName}");
             return IsColumnExistInLocation(tableName, columnName);
         }
 
+        /// <summary>
+        /// Checks whether a column exists and optionally matches an expected index.
+        /// </summary>
         public bool IsColumnExistInLocation(string tableName, string columnName, int count = 0)
         {
             DebugOutput.Log($"Proc - IsColumnExistInLocation {tableName} {columnName} {count}");
@@ -358,6 +475,7 @@ namespace Generic.Steps.Helpers.Classes
             DebugOutput.Log($"We have column number {columnNumber}");
             if (count == -1)
             {
+                // Allow trimmed header matching when -1 is supplied
                 DebugOutput.Log($"Not found column name {columnName}");
                 columnName = columnName.Trim();
                 columnNumber = GetColumnNumberFromTitle(tableElement, columnName);
@@ -367,15 +485,10 @@ namespace Generic.Steps.Helpers.Classes
             return columnNumber == count;
         }
 
-
-
-        // / <summary>
-        // / Does the given column contain a value?
-        // / </summary>
-        // / <param name="tableName"></param>
-        // / <param name="columnName"></param>
-        // / <param name="value"></param>
-        // / <returns></returns>
+        /// <summary>
+        /// Checks if any displayed row contains a given value within the specified column.
+        /// </summary>
+        /// <remarks>Case-insensitive contains check on cell text.</remarks>
         public bool IsColumnContainValue(string tableName, string columnName, string value)
         {
             DebugOutput.Log($"Proc - IsColumnContainValue {tableName} {columnName} {value}");
@@ -390,6 +503,7 @@ namespace Generic.Steps.Helpers.Classes
             var counter = 1;
             while (counter <= numberofDisplayedRows)
             {
+                // Read the text for each row in the target column
                 var text = GetValueOfGridBox(tableName, counter, columnNumber);
                 if (text.ToLower().Contains(value.ToLower()))
                 {
@@ -402,6 +516,9 @@ namespace Generic.Steps.Helpers.Classes
             return false;
         }
 
+        /// <summary>
+        /// Reads the total number of rows reported by the paginator component.
+        /// </summary>
         public int GetNumberOfRowsTotal(string tableName)
         {
             DebugOutput.Log($"Proc - GetNumberOfRowsTotal {tableName}");
@@ -432,6 +549,9 @@ namespace Generic.Steps.Helpers.Classes
             return -1;
         }
 
+        /// <summary>
+        /// Counts the number of visible, non-expanded rows currently rendered in the table body.
+        /// </summary>
         public int GetNumberOfRowsDisplayed(string tableName)
         {
             DebugOutput.Log($"Proc - NumberOfRowsDisplayed {tableName}");
@@ -477,12 +597,18 @@ namespace Generic.Steps.Helpers.Classes
             return  numberofDisplayedRows;
         }
 
+        /// <summary>
+        /// Clicks the next page button in the table paginator.
+        /// </summary>
         public bool ClickOnNextPageInPagination(string tableName, string button = "")
         {
             DebugOutput.Log($"Proc - ClickOnNextPageInPagination {tableName} {button}");
             return ElementInteraction.ClickOnSubElementByTypeUnderElement(CurrentPage, tableName, "table", "", "table.nextpage");
         }
 
+        /// <summary>
+        /// Counts rows that contain a specific locator exactly once and are visible.
+        /// </summary>
         public int GetNumberOfRowsWithLocatorFound(string tableName, By locator)
         {
             DebugOutput.Log($"Proc - GetNumberOfRowsWithLocatorFound {tableName} {locator}");
@@ -512,6 +638,9 @@ namespace Generic.Steps.Helpers.Classes
             return numberOfRowsContainingLocator;
         }
 
+        /// <summary>
+        /// Placeholder for reading the rows-per-page setting; currently not implemented.
+        /// </summary>
         public int GetNumberOfRowsPerPage(string tableName)
         {
             DebugOutput.Log($"Proc - GetNumberOfRowsPerPage {tableName}");
@@ -523,6 +652,9 @@ namespace Generic.Steps.Helpers.Classes
 
         }
 
+        /// <summary>
+        /// Counts the number of displayed rows that have at least one cell resolved.
+        /// </summary>
         public int GetNumberOfPopulatedRowsDisplayed(string tableName)
         {
             DebugOutput.Log($"Proc - GetNumberOfPopulatedRowsDisplayed {tableName}");
@@ -538,6 +670,7 @@ namespace Generic.Steps.Helpers.Classes
                 {
                     DebugOutput.Log($"Row is displayed");
                     var cellElements = GetAllCellsInRow(rowElement);
+                    // If cells are present, count this row as populated
                     displayedRowCount++;
                 }
                 else
@@ -550,6 +683,9 @@ namespace Generic.Steps.Helpers.Classes
             return 0;
         }
 
+        /// <summary>
+        /// Reads the text value from a cell using a column header title.
+        /// </summary>
         public string GetValueOfGridBoxUsingColumnTitle(string tableName, string columnTitle, int rowNumber)
         {
             DebugOutput.Log($"GetValueOfGridBoxUsingColumnTitle {tableName} {columnTitle} {rowNumber}");
@@ -563,6 +699,9 @@ namespace Generic.Steps.Helpers.Classes
             return GetValueOfGridBox(tableName, rowNumber, columnNumber);
         }
 
+        /// <summary>
+        /// Returns all cell elements found within a row using configured cell locators.
+        /// </summary>
         private List<IWebElement> GetAllCellsInRow(IWebElement rowElement)
         {
             DebugOutput.Log($"GetAllCellsInRow {rowElement}");
@@ -578,6 +717,10 @@ namespace Generic.Steps.Helpers.Classes
             return cells;
         }
 
+        /// <summary>
+        /// Gets the text value of a cell identified by row and column (1-based).
+        /// </summary>
+        /// <param name="header">When true, treat rowNumber as header row (unused here).</param>
         public string GetValueOfGridBox(string tableName, int rowNumber, int columnNumber, bool header = false)
         {
             DebugOutput.Log($"GetValueOfGridBox {tableName} {rowNumber} {columnNumber} {header}");
@@ -595,7 +738,7 @@ namespace Generic.Steps.Helpers.Classes
             try
             {
                 DebugOutput.Log($"Get single row element {rowNumber - 1}");
-                var rowElement = rowElements[rowNumber - 1];
+                var rowElement = rowElements[rowNumber - 1]; // zero-based
                 DebugOutput.Log($"Have row element {rowElement}");
                 var cellElements = GetAllCellsInRow(rowElement);
                 DebugOutput.Log($"Got this number of cells in row {cellElements.Count()} we want column {columnNumber}");
@@ -621,6 +764,9 @@ namespace Generic.Steps.Helpers.Classes
 
         // // // PRIVATE
 
+        /// <summary>
+        /// Collects all header titles for the table.
+        /// </summary>
         private List<string> GetAllColumnTitles(IWebElement tableElement)
         {
             DebugOutput.Log($"Proc - GetAllColumnTitles {tableElement} ");
@@ -649,6 +795,9 @@ namespace Generic.Steps.Helpers.Classes
             return columnTitles;
         }
 
+        /// <summary>
+        /// Checks whether the given 1-based row index is visually highlighted/selected.
+        /// </summary>
         public bool IsRowHighlighted(string tableName, int rowNumber)
         {
             DebugOutput.Log($"Proc - IsRowHighlighted {tableName} {rowNumber}");
@@ -679,6 +828,9 @@ namespace Generic.Steps.Helpers.Classes
             return false;
         }
 
+        /// <summary>
+        /// Clicks on a column header to sort the table ascending for that column.
+        /// </summary>
         public bool OrderTableByColumn(string tableName, string columnName)
         {
             DebugOutput.Log($"Proc - GetColumnNumberFromTitle {tableName} {columnName}");
@@ -690,6 +842,9 @@ namespace Generic.Steps.Helpers.Classes
             return ClickOnHeader(tableElement, columnNumber);
         }
 
+        /// <summary>
+        /// Ensures the table is ordered descending by the specified column, clicking once if needed.
+        /// </summary>
         public bool OrderTableByColumnDesc(string tableName, string columnName)
         {
             DebugOutput.Log($"Proc - OrderTableByColumnDesc {tableName} {columnName}");
@@ -700,10 +855,13 @@ namespace Generic.Steps.Helpers.Classes
             var columnHeaderElement = GetColumnElementByName(columnHeaderElements, columnName);
             if (columnHeaderElement == null) return false;
             var classText = SeleniumUtil.GetElementAttributeValue(columnHeaderElement, "class");
-            if (classText.Contains("sort-desc ")) return true;
+            if (classText.Contains("sort-desc ")) return true; // already descending
             return SeleniumUtil.Click(columnHeaderElement);
         }
 
+        /// <summary>
+        /// Clicks a link within the row identified by its number and a column header name.
+        /// </summary>
         public bool ClickOnLinkInTableColumnNameRow(string tableName, string columnName, int rowNumber)
         {
             DebugOutput.Log($"Proc - ClickOnLinkInTableColumnNameRow {tableName} {columnName} {rowNumber}");
@@ -714,6 +872,9 @@ namespace Generic.Steps.Helpers.Classes
             return ClikcOnLinkInTableColumnRow(tableName, columnNumber, rowNumber);
         }
 
+        /// <summary>
+        /// Clicks a header element by its 1-based column index.
+        /// </summary>
         private bool ClickOnHeader(IWebElement tableElement, int columnNumber)
         {
             DebugOutput.Log($"Proc - ClickOnHeader {tableElement} {columnNumber}");
@@ -729,15 +890,15 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.Click(columnHeaderElements[columnNumber]);
         }
 
-        // / <summary>
-        // / Given a name of a column, we will report back what column number
-        // / </summary>
-        // / <param name="tableElement"></param>
-        // / <param name="columnTitle"></param>
-        // / <returns></returns>
+        /// <summary>
+        /// Given a name of a column, we will report back what column number
+        /// </summary>
+        /// <param name="tableElement"></param>
+        /// <param name="columnTitle"></param>
+        /// <returns></returns>
         private int GetColumnNumberFromTitle(IWebElement tableElement, string columnTitle)
         {
-            columnTitle = columnTitle.Replace("'","");
+            columnTitle = columnTitle.Replace("'", "");
             DebugOutput.Log($"Proc - GetColumnNumberFromTitle {tableElement} {columnTitle}");
             var allColumnTitles = GetAllColumnTitles(tableElement);
             int counter = 0;
@@ -755,6 +916,9 @@ namespace Generic.Steps.Helpers.Classes
             return -1;
         }
 
+        /// <summary>
+        /// Finds all header elements using configured locators.
+        /// </summary>
         private List<IWebElement> GetAllColumnElements(IWebElement tableElement)
         {
             DebugOutput.Log($"Proc - GetAllColumnElements {tableElement}");
@@ -773,6 +937,9 @@ namespace Generic.Steps.Helpers.Classes
             return columnElements;
         }
 
+        /// <summary>
+        /// Returns the first header element that matches the given name (case-insensitive).
+        /// </summary>
         private IWebElement? GetColumnElementByName(List<IWebElement> columnElements, string columnName)
         {
             DebugOutput.Log($"Proc - GetColumnElementByName {columnElements} {columnName}");
@@ -786,6 +953,9 @@ namespace Generic.Steps.Helpers.Classes
             return null;
         }
 
+        /// <summary>
+        /// Checks whether an "empty table" row is displayed using known empty-state texts.
+        /// </summary>
         private bool EmptyRowDisplayed(IWebElement tableElement)
         {
             DebugOutput.Log($"Proc - EmptyRowDisplayed {tableElement}");
@@ -805,6 +975,9 @@ namespace Generic.Steps.Helpers.Classes
             return false;
         }
 
+        /// <summary>
+        /// Returns a list of rows that are displayed and not expanded.
+        /// </summary>
         private List<IWebElement> GetAllVisibleRows(IWebElement tableElement)
         {
             DebugOutput.Log($"Proc - GetAllVisibleRows {tableElement}");
@@ -827,6 +1000,9 @@ namespace Generic.Steps.Helpers.Classes
             return rows;
         }
 
+        /// <summary>
+        /// Returns all row elements inside the table body that are displayed.
+        /// </summary>
         private List<IWebElement> GetAllRowsInBody(IWebElement tableElement)
         {
             DebugOutput.Log($"Proc - GetAllRowsInBody {tableElement}");
@@ -856,6 +1032,9 @@ namespace Generic.Steps.Helpers.Classes
             return rowElements;
         }
 
+        /// <summary>
+        /// Returns all displayed rows found using configured row locators.
+        /// </summary>
         private List<IWebElement> GetAllRows(IWebElement tableElement)
         {
             DebugOutput.Log($"Proc - GetAllRows {tableElement}");
@@ -888,6 +1067,9 @@ namespace Generic.Steps.Helpers.Classes
             return rows;
         }
 
+        /// <summary>
+        /// Verifies an action element exists within a specific row number.
+        /// </summary>
         public bool IsRowForAction(string tableName, int rowNumber, string doing)
         {
             DebugOutput.OutputMethod("PrepareRowForAction");
@@ -917,50 +1099,65 @@ namespace Generic.Steps.Helpers.Classes
             return true;
         }
 
+        /// <summary>
+        /// Resolves the table element from the page object map using naming conventions.
+        /// </summary>
         private IWebElement? GetTableElement(string tableName)
         {
             DebugOutput.Log($"GetTableElement {tableName}");
 
-            //  my table has a name that COULD be not unique - it should have table at the end - so i can tell the diference.
-            var newTableName = GetTableName(tableName);
-            DebugOutput.Log($"I is here with a table name {newTableName} using page object {CurrentPage.Name}");
-            if (CurrentPage.Elements.ContainsKey(newTableName))
+            var normalizedWithSuffix = GetTableName(tableName);
+            DebugOutput.Log($"I is here with a table name {normalizedWithSuffix} using page object {CurrentPage.Name}");
+
+            // First attempt: look up using normalized name that ensures the " table" suffix
+            if (CurrentPage.Elements.TryGetValue(normalizedWithSuffix, out var locatorWithSuffix))
             {
-                By? newTableLocator;
-                newTableLocator = CurrentPage.Elements[newTableName];
-                var newTableElement = SeleniumUtil.GetElement(newTableLocator);
-                if (newTableElement == null) return newTableElement;
-                DebugOutput.Log($"Table Element {newTableName} = {newTableElement}");
-                return newTableElement;
+                var element = SeleniumUtil.GetElement(locatorWithSuffix);
+                if (element == null) return null;
+                DebugOutput.Log($"Table Element {normalizedWithSuffix} = {element}");
+                return element;
             }
+
             DebugOutput.Log($"Nothing found ending in ' table'");
-            tableName = tableName.ToLower();
-            tableName = tableName.Replace(" ", "");
-            if (!CurrentPage.Elements.ContainsKey(tableName))
+
+            // Fallback: compact key (lowercase and remove spaces) to handle legacy map entries
+            var compactKey = tableName.Trim().ToLowerInvariant().Replace(" ", "");
+            if (!CurrentPage.Elements.TryGetValue(compactKey, out var locator))
             {
-                DebugOutput.Log($"STILL No key found of {tableName} in page {CurrentPage.Name}");
+                DebugOutput.Log($"STILL No key found of {compactKey} in page {CurrentPage.Name}");
                 return null;
             }
-            By? tableLocator;
-            tableLocator = CurrentPage.Elements[tableName];
-            var tableElement = SeleniumUtil.GetElement(tableLocator);
-            if (tableElement == null) return tableElement;
-            DebugOutput.Log($"Table Element {tableName} = {tableElement}");
+
+            var tableElement = SeleniumUtil.GetElement(locator);
+            if (tableElement == null) return null;
+            DebugOutput.Log($"Table Element {compactKey} = {tableElement}");
             return tableElement;
         }
 
+        /// <summary>
+        /// Normalizes a provided table name to the expected page object key.
+        /// </summary>
         private string GetTableName(string tableName)
         {
             DebugOutput.Log($"GetTableName {tableName}");
-            tableName = tableName.ToLower();
-            tableName = tableName.Replace(" ", "");
-            DebugOutput.Log($"GetTableName lower {tableName}");
-            if (tableName.Contains(" table")) return tableName;
+            var normalized = tableName.Trim().ToLowerInvariant();
+            DebugOutput.Log($"GetTableName lower {normalized}");
+
+            // Ensure the name ends with " table" for primary lookup
+            if (normalized.EndsWith(" table"))
+            {
+                return normalized;
+            }
+
+            // If it already ends with "table" (without space), keep as-is to avoid double spacing
+            if (normalized.EndsWith("table"))
+            {
+                DebugOutput.Log($"Name already ends with 'table' – leaving unchanged");
+                return normalized;
+            }
+
             DebugOutput.Log($"Adding <space>table to element Name");
-            return tableName + " table";
+            return normalized + " table";
         }
-
-
-
     }
 }
