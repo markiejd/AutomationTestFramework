@@ -19,64 +19,134 @@ namespace Generic.Steps.Helpers.Classes
         // ------------------ Alert & dialog helpers ------------------
         // Group: methods that interact with browser alerts and dialogs
 
+        /// <summary>
+        /// Check whether an alert with the specified message is displayed.
+        /// </summary>
+        /// <param name="alertMessage">Expected alert message text.</param>
+        /// <returns>True if alert is displayed, otherwise false.</returns>
         public static bool AlertIsDisplayed(string alertMessage)
         {
+            // Delegates to SeleniumUtil to check for alert presence.
             return SeleniumUtil.AlertDisplayed(alertMessage);
         }
 
+        /// <summary>
+        /// Accept the currently displayed alert.
+        /// </summary>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool AlertClickAccept()
         {
+            // Delegates to Selenium util to accept the alert.
             return SeleniumUtil.AlertClickAccept();
         }
 
+        /// <summary>
+        /// Dismiss or cancel the currently displayed alert.
+        /// </summary>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool AlertClickCancel()
         {
+            // Delegates to Selenium util to cancel the alert.
             return SeleniumUtil.AlertClickCancel();
         }
 
+        /// <summary>
+        /// Send keys/text into an active alert prompt.
+        /// </summary>
+        /// <param name="text">Text to input into the alert prompt.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool AlertSendKeys(string text)
         {
+            // Delegates text input into browser alert.
             return SeleniumUtil.AlertInput(text);
         }
 
         // ------------------ Click / Interaction helpers ------------------
         // Group: methods that perform clicks, selections, dragging, navigation
 
+        /// <summary>
+        /// Clear text from a named element on the current page.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <returns>True if cleared, false otherwise.</returns>
         public static bool ClearTextFromElement(FormBase currentPage, string elementName, string elementType)
         {
+            // Log and call helper that clears text by sending the clear key action.
             DebugOutput.OutputMethod("ClearTextFromElement", $"{currentPage.Name}, {elementName}, {elementType}");
             return EnterTextAndKeyIntoElement(currentPage, elementName, elementType, "", "clear");
         }
 
+        /// <summary>
+        /// Clear then enter text into the element.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <param name="text">Text to enter.</param>
+        /// <param name="key">Optional key to send after entering text.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool ClearTextThenEnterTextToElement(FormBase currentPage, string elementName, string elementType, string text, string key = "")
         {
+            // Clear first and then enter text using existing helper.
             DebugOutput.OutputMethod("ClearTextThenEnterTextToElement", $"{currentPage.Name}, {elementName}, {elementType}");
             if (!ClearTextFromElement(currentPage, elementName, elementType)) return Failure($"Failed to clear element");
             return EnterTextAndKeyIntoElement(currentPage, elementName, elementType, text, key);
         }
 
+        /// <summary>
+        /// Click the browser's back button.
+        /// </summary>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool ClickBackButtonInBrowser()
         {
-            DebugOutput.OutputMethod("ClickBackButtonInBrowser", $"");
+            // Navigate back via Selenium util.
+            DebugOutput.OutputMethod("ClickBackButtonInBrowser", "");
             return SeleniumUtil.ClickBackButtonInBrowser();
         }
 
+        /// <summary>
+        /// Click coordinates in the current viewport.
+        /// </summary>
+        /// <param name="x">X coordinate.</param>
+        /// <param name="y">Y coordinate.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool ClickOnCooClickCoordinates(int x = 0, int y = 0)
         {
+            // Direct coordinate click via selenium util.
             DebugOutput.OutputMethod("ClickOnCooClickCoordinates", $" {x} {y}");
             return SeleniumUtil.ClickCoordinates(x, y);
         }
 
+        /// <summary>
+        /// Click the specified element (by name/type) and optionally offset inside it.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <param name="x">X offset.</param>
+        /// <param name="y">Y offset.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool ClickOnElement(FormBase currentPage, string elementName, string elementType, int x = 0, int y = 0)
         {
+            // Resolve the element and click by coordinates with element reference.
             DebugOutput.OutputMethod("ClickOnElement", $"{currentPage.Name}, {elementName}, {elementType} {x} {y}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so can not click on it!");
             return SeleniumUtil.ClickCoordinatesWithElement(element, x, y);
         }
 
+        /// <summary>
+        /// Click a checkbox sub-element by finding the label inside the parent.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool ClickOnElement_CheckBoxSub(FormBase currentPage, string elementName, string elementType)
         {
+            // Locate closest parent and label to click the checkbox representation.
             DebugOutput.OutputMethod("ClickOnElementCheckBoxSub", $"{currentPage.Name}, {elementName}, {elementType}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so can not click on it!");
@@ -88,8 +158,18 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.Click(labelElement);
         }
 
+        /// <summary>
+        /// Click on element then enter text and send a key (e.g., Enter).
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <param name="text">Text to enter.</param>
+        /// <param name="key">Key to send.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool ClickOnElementEnterTextSendKey(FormBase currentPage, string elementName, string elementType, string text, string key)
         {
+            // Click element then enter text and send key via Selenium util.
             DebugOutput.OutputMethod("ClickOnElementCheckBoxSub", $"{currentPage.Name}, {elementName}, {elementType}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so can not click on it!");
@@ -99,8 +179,17 @@ namespace Generic.Steps.Helpers.Classes
             return true;
         }
 
+        /// <summary>
+        /// Click an element inside a group contained by a parent element.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Parent element name key.</param>
+        /// <param name="elementType">Parent element type string.</param>
+        /// <param name="groupName">Name of the group to click.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool ClickOnGroupElement(FormBase currentPage, string elementName, string elementType, string groupName)
         {
+            // Find group element and click it.
             DebugOutput.OutputMethod("ClickOnGroupElement", $"{currentPage.Name}, {elementName}, {elementType} {groupName}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its display status");
@@ -109,8 +198,17 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.Click(groupElement);
         }
 
+        /// <summary>
+        /// Interact with a date picker to select year, month and day.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Date picker element name key.</param>
+        /// <param name="elementType">Date picker element type string.</param>
+        /// <param name="date">Date to select.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool ClickOnSelectYearPickerOfDatePicker(FormBase currentPage, string elementName, string elementType, DateTime date)
         {
+            // Open the year picker within the date picker and select year/month/day.
             DebugOutput.OutputMethod("ClickOnSubElementOfDatePicker", $"{currentPage.Name}, {elementName}, {elementType}, {date} ");
             var datePicker = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (datePicker == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so can not click on it XZ!");
@@ -147,8 +245,18 @@ namespace Generic.Steps.Helpers.Classes
             return true;
         }
 
+        /// <summary>
+        /// Click a chip-like sub-element by matching text and clicking its close element.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Parent element name key.</param>
+        /// <param name="elementType">Parent element type string.</param>
+        /// <param name="text">Text to match in chip.</param>
+        /// <param name="timeout">Optional timeout seconds.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool ClickOnSubElementByTagSubElementByClassByTextByTag(FormBase currentPage, string elementName, string elementType, string text, int timeout = 0)
         {
+            // Iterate chips, find matching text, click the close 'x' element.
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so can not click on it!");
             // all chips in the chip array
@@ -171,8 +279,18 @@ namespace Generic.Steps.Helpers.Classes
             return Failure($"Failed to find it - not really surprising was it?!");
         }
 
+        /// <summary>
+        /// Click the nth sub-sub element under a given element.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Parent element name key.</param>
+        /// <param name="elementType">Parent element type string.</param>
+        /// <param name="subElementType">Sub-element type string.</param>
+        /// <param name="number">1-based index of sub-sub element.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool ClickOnSubSubElementByNumberUnderElement(FormBase currentPage, string elementName, string elementType, string subElementType, int number)
         {
+            // Resolve list and click by index (1-based input).
             DebugOutput.OutputMethod("ClickOnSubElementByTextUnderElement", $"{currentPage.Name}, {elementName}, {elementType}, {subElementType}, {number}");
             var subSubElement = GetTheSubSubElementsOfElement(currentPage, elementName, elementType, subElementType);
             if (subSubElement == null) return Failure($"Failed to get sub sub element!");
@@ -181,8 +299,17 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.Click(subSubElement[number]);
         }
 
+        /// <summary>
+        /// Click a sub-element under an element by matching visible text.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Parent element name key.</param>
+        /// <param name="elementType">Parent element type string.</param>
+        /// <param name="subElementText">Text to find in sub-element.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool ClickOnSubElementByTextUnderElement(FormBase currentPage, string elementName, string elementType, string subElementText)
         {
+            // Attempt to click the element with the text; fallback to parent click.
             DebugOutput.OutputMethod("ClickOnSubElementByTextUnderElement", $"{currentPage.Name}, {elementName}, {elementType}, {subElementText}");
 
             By locator = By.XPath($".//*[text()='{subElementText}']");
@@ -196,8 +323,18 @@ namespace Generic.Steps.Helpers.Classes
             return Failure($"Even the parent isn't clickable!");
         }
 
+        /// <summary>
+        /// Click the first sub-element of a specific sub-type under an element.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Parent element name key.</param>
+        /// <param name="elementType">Parent element type string.</param>
+        /// <param name="subElementText">Sub-element name or descriptor.</param>
+        /// <param name="subElementType">Sub-element type to find.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool ClickOnSubElementByTypeUnderElement(FormBase currentPage, string elementName, string elementType, string subElementText, string subElementType)
         {
+            // Find sub-elements by subtype and click the first one.
             DebugOutput.OutputMethod("ClickOnSubElementByTypeUnderElement", $"{currentPage.Name}, {elementName}, {elementType}, {subElementType}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so can not click on it!");
@@ -206,8 +343,17 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.Click(elements[0]);
         }
 
+        /// <summary>
+        /// Click an element by searching for a tag under the parent element.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Parent element name key.</param>
+        /// <param name="elementType">Parent element type string.</param>
+        /// <param name="tag">Tag name to search for.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool ClickOnTagElementUnderElement(FormBase currentPage, string elementName, string elementType, string tag)
         {
+            // Try tag name and fallbacks like mat-expansion-panel-header, else click parent.
             DebugOutput.OutputMethod("ClickOnButtonInElement", $"{currentPage.Name}, {elementName}, {elementType}, {tag}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so can not click on it!");
@@ -227,8 +373,18 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.Click(buttonElement);
         }
 
+        /// <summary>
+        /// Click an item within elements of a given tag that contains the specified text.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Parent element name key.</param>
+        /// <param name="elementType">Parent element type string.</param>
+        /// <param name="tag">Tag name to search within.</param>
+        /// <param name="item">Text to search for.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool ClickOnTextInTagInElement(FormBase currentPage, string elementName, string elementType, string tag, string item)
         {
+            // Iterate elements with tag and click the one containing the text.
             DebugOutput.OutputMethod("ClickOnTextInTagInElement", $"{currentPage.Name}, {elementName}, {elementType}, {tag}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so can not click on it!");
@@ -248,8 +404,17 @@ namespace Generic.Steps.Helpers.Classes
             return Failure($"Never found an element by tag {tag} containing text {item} under {elementName}");
         }
 
+        /// <summary>
+        /// Click the nth element from a collection identified by elementName/type.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element collection name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <param name="whichElement">1-based index as string to select which element.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool ClickNthElement(FormBase currentPage, string elementName, string elementType, string whichElement)
         {
+            // Parse 1-based index string, locate elements by locator and click the specified one.
             DebugOutput.OutputMethod("ClickNthElement", $"{currentPage.Name}, {elementName}, {elementType} {whichElement} ");
             int toBeClicked = 0;
             try
@@ -273,14 +438,24 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.Click(elementToBeClicked);
         }
 
+        /// <summary>
+        /// Close browser tab by index.
+        /// </summary>
+        /// <param name="tabNumber">Index of tab to close.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool CloseTabByNumber(int tabNumber)
         {
+            // Delegate to selenium util to close specified tab.
             DebugOutput.OutputMethod("CloseTabByNumber", $"{tabNumber}");
             return SeleniumUtil.CloseTabByNumber(tabNumber);
         }
 
+        /// <summary>
+        /// Close the web browser safely.
+        /// </summary>
         public static void CloseWebBrowser()
         {
+            // Gracefully close and quit driver if present.
             DebugOutput.OutputMethod("CloseWebBrowser");
             if (SeleniumUtil.webDriver == null) return;
             SeleniumUtil.webDriver.Close();
@@ -294,6 +469,7 @@ namespace Generic.Steps.Helpers.Classes
         /// </summary>
         public static bool WebShutdown()
         {
+            // Attempt to quit the driver; catch and report any exceptions.
             DebugOutput.OutputMethod("WebShutdown");
             try
             {
@@ -312,8 +488,17 @@ namespace Generic.Steps.Helpers.Classes
             }
         }
 
+        /// <summary>
+        /// Create a model useful for self-healing element location strategies.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="element">Found IWebElement instance.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <returns>True if model written to file successfully, false otherwise.</returns>
         public static bool CreateSelfHealModel(FormBase currentPage, IWebElement element, string elementName, string elementType)
         {
+            // Collect metadata about element and persist model via SelfHeal.WriteToFile.
             DebugOutput.OutputMethod($"CreateSelfHealModel", $"{currentPage.Name} {element} {elementName} {elementType}");
             if (elementName == null || elementType == null) return false;
             var model = new SelfHealModel();
@@ -329,16 +514,33 @@ namespace Generic.Steps.Helpers.Classes
             return SelfHeal.WriteToFile(model);
         }
 
+        /// <summary>
+        /// Double click on the specified element.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool DoubleClickOnElement(FormBase currentPage, string elementName, string elementType)
         {
+            // Locate element and perform double-click via Selenium util.
             DebugOutput.OutputMethod("ClickOnElement", $"{currentPage.Name}, {elementName}, {elementType}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so can not click on it!");
             return SeleniumUtil.DoubleClick(element);
         }
 
+        /// <summary>
+        /// Drag element A onto element B.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="element1Name">Source element name.</param>
+        /// <param name="element2Name">Target element name.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool DragElementAToElementB(FormBase currentPage, string element1Name, string element2Name, string elementType)
         {
+            // Resolve both elements and delegate drag operation.
             DebugOutput.OutputMethod("DragAToB", $"{currentPage.Name}, {element1Name}, {element2Name}, {elementType}");
             var element1 = GetTheElement.GetElement(currentPage, element1Name, elementType);
             if (element1 == null) return Failure($"Failed to find 1 {element1Name}");
@@ -347,8 +549,18 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.DragElementToElement(element1, element2);
         }
 
+        /// <summary>
+        /// Enter text into an element and optionally send a key.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <param name="text">Text to enter.</param>
+        /// <param name="key">Optional key to send after text.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool EnterTextAndKeyIntoElement(FormBase currentPage, string elementName, string elementType, string text, string key = "")
         {
+            // Resolve element and call SeleniumUtil.EnterText with optional key.
             DebugOutput.OutputMethod("EnterTextAndKeyIntoElement", $"{currentPage.Name}, {elementName}, {elementType} {text} {key}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"Failed to get element! {elementName} of type {elementType} in page {currentPage.Name}");
@@ -358,8 +570,19 @@ namespace Generic.Steps.Helpers.Classes
         // ------------------ Getters / Query helpers ------------------
         // Group: methods that retrieve text, attributes, counts, selection
 
+        /// <summary>
+        /// Get the attribute value of a named sub-element (by visible name) under an element.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Parent element name key.</param>
+        /// <param name="elementType">Parent element type string.</param>
+        /// <param name="subElementName">Visible text of sub-element to match.</param>
+        /// <param name="attribute">Attribute name to return.
+        /// </param>
+        /// <returns>Attribute value or null on failure.</returns>
         public static string? GetAttributeValueOfSubElementByNameOfElement(FormBase currentPage, string elementName, string elementType, string subElementName, string attribute)
         {
+            // Iterate sub-elements and return requested attribute for the matching sub-element.
             DebugOutput.OutputMethod("GetAttributeValueOfSubElementByNameOfElement", $"{currentPage.Name}, {elementName}, {elementType} {subElementName}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return FailureString($"Failed to get element! {elementName} of type {elementType} in page {currentPage.Name}");
@@ -379,8 +602,17 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.GetElementAttributeValue(wantedElement, attribute);
         }
 
+        /// <summary>
+        /// Get label text from an element using a provided locator for the label.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <param name="labelLocator">Locator for the label element under the parent.</param>
+        /// <returns>Label text or null on failure.</returns>
         public static string? GetLabelFromElement(FormBase currentPage, string elementName, string elementType, By labelLocator)
         {
+            // Find the parent element, then find the label under it and return its text.
             DebugOutput.OutputMethod("GetLabelFromElement", $"{currentPage.Name}, {elementName}, {elementType} {labelLocator}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return FailureString($"Failed to get element! {elementName} of type {elementType} in page {currentPage.Name}");
@@ -389,8 +621,16 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.GetElementText(labelElement);
         }
 
+        /// <summary>
+        /// Get the placeholder text associated with an input element by reading its parent label.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <returns>Placeholder text or null on failure.</returns>
         public static string? GetPlaceholderText(FormBase currentPage, string elementName, string elementType)
         {
+            // Get the element's parent and read the label tag text as placeholder.
             DebugOutput.OutputMethod("GetPlaceholderText", $"{currentPage.Name}, {elementName}, {elementType}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return FailureString($"Failed to get element! {elementName} of type {elementType} in page {currentPage.Name}");
@@ -406,14 +646,27 @@ namespace Generic.Steps.Helpers.Classes
             return placeHolderText;
         }
 
+        /// <summary>
+        /// Return the number of tabs currently open in the browser.
+        /// </summary>
+        /// <returns>Number of open tabs or null on failure.</returns>
         public static int? GetTheNumberOfTabsOpenInBrowser()
         {
-            DebugOutput.OutputMethod("GetNumberOfTabsOpenInBrowser", $"");
+            // Delegate to Selenium util to count tabs.
+            DebugOutput.OutputMethod("GetNumberOfTabsOpenInBrowser", "");
             return SeleniumUtil.GetNumberOfTabsOpenInBrowser();
         }
 
+        /// <summary>
+        /// Get the selected value text of a selector element.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <returns>Selected text value or null if not found.</returns>
         public static string? GetSelectionValue(FormBase currentPage, string elementName, string elementType)
         {
+            // Try direct text, then inspect option items to find selected one.
             DebugOutput.OutputMethod("GetSelectorValue", $"{currentPage.Name}, {elementName}, {elementType}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return FailureString($"Failed to get element! {elementName} of type {elementType} in page {currentPage.Name}");
@@ -438,8 +691,16 @@ namespace Generic.Steps.Helpers.Classes
             return null;
         }
 
+        /// <summary>
+        /// Get all possible selection values under a dropdown-like element.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <returns>List of option texts or null on failure.</returns>
         public static List<string>? GetSelectionValues(FormBase currentPage, string elementName, string elementType)
         {
+            // Collect text from all found option elements under the parent.
             DebugOutput.OutputMethod("GetSelectorValue", $"{currentPage.Name}, {elementName}, {elementType}");
             var listOfPossibleValues = new List<string>();
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
@@ -459,8 +720,10 @@ namespace Generic.Steps.Helpers.Classes
             return listOfPossibleValues;
         }
 
+        // Private helper: get sub-element index by visible name
         private static int? GetSubElementCountFromElement(IWebElement element, string elementType, string name)
         {
+            // Find matching sub-element by comparing its text and return index.
             var subElements = GetSubElementsOfElement(element, elementType);
             if (subElements == null) return null;
             int counter = 0;
@@ -474,8 +737,20 @@ namespace Generic.Steps.Helpers.Classes
             return null;
         }
 
+        /// <summary>
+        /// Get the text of a sub-element found under the nth element of a list.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Parent element list name.</param>
+        /// <param name="elementType">Parent element type.</param>
+        /// <param name="subElementName">Sub-element name key.</param>
+        /// <param name="subElementType">Sub-element type string.</param>
+        /// <param name="nth">1-based index of which parent element to inspect.
+        /// </param>
+        /// <returns>Text of the sub-element or null on failure.</returns>
         public static string? GetSubElementTextFromNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, int nth)
         {
+            // Retrieve nth parent element then fetch its sub-element by locator and return text.
             DebugOutput.OutputMethod("GetSubElementTextFromNthElement", $"{currentPage.Name}, {elementName}, {elementType} {subElementName} {subElementType} {nth}");
             // get the nth Element
             var element = GetTheElements.GetNthElement(currentPage, elementName, elementType, nth, 0);
@@ -492,8 +767,16 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.GetElementText(subElement);
         }
 
+        /// <summary>
+        /// Get text content from a single element identified by name/type.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <returns>Text or null on failure.</returns>
         public static string? GetTextFromElement(FormBase currentPage, string elementName, string elementType)
         {
+            // Attempt to fetch text, retrying once after a short delay if null.
             DebugOutput.OutputMethod("GetTextFromElement", $"{currentPage.Name}, {elementName}, {elementType}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return FailureString($"Failed to get element! {elementName} of type {elementType} in page {currentPage.Name}");
@@ -508,16 +791,33 @@ namespace Generic.Steps.Helpers.Classes
             return text;
         }
 
+        /// <summary>
+        /// Get text from last element in a collection.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Collection name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <returns>Text of last element or null on failure.</returns>
         public static string? GetTextFromLastElement(FormBase currentPage, string elementName, string elementType)
         {
+            // Fetch all elements and return text of final one.
             DebugOutput.OutputMethod("GetTextFromLastElement", $"{currentPage.Name}, {elementName}, {elementType}");
             var elements = GetTheElements.GetElements(currentPage, elementName, elementType, 0);
             if (elements == null) return FailureString($"Never found ANY elements using {elementName} of {elementType} in page {currentPage}");
             return SeleniumUtil.GetElementText(elements[elements.Count() - 1]);
         }
 
+        /// <summary>
+        /// Get text from the nth element in a collection (1-based).
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Collection name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <param name="nth">1-based index of element to read.</param>
+        /// <returns>Text of the nth element or null on failure.</returns>
         public static string? GetTextFromNthElement(FormBase currentPage, string elementName, string elementType, int nth)
         {
+            // Validate index and return text of specified element.
             DebugOutput.OutputMethod("GetTextFromNthElement", $"{currentPage.Name}, {elementName}, {elementType} {nth}");
             var elements = GetTheElements.GetElements(currentPage, elementName, elementType, 0);
             if (elements == null) return FailureString($"Never found ANY elements using {elementName} of {elementType} in page {currentPage}");
@@ -527,8 +827,16 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.GetElementText(elements[nth]);
         }
 
+        /// <summary>
+        /// Save a screenshot of the specified element to disk.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key used for file naming.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool GetScreenShotOfElement(FormBase currentPage, string elementName, string elementType)
         {
+            // Get IWebElement and call Selenium util to capture it.
             DebugOutput.OutputMethod("GetScreenshotOfElement", $"{currentPage.Name}, {elementName}, {elementType}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"Failed to take screen shot {currentPage.Name} {elementName}  {elementType}");
@@ -537,20 +845,34 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.ScreenShotElement(element, elementName);
         }
 
+        /// <summary>
+        /// Save a screenshot of the current page.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool GetScreenShotOfPage(FormBase currentPage)
         {
+            // Delegate to Selenium util to save page image with page name.
             DebugOutput.OutputMethod("GetScreenShotOfPage", $"{currentPage.Name}");
             return SeleniumUtil.SaveCurrentPageImage(currentPage.Name);
         }
 
+        /// <summary>
+        /// Save an error screenshot with an associated message.
+        /// </summary>
+        /// <param name="errorMessage">Error message used for naming/logging.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public static bool GetErrorScreenShotOfPage(string errorMessage)
         {
+            // Attempt to capture screenshot of current page and return success state.
             DebugOutput.OutputMethod("GetErrorScreenShotOfPage", $"{errorMessage}");
             return SeleniumUtil.GetCurrentPageScreenShot(errorMessage) ?? false;
         }
 
+        // Private helper to get sub-elements matching an array of locators
         private static List<IWebElement>? GetSubElementOfElement(IWebElement element, By[] locators)
         {
+            // Try each locator in order until any matching elements are found.
             foreach (var locator in locators)
             {
                 DebugOutput.Log($"Checking LOCATOR {locator} ");
@@ -564,8 +886,16 @@ namespace Generic.Steps.Helpers.Classes
             return null;
         }
 
+        /// <summary>
+        /// Get visible texts of sub-elements under a parent element.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Parent element name key.</param>
+        /// <param name="elementType">Parent element type string.</param>
+        /// <returns>List of sub-element texts or null on failure.</returns>
         public static List<string>? GetSubElementsTextOfElement(FormBase currentPage, string elementName, string elementType)
         {
+            // Resolve the parent and collect texts for each sub-element.
             DebugOutput.OutputMethod("GetSubElementsOfElement", $"{currentPage.Name}, {elementName}, {elementType}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return null;
@@ -580,8 +910,10 @@ namespace Generic.Steps.Helpers.Classes
             return returnList;
         }
 
+        // Overloaded private helper for sub-elements selection logic
         private static List<IWebElement>? GetSubElementsOfElement(IWebElement element, string elementType, string subType = "")
         {
+            // Decide which locator arrays to use based on elementType and subtype.
             DebugOutput.OutputMethod("GetSubElementsOfElement", $"{element} {elementType} {subType}");
             if (element == null) return null;
             if (subType != "")
@@ -611,8 +943,10 @@ namespace Generic.Steps.Helpers.Classes
             }
         }
 
+        // Private helper that tries multiple locators to find sub-elements
         private static List<IWebElement>? GetSubElementsOfElement(IWebElement element, By[] locators)
         {
+            // Iterate locator candidates and return the first set of elements found.
             foreach (var locator in locators)
             {
                 DebugOutput.Log($"Checking LOCATOR {locator} ");
@@ -626,8 +960,10 @@ namespace Generic.Steps.Helpers.Classes
             return null;
         }
 
+        // private helper to get sub-sub elements under nth element
         private static List<IWebElement>? GetSubSubElementsOfNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, string subSubElementName, string subSubElementType, int nth = 0)
         {
+            // Find the nth parent element then its sub-element and return matching sub-sub elements.
             DebugOutput.OutputMethod("GetSubSubElementsOfNthElement", $"{currentPage.Name}, {elementName}, {elementType}");
             // get list elements - ANSWER 
             var nthElement = GetTheNthElement(currentPage, elementName, elementType, nth);
@@ -665,8 +1001,16 @@ namespace Generic.Steps.Helpers.Classes
             return subSubElements;
         }
 
+        /// <summary>
+        /// Get text of the sub-element that is currently selected under a parent element.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Parent element name key.</param>
+        /// <param name="elementType">Parent element type string.</param>
+        /// <returns>Text of selected sub-element or null if none selected.</returns>
         public static string? GetTextFromSubElementSelectedOfElement(FormBase currentPage, string elementName, string elementType)
         {
+            // Iterate sub-elements and return text of the one with selected state.
             DebugOutput.OutputMethod("GetTextFromSubElementSelectedOfElement", $"{currentPage.Name}, {elementName}, {elementType}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return FailureString("FAiled to even get the parent element!");
@@ -679,8 +1023,23 @@ namespace Generic.Steps.Helpers.Classes
             return null;
         }
 
+        /// <summary>
+        /// Get list of texts (or attribute values) from sub-sub elements under the nth parent element.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Parent element name key.</param>
+        /// <param name="elementType">Parent element type string.</param>
+        /// <param name="subElementName">Sub-element name key.</param>
+        /// <param name="subElementType">Sub-element type string.</param>
+        /// <param name="subSubElementName">Sub-sub element name key.</param>
+        /// <param name="subSubElementType">Sub-sub element type string.</param>
+        /// <param name="nth">Index of parent element to inspect.</param>
+        /// <param name="attribute">Optional attribute name to read instead of text.
+        /// </param>
+        /// <returns>List of strings collected or null on failure.</returns>
         public static List<string>? GetTextListFromSubSubElementsOfNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, string subSubElementName, string subSubElementType, int nth = 0, string attribute = "")
         {
+            // Collect text or attribute for each matching sub-sub element.
             DebugOutput.OutputMethod("GetTextFromSubSubElementOfLastElement", $"{currentPage.Name}, {elementName}, {elementType}");
             var subSubElements = GetSubSubElementsOfNthElement(currentPage, elementName, elementType, subElementName, subElementType, subSubElementName, subSubElementType, nth);
             if (subSubElements == null) return FailureListString($"Failed at getting the sub sub element!");
@@ -698,8 +1057,10 @@ namespace Generic.Steps.Helpers.Classes
             return returnList;
         }
 
+        // Private helper: get list of sub-elements of nth element via locator lookup
         private static List<IWebElement>? GetTheListOfSubElementsofNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, int nth = 0)
         {
+            // Use GetTheNthElement and dictionary locator to return elements under that nth element.
             var element = GetTheNthElement(currentPage, elementName, elementType);
             if (element == null) return null;
 
@@ -709,8 +1070,10 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.GetElementsUnder(element, sublocator);
         }
 
+        // Private helper: return the nth element (or last if nth==0) from a named collection
         private static IWebElement? GetTheNthElement(FormBase currentPage, string elementName, string elementType, int nth = 0)
         {
+            // Get all elements for the collection then pick nth or last.
             var elements = GetTheElements.GetElements(currentPage, elementName, elementType);
             if (elements == null) return null;
             var numberOfElements = elements.Count();
@@ -719,8 +1082,16 @@ namespace Generic.Steps.Helpers.Classes
             return elements[numberOfElements - nth];
         }
 
+        /// <summary>
+        /// Get the count of sub-elements under a given element.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Parent element name key.</param>
+        /// <param name="elementType">Parent element type string.</param>
+        /// <returns>Count of sub-elements or null on failure.</returns>
         public static int? GetTheNumberOfSubElementsOfElement(FormBase currentPage, string elementName, string elementType)
         {
+            // Resolve element and return number of sub-elements.
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return null;
             var subElements = GetSubElementsOfElement(element, elementType);
@@ -728,29 +1099,67 @@ namespace Generic.Steps.Helpers.Classes
             return subElements.Count();
         }
 
+        /// <summary>
+        /// Get count of sub-elements for the nth element in a collection.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Collection name key.</param>
+        /// <param name="elementType">Collection element type string.</param>
+        /// <param name="subElementName">Sub-element name key.</param>
+        /// <param name="subElementType">Sub-element type string.</param>
+        /// <param name="nth">Index (1-based) of parent element.</param>
+        /// <returns>Count or null on failure.</returns>
         public static int? GetTheNumberOfSubElementsOfNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, int nth = 0)
         {
+            // Use helper to get list and return its count.
             var listOfElements = GetTheListOfSubElementsofNthElement(currentPage, elementName, elementType, subElementName, subElementType, nth);
             if (listOfElements == null) return FailureInt($"Failed to get list of elements!");
             return listOfElements.Count();
         }
 
+        /// <summary>
+        /// Get number of sub-sub elements under an element when there is a single sub-element containing them.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Parent element name key.</param>
+        /// <param name="elementType">Parent element type string.</param>
+        /// <param name="subType">Sub-type identifier.
+        /// </param>
+        /// <returns>Count or null on failure.</returns>
         public static int? GetTheNumberOfSubSubElementsOfElement(FormBase currentPage, string elementName, string elementType, string subType)
         {
+            // Delegate to GetTheSubSubElementsOfElement and return the count.
             var subSubElement = GetTheSubSubElementsOfElement(currentPage, elementName, elementType, subType);
             if (subSubElement == null) return FailureInt($"Failed to find any sub sub element!");
             return subSubElement.Count;
         }
 
+        /// <summary>
+        /// Get count of sub-sub elements under the nth element in a collection.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Collection name key.</param>
+        /// <param name="elementType">Collection element type string.</param>
+        /// <param name="subElementName">Sub-element name key.
+        /// </param>
+        /// <param name="subElementType">Sub-element type string.
+        /// </param>
+        /// <param name="subSubElementName">Sub-sub element name key.</param>
+        /// <param name="subSubElementType">Sub-sub element type string.</param>
+        /// <param name="nth">Index of parent element.</param>
+        /// <returns>Count or null on failure.</returns>
         public static int? GetTheNumberOfSubSubElementsOfNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, string subSubElementName, string subSubElementType, int nth = 0)
         {
+            // Get list of sub-sub elements for nth parent and return count.
             var listOfElements = GetTheListOfSubSubElementsofNthElement(currentPage, elementName, elementType, subElementName, subElementType, subSubElementName, subSubElementType, nth);
             if (listOfElements == null) return FailureInt($"Failed to get list of elements!");
             return listOfElements.Count();
         }
 
+        // Private helper to get a specific sub-element for nth parent
         private static IWebElement? GetTheSubElementOfNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, int nth = 0)
         {
+            // Resolve parent and sub-element locator and return single element.
             var element = GetTheNthElement(currentPage, elementName, elementType);
             if (element == null) return null;
 
@@ -760,8 +1169,10 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.GetElementUnderElement(element, locator);
         }
 
+        // Private helper to get sub-sub elements under a parent element
         private static List<IWebElement>? GetTheSubSubElementsOfElement(FormBase currentPage, string elementName, string elementType, string subType)
         {
+            // Retrieve the first sub-element then return the list of its child sub-elements.
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return null;
             var subElements = GetSubElementsOfElement(element, elementType, subType);
@@ -772,8 +1183,10 @@ namespace Generic.Steps.Helpers.Classes
             return subSubElement;
         }
 
+        // Private helper to get a single sub-sub element under the nth element
         private static IWebElement? GetTheSubSubElementofNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, string subSubElementName, string subSubElementType, int nth = 0)
         {
+            // Resolve nth parent, sub-element locator and sub-sub locator to return single element.
             var element = GetTheNthElement(currentPage, elementName, elementType);
             if (element == null) return null;
 
@@ -789,8 +1202,10 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.GetElementUnderElement(subElement, subSubLocator);
         }
 
+        // Private helper to get list of sub-sub elements under nth parent
         private static List<IWebElement>? GetTheListOfSubSubElementsofNthElement(FormBase currentPage, string elementName, string elementType, string subElementName, string subElementType, string subSubElementName, string subSubElementType, int nth = 0)
         {
+            // Resolve nth parent, sub-element and sub-sub locator and return list.
             var element = GetTheNthElement(currentPage, elementName, elementType);
             if (element == null) return null;
 
@@ -806,16 +1221,34 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.GetElementsUnder(subElement, subSubLocator);
         }
 
+        /// <summary>
+        /// Get the width (in pixels) of an element.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <returns>Width in pixels or null on failure.</returns>
         public static int? GetWidthOfElement(FormBase currentPage, string elementName, string elementType)
         {
+            // Resolve element and ask Selenium util for its width.
             DebugOutput.OutputMethod("GetText", $"{currentPage.Name}, {elementName}, {elementType}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return FailureInt($"Failed to get element! {elementName} of type {elementType} in page {currentPage.Name}");
             return SeleniumUtil.GetWidthOfElement(element);
         }
 
+        /// <summary>
+        /// Check whether an element is displayed (visible) within an optional timeout.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <param name="timeout">Timeout in seconds to wait for element to exist.
+        /// </param>
+        /// <returns>True if displayed, false otherwise.</returns>
         public static bool IsElementDisplayed(FormBase currentPage, string elementName, string elementType, int timeout = 0)
         {
+            // Try to find the element and confirm it is displayed; optionally create self-heal model.
             DebugOutput.OutputMethod("IsElementDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {timeout}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType, timeout);
             if (element == null) return false;
@@ -829,8 +1262,16 @@ namespace Generic.Steps.Helpers.Classes
             return false;
         }        
 
+        /// <summary>
+        /// Determine whether an expandable element is in an expanded state.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <returns>True if expanded, false otherwise.</returns>
         public static bool IsElementExpanded(FormBase currentPage, string elementName, string elementType)
         {
+            // Inspect child's aria-expanded attribute to determine expansion state.
             DebugOutput.OutputMethod("IsElementExpanded", $"{currentPage.Name}, {elementName}, {elementType}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its display status");
@@ -843,16 +1284,36 @@ namespace Generic.Steps.Helpers.Classes
             return false;
         }
 
+        /// <summary>
+        /// Check whether an element exists (regardless of visibility), with an optional timeout.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <param name="timeout">Timeout seconds to wait for existence.</param>
+        /// <returns>True if exists, false otherwise.</returns>
         public static bool IsElementExists(FormBase currentPage, string elementName, string elementType, int timeout)
         {
+            // Resolve element with timeout; return false if null.
             DebugOutput.OutputMethod("IsElementDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {timeout}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType, timeout);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its display status");
             return true;
         }
 
+        /// <summary>
+        /// Determine whether a named group of a parent element is displayed.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Parent element name key.</param>
+        /// <param name="elementType">Parent element type string.
+        /// </param>
+        /// <param name="groupName">Group key to find under parent.
+        /// </param>
+        /// <returns>True if displayed, false otherwise.</returns>
         public static bool IsElementGroupDisplayed(FormBase currentPage, string elementName, string elementType, string groupName)
         {
+            // Get the group element under parent and verify display state.
             DebugOutput.OutputMethod("IsElementGroupDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {groupName}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its display status");
@@ -861,8 +1322,19 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.IsDisplayed(groupElement);
         }
 
+        /// <summary>
+        /// Determine whether a named group is expanded by checking its expansion element.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Parent element name key.</param>
+        /// <param name="elementType">Parent element type string.
+        /// </param>
+        /// <param name="groupName">Group key to find under parent.
+        /// </param>
+        /// <returns>True if expanded, false otherwise.</returns>
         public static bool IsElementGroupExpanded(FormBase currentPage, string elementName, string elementType, string groupName)
         {            
+            // Find the group's expansion element and inspect aria-expanded attribute.
             DebugOutput.OutputMethod("IsElementGroupDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {groupName}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its display status");
@@ -878,8 +1350,17 @@ namespace Generic.Steps.Helpers.Classes
             return expanded ?? false;
         }        
 
+        /// <summary>
+        /// Wait until an element is not displayed (becomes hidden) within a timeout.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <param name="timeout">Timeout in seconds to wait for disappearance.</param>
+        /// <returns>True if not displayed, false if still displayed after timeout.</returns>
         public static bool IsElementNotDisplayed(FormBase currentPage, string elementName, string elementType, int timeout = 0)
         {
+            // Immediate check then loop with negative timeout until element not displayed.
             DebugOutput.OutputMethod("IsElementDisplayedNot", $"{currentPage.Name}, {elementName}, {elementType}, {timeout}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return true;
@@ -899,16 +1380,34 @@ namespace Generic.Steps.Helpers.Classes
             return true;
         }
 
+        /// <summary>
+        /// Check whether an element is enabled (interactive).
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <returns>True if enabled, false otherwise.</returns>
         public static bool IsElementEnabled(FormBase currentPage, string elementName, string elementType)
         {
+            // Locate element and query enabled state from Selenium util.
             DebugOutput.OutputMethod("IsEnabled", $"{currentPage.Name}, {elementName}, {elementType}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know if enabled or not!");
             return SeleniumUtil.IsEnabled(element);
         }
 
+        /// <summary>
+        /// Determine whether a group is not expanded.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Parent element name key.</param>
+        /// <param name="elementType">Parent element type string.</param>
+        /// <param name="groupName">Group key under the parent.
+        /// </param>
+        /// <returns>True if not expanded, false otherwise.</returns>
         public static bool IsElementGroupNotExpanded(FormBase currentPage, string elementName, string elementType, string groupName)
         {
+            // Inspect group's aria-expanded attribute and return negated state.
             DebugOutput.OutputMethod("IsElementGroupDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {groupName}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its display status");
@@ -926,16 +1425,33 @@ namespace Generic.Steps.Helpers.Classes
             return true;
         }        
 
+        /// <summary>
+        /// Determine whether an element is read-only (not enabled).
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.</param>
+        /// <returns>True if read-only, false otherwise.</returns>
         public static bool IsElementReadOnly(FormBase currentPage, string elementName, string elementType)
         {
+            // Return negation of IsEnabled check.
             DebugOutput.OutputMethod("IsReadOnly", $"{currentPage.Name}, {elementName}, {elementType}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know if enabled or not!");
             return !SeleniumUtil.IsEnabled(element);
         }
 
+        /// <summary>
+        /// Determine whether an element is selected; special handling for switches.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Element name key.</param>
+        /// <param name="elementType">Element type string.
+        /// </param>
+        /// <returns>True if selected, false otherwise.</returns>
         public static bool IsElementSelected(FormBase currentPage, string elementName, string elementType)
         {
+            // Use special switch detection, otherwise check selected state.
             DebugOutput.OutputMethod("IsSelected", $"{currentPage.Name}, {elementName}, {elementType}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its selected or not!");
@@ -948,8 +1464,12 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.IsSelected(element);
         }
 
+        /// <summary>
+        /// Determine whether the parent element of a named element is displayed.
+        /// </summary>
         public static bool IsElementsParentElementDisplayed(FormBase currentPage, string elementName, string elementType)
         {
+            // Get parent via helper and check its Displayed property.
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its display status");
             var parentElement = GetTheElement.GetParent(element);
@@ -963,30 +1483,46 @@ namespace Generic.Steps.Helpers.Classes
             return false;
         }
 
+        /// <summary>
+        /// Check whether an element under a parent with a given tag and matching text is displayed.
+        /// </summary>
         public static bool IsElementUnderElementByTagByTextDisplayed(FormBase currentPage, string elementName, string elementType, string tag, string text)
         {
+            // Build tag locator and call common locator/text checker.
             DebugOutput.OutputMethod("IsElementUnderElementByTagDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {tag} {text}");
             var locator = By.TagName(tag);
             return IsElementUnderElementByLocatorByTextDisplayed(currentPage, elementName, elementType, locator, text);
         }
 
+        /// <summary>
+        /// Check whether an element under a parent with a given class and matching text is displayed.
+        /// </summary>
         public static bool IsElementUnderElementByClassByTextDisplayed(FormBase currentPage, string elementName, string elementType, string classWanted, string text)
         {
+            // Build class locator and use generic checker.
             DebugOutput.OutputMethod("IsElementUnderElementByTagDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {classWanted} {text}");
             var locator = By.ClassName(classWanted);
             return IsElementUnderElementByLocatorByTextDisplayed(currentPage, elementName, elementType, locator, text);
         }        
 
+        /// <summary>
+        /// Check whether a sub-element under a parent located by a locator with given text is displayed.
+        /// </summary>
         public static bool IsElementUnderElementByLocatorByTextDisplayed(FormBase currentPage, string elementName, string elementType, By locator, string text)
         {
+            // Use helper to find sub-element by locator-text then check display state.
             DebugOutput.OutputMethod("IsElementUnderElementByTagDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {locator} {text}");
             var subElement = GetTheElement.GetSubElementByText(currentPage, elementName, elementType, locator, text, 0);
             if (subElement == null) return Failure($"Failed to find the sub element by {locator} with text {text} under {elementName}");
             return SeleniumUtil.IsDisplayed(subElement);
         }
 
+        /// <summary>
+        /// Check whether a sub-element under a parent (located by matching text anywhere) is displayed.
+        /// </summary>
         public static bool IsElementUnderElementByTextDisplayed(FormBase currentPage, string elementName, string elementType, string subElementText)
         {
+            // Build XPath for exact text and use helper to find and check display.
             DebugOutput.OutputMethod("IsElementUnderElementByTextDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {subElementText}");
             By locator = By.XPath($".//*[text()='{subElementText}']");
             var subElement= GetTheElement.GetSubElementByText(currentPage, elementName, elementType, locator, subElementText, 0);
@@ -994,15 +1530,24 @@ namespace Generic.Steps.Helpers.Classes
             return SeleniumUtil.IsDisplayed(subElement);
         }
 
+        /// <summary>
+        /// Check whether the Selenium web driver is active.
+        /// </summary>
+        /// <returns>True if webDriver not null, otherwise false.</returns>
         public static bool IsDriverActive()
         {
-            DebugOutput.OutputMethod("IsDriverNull", $"");
+            // Simple null-check for driver.
+            DebugOutput.OutputMethod("IsDriverNull", "");
             if (SeleniumUtil.webDriver == null) return false;
             return true;            
         }
 
+        /// <summary>
+        /// Determine whether a named sub-element (by visible name) is displayed under a parent element.
+        /// </summary>
         public static bool IsSubElementDisplayed(FormBase currentPage, string elementName, string elementType, string subElementName)
         {
+            // Iterate sub-elements to find matching visible name then return its display state.
             DebugOutput.OutputMethod("IsSubElementDisplayed", $"{currentPage.Name}, {elementName}, {elementType} {subElementName} ");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its selected or not!");
@@ -1017,38 +1562,69 @@ namespace Generic.Steps.Helpers.Classes
             return false;
         }
 
+        /// <summary>
+        /// Move mouse cursor over an element (hover).
+        /// </summary>
         public static bool MouseOverElement(FormBase currentPage, string elementName, string elementType)
         {
+            // Use Selenium util to move to element (hover behaviour).
             DebugOutput.OutputMethod("MouseOver", $"{currentPage.Name}, {elementName}, {elementType}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its selected or not!");
             return SeleniumUtil.MoveToElement(element);
         }
 
+        /// <summary>
+        /// Move a slider element to a specified value.
+        /// </summary>
         public static bool MoveSliderElement(FormBase currentPage, string elementName, string elementType, int value)
         {
+            // Locate the slider element and instruct Selenium util to change its value.
             DebugOutput.OutputMethod("MoveSliderElement", $"{currentPage.Name}, {elementName}, {elementType} {value}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its selected or not!");
             return SeleniumUtil.MoveSliderElement(element, value);
         }
 
+        /// <summary>
+        /// Navigate the browser to a specified URL.
+        /// </summary>
         public static bool NavigateToURL(string url)
         {
+            // Delegate to Selenium util's navigation.
             DebugOutput.OutputMethod("NavigateToURL", $"{url}");
             return SeleniumUtil.NavigateToURL(url);
         }
 
+        /// <summary>
+        /// Perform a right-click (context click) on an element.
+        /// </summary>
         public static bool RightClickElement(FormBase currentPage, string elementName, string elementType)
         {
+            // Locate element and perform right-click via Selenium util.
             DebugOutput.OutputMethod("RightClick", $"{currentPage.Name}, {elementName}, {elementType}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its selected or not!");
             return SeleniumUtil.RightClick(element);
         }
 
+        /// <summary>
+        /// Select an option from a dropdown-like element using multiple strategies.
+        /// </summary>
+        /// <param name="currentPage">Page context.</param>
+        /// <param name="elementName">Parent element name key.</param>
+        /// <param name="elementType">Parent element type string.</param>
+        /// <param name="selecting">Text to select.</param>
+        /// <param name="topOptionAlreadySelected">Whether top option is already selected (affects navigation).
+        /// </param>
+        /// <param name="textEntry">If true, try typing into the control to narrow options.
+        /// </param>
+        /// <param name="timeout">Optional timeout for locating dropdown options.
+        /// </param>
+        /// <returns>True if selection succeeded, false otherwise.</returns>
         public static bool SelectingFrom(FormBase currentPage, string elementName, string elementType, string selecting, bool topOptionAlreadySelected = false, bool textEntry = true, int timeout = 0)
         {
+            // Open dropdown if needed, try text entry, look through option locators and fall back to generic searches.
             DebugOutput.OutputMethod("SelectingFrom", $"{currentPage.Name}, {elementName}, {elementType}, {selecting}, {topOptionAlreadySelected}, {textEntry}, {timeout}");
             var element = GetTheElement.GetElement(currentPage, elementName, elementType);
             if (element == null) return Failure($"No element found called {elementName} of type {elementType} in page {currentPage} so do not know its selected or not!");
@@ -1165,23 +1741,36 @@ namespace Generic.Steps.Helpers.Classes
             return false;
         }
 
+        /// <summary>
+        /// Set the browser window size using a size string (e.g., "1024x768").
+        /// </summary>
         public static bool SetWindowSize(string size)
         {
+            // Delegate to Selenium util to set window size using string.
             return SeleniumUtil.SetWindowSize(size);
         } 
 
+        /// <summary>
+        /// Set the browser window size with specific dimensions.
+        /// </summary>
         public static bool SetWindowSize(int length, int height)
         {
             DebugOutput.OutputMethod("SetWindowSize", $"{length}, {height}");         
             return SeleniumUtil.SetWindowSize(length, height);
         }
 
+        /// <summary>
+        /// Switch focus to a different tab by number.
+        /// </summary>
         public static bool SwapTabByNumber(int tabNumber)
         {
             DebugOutput.OutputMethod("SwapTabByNumber", $"{tabNumber}"); 
             return  SeleniumUtil.SwapTabByNumber(tabNumber);
         }
 
+        /// <summary>
+        /// Wait for an element to be present and displayed within a timeout.
+        /// </summary>
         public static bool WaitForElementToBeDisplayed(FormBase currentPage, string elementName, string elementType, int timeout = 0)
         {
             DebugOutput.OutputMethod($"WaitForElementToBeDisplayed", $"{currentPage.Name} {elementName} {elementType} {timeout} ");
@@ -1208,6 +1797,9 @@ namespace Generic.Steps.Helpers.Classes
             return true;
         }
 
+        /// <summary>
+        /// Wait for an element to not be displayed (disappear) within a timeout.
+        /// </summary>
         public static bool WaitForElementToNotBeDisplayed(FormBase currentPage, string elementName, string elementType, int timeout = 0)
         {
             if (timeout == 0) timeout = TargetConfiguration.Configuration.NegativeTimeout;
@@ -1233,6 +1825,9 @@ namespace Generic.Steps.Helpers.Classes
             return true;
         }
 
+        /// <summary>
+        /// Wait until the text of an element stops changing and does not contain the generation string.
+        /// </summary>
         public static bool WaitForTextNotToChange(FormBase currentPage, string elementName, string elementType, string generationString = "", int waitTime = 0)
         {
             if (waitTime == 0) waitTime = TargetConfiguration.Configuration.PositiveTimeout;
@@ -1242,6 +1837,9 @@ namespace Generic.Steps.Helpers.Classes
             return WaitForTextNotToChange(element, generationString, waitTime);
         }
 
+        /// <summary>
+        /// Wait until the text of a given IWebElement stops changing and does not contain the generation string.
+        /// </summary>
         public static bool WaitForTextNotToChange(IWebElement element, string generationString = "", int waitTime = 0)
         {
             if (waitTime == 0) waitTime = TargetConfiguration.Configuration.PositiveTimeout;
@@ -1279,6 +1877,9 @@ namespace Generic.Steps.Helpers.Classes
             return true;
         }
 
+        /// <summary>
+        /// Wait for the text of the last element in a collection to stop changing.
+        /// </summary>
         public static bool WaitForTextNotToChangeInLastElement(FormBase currentPage, string elementName, string elementType, string generationString = "", int waitTime = 0)
         {
             if (waitTime == 0) waitTime = TargetConfiguration.Configuration.PositiveTimeout;
