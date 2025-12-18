@@ -11,63 +11,134 @@ namespace Generic.Steps.Helpers.Classes
 {
     public class TableStepHelper : StepHelper, ITableStepHelper
     {
+        /// <summary>
+        /// Reference to the target forms service for form interactions
+        /// </summary>
         private readonly ITargetForms targetForms;
+
+        /// <summary>
+        /// Initializes a new instance of the TableStepHelper class
+        /// </summary>
+        /// <param name="featureContext">The current feature context from Reqnroll</param>
+        /// <param name="targetForms">Service for handling target form interactions</param>
         public TableStepHelper(FeatureContext featureContext, ITargetForms targetForms) : base(featureContext)
         {
             this.targetForms = targetForms;
         }
 
-        // int versionNumber = 0;
+        /// <summary>
+        /// Table Configuration Locators and Settings
+        /// </summary>
+        
+        /// <summary>
+        /// Defines which column should never be empty - used as primary identifier for table rows
+        /// </summary>
+        private readonly int TablePrimaryColumnNumber = TargetLocator.Configuration.TablePrimaryColumnNumber;
 
-        // int primaryColumnForTable = 1;
-
-        //Everything below this is part of the table
-        private readonly int TablePrimaryColumnNumber = TargetLocator.Configuration.TablePrimaryColumnNumber;  //what column can never be empty
-        //The header row
-        //All the column headers
+        /// <summary>
+        /// Locator for the entire table header element
+        /// </summary>
         private readonly By[] TableHeadLocator = LocatorValues.locatorParser(TargetLocator.Configuration.TableHeadLocator);
-        //The indivdual header cells
+
+        /// <summary>
+        /// Locators for individual header cells (column headers)
+        /// </summary>
         private readonly By[] TableHeadCellsLocator = LocatorValues.locatorParser(TargetLocator.Configuration.TableHeadCellsLocator);
 
-        //The data rows
-        //All the data rows
+        /// <summary>
+        /// Locators for the table body container(s)
+        /// </summary>
         private readonly By[] TableBodyLocator = LocatorValues.locatorParser(TargetLocator.Configuration.TableBodyLocator);
-        //The individual row 
+
+        /// <summary>
+        /// Locators for individual data rows within the table body
+        /// </summary>
         private readonly By[] TableBodyRowLocator = LocatorValues.locatorParser(TargetLocator.Configuration.TableBodyRowLocator);
-        //The elment under a individual row that contains the highlighter
+
+        /// <summary>
+        /// Locators for sub-elements within rows that indicate selection/highlighting state
+        /// </summary>
         private readonly By[] TableBodyRowSubLocator = LocatorValues.locatorParser(TargetLocator.Configuration.TableBodyRowSubLocator);
-        //The Cells in the row
+
+        /// <summary>
+        /// Locators for individual cells within table rows
+        /// </summary>
         private readonly By[] TableBodyCellsLocator = LocatorValues.locatorParser(TargetLocator.Configuration.TableBodyCellsLocator);
 
-
+        /// <summary>
+        /// Locators for the pagination "next page" button
+        /// </summary>
         private readonly By[] TableNextPageButton = LocatorValues.locatorParser(TargetLocator.Configuration.TableNextPageButton);
+
+        /// <summary>
+        /// Locators for the pagination "previous page" button
+        /// </summary>
         private readonly By[] TablePreviousPageButton = LocatorValues.locatorParser(TargetLocator.Configuration.TablePreviousPageButton);
 
+        /// <summary>
+        /// Locators for the table filter/search input element
+        /// </summary>
         private readonly By[] TableFilterLocator = LocatorValues.locatorParser(TargetLocator.Configuration.TableFilterLocator);
 
+        /// <summary>
+        /// List of supported table actions (e.g., "view", "edit", "delete")
+        /// </summary>
         private readonly string[] TableActions = TargetLocator.Configuration.TableActions;
+
+        /// <summary>
+        /// Locators for action buttons/elements corresponding to each TableAction
+        /// </summary>
         private readonly By[] TableActionsLocator = LocatorValues.locatorParser(TargetLocator.Configuration.TableActionsLocator);
 
+        /// <summary>
+        /// Text variations that indicate an empty table state with no data to display
+        /// </summary>
         private readonly string[] EmptyTableText = {"No data to display", "Nobody found for the specified search criteria"};
 
+        /// <summary>
+        /// Generic locator for hyperlink elements within table cells
+        /// </summary>
         private readonly By LinkLocator = By.TagName("a");
 
+        /// <summary>
+        /// Generic locator for button elements within table cells
+        /// </summary>
         private readonly By ButtonLocator = By.TagName("button");
 
+/// <summary>
+        /// Determines whether a specific row contains a visible action button/element
+        /// </summary>
+        /// <param name="tableName">The name of the table to search</param>
+        /// <param name="action">The action to look for (e.g., "view", "edit", "delete")</param>
+        /// <param name="columnName">The column header name to search in</param>
+        /// <param name="value">The cell value to match in the specified column</param>
+        /// <returns>True if the row contains the action and it is displayed; otherwise false</returns>
         public bool DoesRowContainAction(string tableName, string action, string columnName, string value)
         {
-            DebugOutput.Log($"Proc - ActionRowByValueInColumnName {tableName} {action} {columnName} {value}");
+            DebugOutput.Log($"Proc - DoesRowContainAction {tableName} {action} {columnName} {value}");
+
+            // Validate that the requested action is supported
             if (!TableActions.Contains(action.ToLower()))
             {
                 DebugOutput.Log($"We do not know of action {action}");
                 return false;
             }
+
+            // Retrieve the table element
             var tableElement = GetTableElement(tableName);
-            if (tableElement == null) return false;
+            if (tableElement == null) 
+                return false;
+
+            // Get the column number from the column header name
             var columnNumber = GetColumnNumberFromTitle(tableElement, columnName);
-            if (columnNumber < 0) return false;
+            if (columnNumber < 0) 
+                return false;
+
+            // Find the row number where the value exists in the specified column
             var rowNumber = GetRowNumberWhereValueIsFoundInColumnNumber(tableElement, columnNumber, value);
-            if (rowNumber < 0) return false;
+            if (rowNumber < 0) 
+                return false;
+
             DebugOutput.Log($"Found row number {rowNumber}");
             var allColumnElements = GetAllRows(tableElement);
             var rowElement = allColumnElements[rowNumber - 1];
@@ -80,9 +151,10 @@ namespace Generic.Steps.Helpers.Classes
                 {
                     locator = TableActionsLocator[counter];
                     var element = SeleniumUtil.GetElementUnderElement(rowElement, locator, 1);
+
                     if (element != null)
                     {
-                        DebugOutput.Log($"");
+                        DebugOutput.Log($"Found action element using configured locator");
                         return element.Displayed;
                     }
                     By test = By.ClassName("RadButton");
