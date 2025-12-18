@@ -1106,31 +1106,31 @@ namespace Generic.Steps.Helpers.Classes
         {
             DebugOutput.Log($"GetTableElement {tableName}");
 
-            //  my table has a name that COULD be not unique - it should have table at the end - so i can tell the diference.
-            var newTableName = GetTableName(tableName);
-            DebugOutput.Log($"I is here with a table name {newTableName} using page object {CurrentPage.Name}");
-            if (CurrentPage.Elements.ContainsKey(newTableName))
+            var normalizedWithSuffix = GetTableName(tableName);
+            DebugOutput.Log($"I is here with a table name {normalizedWithSuffix} using page object {CurrentPage.Name}");
+
+            // First attempt: look up using normalized name that ensures the " table" suffix
+            if (CurrentPage.Elements.TryGetValue(normalizedWithSuffix, out var locatorWithSuffix))
             {
-                By? newTableLocator;
-                newTableLocator = CurrentPage.Elements[newTableName];
-                var newTableElement = SeleniumUtil.GetElement(newTableLocator);
-                if (newTableElement == null) return newTableElement;
-                DebugOutput.Log($"Table Element {newTableName} = {newTableElement}");
-                return newTableElement;
+                var element = SeleniumUtil.GetElement(locatorWithSuffix);
+                if (element == null) return null;
+                DebugOutput.Log($"Table Element {normalizedWithSuffix} = {element}");
+                return element;
             }
+
             DebugOutput.Log($"Nothing found ending in ' table'");
-            tableName = tableName.ToLower();
-            tableName = tableName.Replace(" ", "");
-            if (!CurrentPage.Elements.ContainsKey(tableName))
+
+            // Fallback: compact key (lowercase and remove spaces) to handle legacy map entries
+            var compactKey = tableName.Trim().ToLowerInvariant().Replace(" ", "");
+            if (!CurrentPage.Elements.TryGetValue(compactKey, out var locator))
             {
-                DebugOutput.Log($"STILL No key found of {tableName} in page {CurrentPage.Name}");
+                DebugOutput.Log($"STILL No key found of {compactKey} in page {CurrentPage.Name}");
                 return null;
             }
-            By? tableLocator;
-            tableLocator = CurrentPage.Elements[tableName];
-            var tableElement = SeleniumUtil.GetElement(tableLocator);
-            if (tableElement == null) return tableElement;
-            DebugOutput.Log($"Table Element {tableName} = {tableElement}");
+
+            var tableElement = SeleniumUtil.GetElement(locator);
+            if (tableElement == null) return null;
+            DebugOutput.Log($"Table Element {compactKey} = {tableElement}");
             return tableElement;
         }
 
@@ -1140,15 +1140,24 @@ namespace Generic.Steps.Helpers.Classes
         private string GetTableName(string tableName)
         {
             DebugOutput.Log($"GetTableName {tableName}");
-            tableName = tableName.ToLower();
-            tableName = tableName.Replace(" ", "");
-            DebugOutput.Log($"GetTableName lower {tableName}");
-            if (tableName.Contains(" table")) return tableName;
+            var normalized = tableName.Trim().ToLowerInvariant();
+            DebugOutput.Log($"GetTableName lower {normalized}");
+
+            // Ensure the name ends with " table" for primary lookup
+            if (normalized.EndsWith(" table"))
+            {
+                return normalized;
+            }
+
+            // If it already ends with "table" (without space), keep as-is to avoid double spacing
+            if (normalized.EndsWith("table"))
+            {
+                DebugOutput.Log($"Name already ends with 'table' – leaving unchanged");
+                return normalized;
+            }
+
             DebugOutput.Log($"Adding <space>table to element Name");
-            return tableName + " table";
+            return normalized + " table";
         }
-
-
-
     }
 }
