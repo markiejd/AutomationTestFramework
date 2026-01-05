@@ -2,18 +2,32 @@
 using Core.FileIO;
 using Core.Logging;
 using Core.Transformations;
+using Core.Configuration;
+using System;
+using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using Core.Configuration;
+using System.Threading.Tasks;
 
 namespace Core
 {
+    /// <summary>
+    /// Holds the last HTTP response returned by APIUtil. Intended for diagnostics only.
+    /// </summary>
     public static class APIResponse
     {
+        /// <summary>
+        /// The most recent HttpResponseMessage captured by APIUtil methods.
+        /// </summary>
         public static HttpResponseMessage? fullResponse { get; set; }
     }
 
+    /// <summary>
+    /// General-purpose HTTP helper methods used across the framework.
+    /// </summary>
     public class APIUtil
     {
 
@@ -24,19 +38,14 @@ namespace Core
         }
 
 
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
         //////////   GET
         ///
         
-        
+        /// <summary>
+        /// Executes a simple GET request. If successful, saves the response body to a file named after apiName.
+        /// </summary>
+        /// <param name="url">The endpoint to call.</param>
+        /// <param name="apiName">Friendly name used to persist the response to disk for debugging.</param>
         public static async Task<HttpResponseMessage> Get(string url, string apiName = "unknownAPI")
         {
             DebugOutput.OutputMethod($"APIUtil - Get", $" {url} {apiName}  ");
@@ -45,7 +54,7 @@ namespace Core
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    // Set a very short timeout of 1 second
+                    // Use configured short timeout (useful for negative tests)
                     var timeout = TargetConfiguration.Configuration.NegativeTimeout;
                     client.Timeout = TimeSpan.FromSeconds(timeout);
                     try
@@ -53,10 +62,11 @@ namespace Core
                         response = await client.GetAsync(url);
                         var statusCode = (int)response.StatusCode;
                         DebugOutput.Log($"Status Code of {statusCode} received");
-                        APIResponse.fullResponse = response;    
+                        APIResponse.fullResponse = response;
                         if (response.IsSuccessStatusCode)
                         {
-                            var fullJson = await client.GetStringAsync(url);
+                            // Avoid issuing a second GET; read the body from the existing response.
+                            var fullJson = await response.Content.ReadAsStringAsync();
                             WriteAPIJsonToFile(fullJson, apiName);
                             return SetResponse(response);
                         }
@@ -85,61 +95,108 @@ namespace Core
         }
         
 
+        /// <summary>
+        /// Retrieves a specific cookie value from an HTTP response by sending a GET request to the specified URL.
+        /// </summary>
+        /// <param name="url">The URL endpoint to send the GET request to. Defaults to "http://".</param>
+        /// <param name="cookieTitle">The name of the cookie to extract from the Set-Cookie header. Defaults to "JSESSIONID".</param>
+        /// <returns>The cookie value string if found and successfully parsed; otherwise, null.</returns>
+        /// <remarks>
+        /// This method sends a GET request and inspects the Set-Cookie response headers to locate the requested cookie.
+        /// The cookie value is cleaned/normalized using FixJSessionCookie before being returned.
+        /// </remarks>
         public static  async Task<string?> GetCookie(string url = "http://", string cookieTitle = "JSESSIONID")
         {
+            // Log the method entry with parameters for debugging
             DebugOutput.OutputMethod($"APIUtil - GetCookie", $" {url} {cookieTitle} ");
+            
+            // Initialize an empty response object to hold the HTTP response
             HttpResponseMessage response = new HttpResponseMessage();
+            
             try
             {
+                // Create an HttpClient with a default handler for making the HTTP request
                 using (HttpClient client = new HttpClient(new HttpClientHandler() {  }))
                 {
                     try
                     {
+                        // Send GET request to the specified URL, reading only headers initially for performance
                         response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+                        
+                        // Check if the response status code indicates failure (not 2xx)
                         if (!response.IsSuccessStatusCode)
                         {
                             DebugOutput.Log($"Failed code returned! returning null");
                             return null;
                         }
-                        APIResponse.fullResponse = response;    
+                        
+                        // Store the response globally for diagnostic purposes
+                        APIResponse.fullResponse = response;
                         DebugOutput.Log($"CODE = {response.StatusCode}");
-                        var cookie = response.Headers.GetValues("Set-Cookie").First(x => x.StartsWith(cookieTitle));;
-                        if (cookie != null)
+
+                        // Attempt to extract the Set-Cookie header from the response headers
+                        if (response.Headers.TryGetValues("Set-Cookie", out var setCookieValues))
                         {
-                            cookie = FixJSessionCookie(cookie);
-                            DebugOutput.Log($"Cookie {cookieTitle} = {cookie}");
-                            return cookie;
+                            // Search for the first cookie in the Set-Cookie header that matches the requested cookie name (case-insensitive)
+                            var cookie = setCookieValues.FirstOrDefault(x => x.StartsWith(cookieTitle, StringComparison.OrdinalIgnoreCase));
+                            
+                            // If a matching cookie was found, process and return it
+                            if (!string.IsNullOrEmpty(cookie))
+                            {
+                                // Clean up the cookie value by removing extraneous data (e.g., path, domain)
+                                cookie = FixJSessionCookie(cookie);
+                                DebugOutput.Log($"Cookie {cookieTitle} = {cookie}");
+                                return cookie;
+                            }
                         }
+                        
+                        // Log when the cookie header exists but the specific cookie wasn't found
                         DebugOutput.Log($"Failed to populate cookie");
                     }
                     catch
                     {
+                        // Catch any exceptions during the GET request or cookie extraction
                         DebugOutput.Log($"Failed when trying to get {cookieTitle}");
                     }
+                    
+                    // Return null if cookie extraction failed
                     return null;
                 }
             }
             catch
             {
+                // Catch any exceptions during HttpClient creation or usage
                 DebugOutput.Log($"Failed when trying to use HTTPCLIENT for {cookieTitle} on {url}");
             }
+            
+            // Return null if the entire operation failed
             return null;
         }
         
+        /// <summary>
+        /// Retrieves raw data from a Jira endpoint using an access token.
+        /// </summary>
+        /// <param name="API_Access_Token">Bearer token used for Authorization header.</param>
+        /// <param name="apiUrl">The full Jira API URL to call (defaults to "https://").</param>
+        /// <returns>Response body as string on success; "Error: {status}" or "Exception: {message}" on failure.</returns>
         public static string GetJiraData(string API_Access_Token = "", string apiUrl = "https://")
         {
+            // NOTE: Uses HttpWebRequest for legacy compatibility. Prefer HttpClient for new code.
             try
             {
                 #pragma warning disable SYSLIB0014 // Type or member is obsolete
+                // Create a legacy HttpWebRequest - kept for backwards compatibility with existing callers.
                 var request = (HttpWebRequest)WebRequest.Create(apiUrl);
                 #pragma warning restore SYSLIB0014 // Type or member is obsolete
                 request.Method = "GET";
+                // Add the Authorization header using the provided bearer token.
                 request.Headers.Add("Authorization", "Bearer " + API_Access_Token);
 
                 using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
+                        // Read the response stream to the end and return the payload as a UTF8 string.
                         using (var reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
                         {
                             return reader.ReadToEnd();
@@ -147,18 +204,30 @@ namespace Core
                     }
                     else
                     {
-                        // Handle other status codes (e.g., unauthorized, not found, etc.)
+                        // Non-success HTTP status code - return a readable error string.
                         return $"Error: {response.StatusCode}";
                     }
                 }
             }
             catch (Exception ex)
             {
+                // Surface exceptions as a prefixed string to avoid throwing from legacy callers.
                 return $"Exception: {ex.Message}";
             }
         }
 
         
+        /// <summary>
+        /// Attempts to sign on to the configured API server and returns the JSESSIONID
+        /// issued for the authenticated session. The method will retrieve an initial
+        /// JSESSIONID, fall back to configured application credentials when none are
+        /// provided, post the credentials to the server's j_security_check endpoint,
+        /// and return the session id if the POST succeeds.
+        /// </summary>
+        /// <param name="serverURL">Optional server logon URL. If empty, the configured APIServer + "/logon" is used.</param>
+        /// <param name="userName">Optional username for logon. Falls back to AppUserName from configuration when empty.</param>
+        /// <param name="password">Optional password for logon. Falls back to AppUserPassword from configuration when empty.</param>
+        /// <returns>JSESSIONID string on success; otherwise null.</returns>
         public static async Task<string?> GetRedirectionURL(string serverURL = "", string userName = "", string password = "")
         {
             DebugOutput.OutputMethod($"APIUtil - GetRedirectionURL", $" {serverURL} {userName} {password}");
@@ -166,16 +235,22 @@ namespace Core
             string url = "";
             if (serverURL == "")
             {
+                // Build default logon URL from configuration when none supplied
                 url = VariableConfiguration.Configuration.APIServer + @"/logon";
                 DebugOutput.Log($"URL set to {url}");
             }
+
+            // Get the initial JSESSIONID value from the server (may include attributes)
             var JSESSIONID = await GetJsessionId(url);
             if (JSESSIONID == null) return null;
-            JSESSIONID = JSESSIONID.Replace("; Path=/","");
+
+            // Normalize cookie value by removing path/domain suffixes if present
+            JSESSIONID = JSESSIONID.Replace("; Path=/", "");
             DebugOutput.Log($"Got to here {JSESSIONID}");
 
             var x = VariableConfiguration.Configuration;
 
+            // Fallback to configured application credentials when none are provided
             if (userName == "")
             {
                 userName = x.AppUserName;
@@ -197,27 +272,38 @@ namespace Core
                 using (var client = new HttpClient(handler) { BaseAddress = baseAddress })
                 {
                     DebugOutput.Log($"client built");
+
+                    // Place the retrieved JSESSIONID into the handler's cookie container
                     cookieContainer.Add(baseAddress, new Cookie("JSESSIONID", JSESSIONID));
                     DebugOutput.Log($"cookie added");
+
+                    // Post credentials to the server's j_security_check endpoint to complete authentication
                     var newUrl1 = url + "/j_security_check";
 
                     response = await client.PostAsync(newUrl1, new StringContent(content, Encoding.UTF8, "application/x-www-form-urlencoded"));
                     APIResponse.fullResponse = response;    
 
                     DebugOutput.Log($"CODE = {(int)response.StatusCode}");
+
+                    // If login succeeded, return the normalized JSESSIONID; otherwise fall through to null
                     if (response.IsSuccessStatusCode) return JSESSIONID;
                 }       
             }    
             return null;        
         }
         
-
+        /// <summary>
+        /// Performs an HTTP GET using a supplied JSESSIONID value by placing it into a CookieContainer
+        /// for the request's base address. Returns the HttpResponseMessage and stores it in APIResponse.fullResponse
+        /// for diagnostics.
+        /// </summary>
         public static async Task<HttpResponseMessage> GetResponseWithJsession(string url, string JSESSIONID)
         {
             DebugOutput.OutputMethod($"APIUtil - GetResponseWithJsession", $" {url} {JSESSIONID} ");
             HttpResponseMessage response = new HttpResponseMessage();
             var cookieContainer = new CookieContainer();
             var baseAddress = new Uri(url);
+            // Add the JSESSIONID cookie to the container so the request is sent with the provided session id.
             cookieContainer.Add(baseAddress, new Cookie("JSESSIONID", JSESSIONID));
             using (var handler = new HttpClientHandler() { CookieContainer = cookieContainer })
             {
@@ -225,9 +311,9 @@ namespace Core
                 using (var client = new HttpClient(handler) { BaseAddress = baseAddress })
                 {
                     DebugOutput.Log($"client built");
-                    cookieContainer.Add(baseAddress, new Cookie("JSESSIONID", JSESSIONID));
-                    DebugOutput.Log($"cookie added");
+                    // Cookie already added to the container above; no need to add again.
 
+                    // Execute the GET request (reading headers first for efficiency), store the response for diagnostics, and return it.
                     response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
                     APIResponse.fullResponse = response;    
                     return response;
@@ -242,14 +328,15 @@ namespace Core
             HttpResponseMessage response = new HttpResponseMessage();
             var client= GetHttpClient("token");
             if (client == null) return response;
-            // var client = new HttpClient();
 
-            // client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            // If an explicit access token is provided, prefer it over file/env token.
+            if (!string.IsNullOrWhiteSpace(accessToken))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            }
 
-            DebugOutput.Log($"PRIOR aaaaa");
-            // response = await client.GetAsync(apiUrl).ConfigureAwait(false);
-            response = await client.GetAsync(apiUrl); // Blocking call
-            DebugOutput.Log($"POST HFHFHFHFH aaaaa");
+            DebugOutput.Log($"Sending GET to {apiUrl} with token auth");
+            response = await client.GetAsync(apiUrl);
             APIResponse.fullResponse = response;
             DebugOutput.Log($"{response.StatusCode}");
             if (response.IsSuccessStatusCode)
@@ -277,7 +364,8 @@ namespace Core
             var statusCode = (int)response.StatusCode;
             if (response.IsSuccessStatusCode)
             {
-                var fullJson = await client.GetStringAsync(url);
+                // Avoid a second GET by reading the content from the initial response
+                var fullJson = await response.Content.ReadAsStringAsync();
                 WriteAPIJsonToFile(fullJson, apiName);
                 return SetResponse(response);
             }
@@ -303,7 +391,8 @@ namespace Core
             DebugOutput.Log($"{response.StatusCode}");
             if (response.IsSuccessStatusCode)
             {
-                var fullJson = await client.GetStringAsync(url);
+                // Read content from the response we just fetched
+                var fullJson = await response.Content.ReadAsStringAsync();
                 return fullJson;
             }
             else
@@ -331,7 +420,7 @@ namespace Core
                         DebugOutput.Log($"Status Code of {statusCode} received");
                         if (response.IsSuccessStatusCode)
                         {
-                            var fullJson = await client.GetStringAsync(url);
+                            var fullJson = await response.Content.ReadAsStringAsync();
                             return fullJson;
                         }
                         else
@@ -369,8 +458,7 @@ namespace Core
                 using (var client = new HttpClient(handler) { BaseAddress = baseAddress })
                 {
                     DebugOutput.Log($"client built");
-                    cookieContainer.Add(baseAddress, new Cookie("JSESSIONID", JSESSIONID));
-                    DebugOutput.Log($"cookie added");
+                    // Cookie already present in cookie container; avoid adding a duplicate.
 
                     response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
                     var statusCode = (int)response.StatusCode;
@@ -378,7 +466,7 @@ namespace Core
                     APIResponse.fullResponse = response;
                     if (response.IsSuccessStatusCode)
                     {
-                        var fullJson = await client.GetStringAsync(url);
+                        var fullJson = await response.Content.ReadAsStringAsync();
                         DebugOutput.Log($"FULL RESPONSE = {APIResponse.fullResponse.Headers}"); 
                         return fullJson;
                     }
@@ -423,6 +511,8 @@ namespace Core
 
         private static HttpClient? GetHttpClient(string authorisation = "", string userName = "", string userPassword = "")
         {
+            // Creates an HttpClient configured with a requested auth scheme. For token-based flows
+            // we try file on disk first, then fall back to an environment variable.
             var client = new HttpClient();
             switch(authorisation.ToLower())
             {
@@ -534,7 +624,7 @@ namespace Core
                         APIResponse.fullResponse = response;    
                         if (response.IsSuccessStatusCode)
                         {
-                            var fullJson = await client.GetStringAsync(url);
+                            var fullJson = await response.Content.ReadAsStringAsync();
                             WriteAPIJsonToFile(fullJson, apiName);
                             return SetResponse(response);
                         }
@@ -560,19 +650,13 @@ namespace Core
 
 
 
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
         ////////// PATCH
         ///      
 
-
+        /// <summary>
+        /// Sends a PATCH request with JSON payload. Optionally wraps payload in an array for APIs expecting batches.
+        /// </summary>
+        /// <remarks>Parameter name addSquareBrckets kept for backward compatibility.</remarks>
         public static async Task<HttpResponseMessage> Patch(string url, string jSonText, string apiName = "default", bool addSquareBrckets = true)
         {
             DebugOutput.OutputMethod($"APIUtil - Patch", $" {url} {apiName}");
@@ -642,22 +726,7 @@ namespace Core
 
         }
 
-
-
-
-
-
-
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        /////////   POST
+        ////////// POST
         ///
         
 
@@ -835,8 +904,8 @@ namespace Core
                         // Build the URL for the Jira issue attachment API endpoint
                         string attachmentUrl = $"{url}/rest/api/2/issue/{issueKey}/attachments";
 
-                        // Send the POST request to upload the attachment
-                        response = await client.PostAsync(url, multipartFormDataContent);
+                        // Send the POST request to upload the attachment (use the attachmentUrl - bugfix)
+                        response = await client.PostAsync(attachmentUrl, multipartFormDataContent);
                         if (response.IsSuccessStatusCode) DebugOutput.Log($"PASSED AND SENT!");
                         else DebugOutput.Log($"FAiled and not sent!");
                         return SetResponse(response);
@@ -1009,22 +1078,13 @@ namespace Core
 
 
 
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
         ////////// PUT
         ///
         
         
         public static async Task<HttpResponseMessage> PutContentWithToken(string url, StringContent content, string type = "token", string email = "", string domain = "")
         {
-            DebugOutput.Log($"APIUtil - PostContentWithToken {url} {content}");
+            DebugOutput.Log($"APIUtil - PutContentWithToken {url} {content}");
             if (url == "") url = "https://proactionuk.ent.cgi.com/jira/rest/api/2/issue";
             HttpResponseMessage response = new HttpResponseMessage();
             var client= GetHttpClient(type, email, domain);
@@ -1046,7 +1106,8 @@ namespace Core
 
         public static async Task<HttpResponseMessage> PutStringWithToken(string url = "", string text = "")
         {
-            DebugOutput.OutputMethod($"APIUtil - PostJsonWithToken", $" {url} {text}");
+            DebugOutput.OutputMethod($"APIUtil - PutStringWithToken", $" {url} {text}");
+            // NOTE: Jira comment endpoints typically expect { "body": "..." }. Adjust as needed for the target API.
             var body = new { fields = new { description = text } };
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(body);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -1120,23 +1181,7 @@ namespace Core
             return response;
         }
 
-
-
-
-
-
-
-
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        //////// WAIT 
+        ////////// WAIT 
         ///
 
         public static async Task<HttpResponseMessage> WaitForAPICompletion(string url, string completionCheck, string userName = "", string userPassword = "")
@@ -1157,8 +1202,8 @@ namespace Core
                         if (response.IsSuccessStatusCode)
                         {
                             DebugOutput.Log($"We have a success code - but is it completed?");
-                            int waitTimer = 500;
-                            int fullTimer = 10000;
+                            int waitTimer = 500;      // milliseconds between polls
+                            int fullTimer = 10000;     // overall polling window in milliseconds
                             for (int x = 0; x < fullTimer; x = x + waitTimer)
                             {
                                 var fullJson = await client.GetStringAsync(url);
@@ -1169,7 +1214,8 @@ namespace Core
                                     return SetResponse(response);
                                 } 
                                 DebugOutput.Log($"NOT DONE YET! {x}");
-                                Thread.Sleep(500);
+                                // Don't block the thread inside async code
+                                await Task.Delay(waitTimer).ConfigureAwait(false);
                             }
                             return SetResponse(response);
                         }
@@ -1197,21 +1243,13 @@ namespace Core
 
 
 
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
         //////////   PRIVATE AREA
 
 
         private static string FixJSessionCookie(string JSESSION)
         {
             DebugOutput.OutputMethod($"APIUtil - FixJSessionCookie", $" {JSESSION} ");
+            // Normalize a Set-Cookie value down to the cookie value only
             JSESSION = JSESSION.Replace("JSESSIONID=","");
             var listOfString = StringValues.BreakUpByDelimitedToList(JSESSION,";");
             DebugOutput.Log($"Returning {listOfString[0]}");
