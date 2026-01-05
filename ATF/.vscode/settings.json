@@ -39,6 +39,8 @@
             "value": ".*"            
         }            
     ],            
+    "cucumberautocomplete.strictGherkinCompletion": true,
+    "cucumberautocomplete.smartSnippets": true,
     "http.proxy": "",            
     "http.proxyAuthorization": null,            
     "http.proxyStrictSSL": false,

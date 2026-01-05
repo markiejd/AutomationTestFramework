@@ -19,7 +19,7 @@ namespace Generic.Elements.Steps.Page
         }
 
         
-        [Then(@"Page ""(.*)"" Is Not Displayed")]
+        [Then(@"Page ""([^""]*)"" Is Not Displayed")]
         public void ThenPageIsNotDisplayed(string pageName)
         {
             string proc = $"Then Page Is Not Displayed {pageName}";
