@@ -17,7 +17,7 @@ namespace Generic.Steps.Elements.Switch
         public void ThenSwitchIsDisplayed(string switchName)
         {
             string proc = $"Then Switch {switchName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 DebugOutput.Log($"Do I get here?");
                 if (Helpers.Switch.IsDisplayed(switchName))
@@ -33,7 +33,7 @@ namespace Generic.Steps.Elements.Switch
         public void ThenSwitchIsNotDisplayed(string switchName)
         {
             string proc = $"Then Switch {switchName} Is Not Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!Helpers.Switch.IsDisplayed(switchName))
                 {
@@ -55,7 +55,7 @@ namespace Generic.Steps.Elements.Switch
                 return;
             }
             string proc = $"Then Switch {switchName} Is {status}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Switch.Status(switchName) == expectedStatus)
                 {

@@ -34,7 +34,7 @@ namespace Generic.Steps
         public bool WhenIUnzipFile(string zipFileRepoLocation)
         {
             string proc = $"When I Unzip File {zipFileRepoLocation}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 // the directory and path give must be made into OS format
                 var osZipFileRepoLocation = FileUtils.GetCorrectDirectory(zipFileRepoLocation);
@@ -90,7 +90,7 @@ namespace Generic.Steps
         public bool WhenIClickOnBackButtonInBrowser()
         {
             string proc = $"When I Click On Back Button In Browser";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!ElementInteraction.ClickBackButtonInBrowser()) return Failed(proc, "Failed to click on browsers back button!");
                 return true;
@@ -113,7 +113,7 @@ namespace Generic.Steps
                 repoDirectory = repoDirectory + "/";
             }
             string proc = $"When I Clear Repo Directory {repoDirectory}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var osDirectory = FileUtils.GetCorrectDirectory(repoDirectory);
                 DebugOutput.Log($"The OS format of the directory is {osDirectory}");
@@ -138,7 +138,7 @@ namespace Generic.Steps
         public async Task<bool> WhenIGetFromURL(string url)
         {
             string proc = $"When I Get From URL {url}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var response = await APIUtil.Get(url, "get");
                 if (response.IsSuccessStatusCode)
@@ -156,7 +156,7 @@ namespace Generic.Steps
         public async Task<bool> WhenUsingWindowsAuthenticationUserPasswordIGetFromURL(string winUser,string winPassword,string url)
         {
             string proc = $"When I Get From URL {url}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var response = await APIUtil.GetWithWindowsAuth(url,"getWithAuth", winUser, winPassword);
                 if (response.IsSuccessStatusCode)
@@ -174,7 +174,7 @@ namespace Generic.Steps
         public async Task<bool> WhenIPostJsonToURL(string jSonString,string url)
         {
             string proc = $"When I Post Json {jSonString} To URL {url}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var response = await APIUtil.Post(url, jSonString, "post", false);
                 if (response.IsSuccessStatusCode)
@@ -192,7 +192,7 @@ namespace Generic.Steps
         public async Task<bool> WhenIPostJsonFileToURL(string jsonFileLocation,string url)
         {
             string proc = $"When I Post Json File {jsonFileLocation} To URL {url}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!FileUtils.OSFileCheck(jsonFileLocation))
                 {
@@ -212,7 +212,7 @@ namespace Generic.Steps
         public async Task<bool> WhenIPatchJsonToURL(string jSonString,string url)
         {
             string proc = $"When I Patch Json {jSonString} To URL {url}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var response = await APIUtil.Post(url, jSonString, "post", false);
                 if (response.IsSuccessStatusCode)
@@ -230,7 +230,7 @@ namespace Generic.Steps
         public async Task<bool> WhenIPatchJsonFileToURL(string jsonFileLocation,string url)
         {
             string proc = $"When I Patch Json {jsonFileLocation} To URL {url}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!FileUtils.OSFileCheck(jsonFileLocation))
                 {
@@ -250,7 +250,7 @@ namespace Generic.Steps
         public bool WhenISwitchToTab(int tabNumber)
         {
             string proc = $"When I Switch To Tab {tabNumber}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 return false;
                 // if (!ElementInteraction.SwapTabByNumber(tabNumber))
@@ -267,7 +267,7 @@ namespace Generic.Steps
         public bool WhenICloseTab(int tabNumber)
         {
             string proc = $"When I Close Tab {tabNumber}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 return false;
                 // if (!ElementInteraction.CloseTabByNumber(tabNumber))

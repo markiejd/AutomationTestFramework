@@ -22,7 +22,7 @@ namespace Generic.Elements.Steps.Image
         public void WhenIMoveToImage(string ImageName)
         {
             string proc = $"Whne I Move To Image {ImageName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Image.MoveToImage(ImageName))
                 {

@@ -17,7 +17,7 @@ namespace Generic.Elements.Steps.Datepicker
         public void GivenDatePickerIsEqualTo(string datePickerName, string date)
         {
             string proc = $"Given DatePicker {datePickerName} Is Equal To {date}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.DatePicker.SetDateValue(datePickerName, date))
                 {

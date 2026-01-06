@@ -93,7 +93,7 @@ namespace Generic.Steps
         public void GivenAppIsOpen(string applicationExePath)
         {
             string proc = $"Given App {applicationExePath} Is Open";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Application.OpenApplication(applicationExePath)) return;
                 CombinedSteps.Failure("There has been a failure when trying to get the windows driver to be active");
@@ -104,7 +104,7 @@ namespace Generic.Steps
         public void GivenAppIsClosed()
         {
             string proc = $"Given App Is Close";
-            if (!CombinedSteps.OuputProc(proc))
+            if (!CombinedSteps.OutputProc(proc))
             {
                 DebugOutput.Log($"We still want to try and close the app - even after failure");
             }
@@ -152,7 +152,7 @@ namespace Generic.Steps
                 }
             }
 
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 switch (browser.ToLower())
                 {
@@ -203,7 +203,7 @@ namespace Generic.Steps
         public bool GivenFileExists(string fullFileLocation)
         {
             string proc = $"Given File {fullFileLocation} Exists";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!FileUtils.OSFileCheck(fullFileLocation))
                 {
@@ -225,7 +225,7 @@ namespace Generic.Steps
         public bool GivenFileDoesNotExists(string fullFileLocation)
         {
             string proc = $"Given File {fullFileLocation} Does Not Exists";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!FileUtils.OSFileCheck(fullFileLocation))
                 {

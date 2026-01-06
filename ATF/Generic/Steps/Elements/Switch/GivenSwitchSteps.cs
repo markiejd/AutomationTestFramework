@@ -16,7 +16,7 @@ namespace Generic.Steps.Elements.Switch
         public void GivenSwitchIs(string switchName,string status)
         {
             string proc = $"Given Switch {switchName} Is {status}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 bool? expectedStatus = GetStatusAsBool(status);
                 if (expectedStatus == null)

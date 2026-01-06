@@ -360,7 +360,7 @@ namespace AppSpecFlow.AppSteps
         public void ThenWaitForFileToBeBy(string fileName, string process, string ingestionType)
         {
             string proc = $"Then Wait For File {fileName} To Be {process} By {ingestionType}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!ThenWaitForFileInADF(fileName, process, ingestionType))
                 {
@@ -376,7 +376,7 @@ namespace AppSpecFlow.AppSteps
         public void GivenTableRowIsReadyForViewDataCorrection(string tableName,int rowNumber)
         {
             string proc = $"Given Table {tableName} Row {rowNumber} Is Ready For View Data Correction";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 // find the table
                 ThenTableSteps.ThenTableIsDisplayed(tableName);
@@ -437,7 +437,7 @@ namespace AppSpecFlow.AppSteps
         public void WhenIUnzipFileBy(string repoZipFile, string ingestionType)
         {
             string proc = $"When I Unzip File {repoZipFile} By {ingestionType}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 // repoZipFile is something like /AppSpecFlow/TestResults/Rejected/HX25-8744_BL001_corrupted_Unreadable.zip
                 // we need just the path not the file name
@@ -515,7 +515,7 @@ namespace AppSpecFlow.AppSteps
         public void WhenIDeleteZippedFileBy(string repoFile,string ingestionType)
         {
             string proc = $"When I Delete Zipped File {repoFile} By {ingestionType}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 // repoFile is something like /AppSpecFlow/TestResults/Rejected/HX25-8744_BL001_corrupted.zip
                 // we need just the path not the file name
@@ -585,7 +585,7 @@ namespace AppSpecFlow.AppSteps
         public string? ThenFileIsFoundInByAsUnreadable(string originalZipFile, string repoPathWhereZipFileWas, string ingestionType)
         {
             string proc = $"Then File {originalZipFile} Is Found In {repoPathWhereZipFileWas} By {ingestionType} As Unreadable";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 // does the repoPathWhereZipFileWas exist
                 var fullRepoPathWhereZipFileWas = FileUtils.GetRepoDirectory() + "\\" + repoPathWhereZipFileWas;
@@ -633,7 +633,7 @@ namespace AppSpecFlow.AppSteps
         public string? ThenFileIsFoundInBy(string originalZipFile, string repoPathWhereZipFileWas, string ingestionType)
         {
             string proc = $"Then File {originalZipFile} Is Found In {repoPathWhereZipFileWas} By {ingestionType}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 // does the repoPathWhereZipFileWas exist
                 var fullRepoPathWhereZipFileWas = FileUtils.GetRepoDirectory() + "\\" + repoPathWhereZipFileWas;
@@ -718,7 +718,7 @@ namespace AppSpecFlow.AppSteps
         public void ThenExcelFileFoundInByHasSheet(string excelFileName, string zippedFolderPath, string ingestionType, string sheetName)
         {
             string proc = $"Then Excel File {excelFileName} Found In {zippedFolderPath} By {ingestionType} Has Sheet {sheetName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var OSFileName = ThenFileIsFoundInBy(excelFileName, zippedFolderPath, ingestionType);
                 if (OSFileName == null)
@@ -763,7 +763,7 @@ namespace AppSpecFlow.AppSteps
                 expectedValue = string.Empty;
             }
             string proc = $"Then Excel File {excelFileName} Sheet {sheetName} Cell {cellLocation} Equal To {expectedValue} Found In {folderPath} By {ingestionType}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var OSFileName = ThenFileIsFoundInBy(excelFileName, folderPath, ingestionType);
                 if (OSFileName == null)
@@ -805,7 +805,7 @@ namespace AppSpecFlow.AppSteps
         public void ThenExcelFileFoundINByHasSheets(string excelFileName, string zippedFolderPath, string ingestionType,int expectedSheetCount)
         {
             string proc = $"Then Excel File {excelFileName} Found IN {zippedFolderPath} By {ingestionType} Has {expectedSheetCount} Sheets";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var OSFileName = ThenFileIsFoundInBy(excelFileName, zippedFolderPath, ingestionType);
                 if (OSFileName == null)
@@ -846,7 +846,7 @@ namespace AppSpecFlow.AppSteps
         public void ThenInputFileDirectoryStructureIsCreatedFor(string IngestionType)
         {
             string proc = $"Then Input File Directory Structure Is Created For {IngestionType}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 string ADFDirectory = "";
                 switch (IngestionType.ToLower())
@@ -890,7 +890,7 @@ namespace AppSpecFlow.AppSteps
         public void WhenIAPITrigger(string IngestionType)
         {
             string proc = $"When I API Trigger {IngestionType}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var interfaceId = GetIngestionTypeDirectory(IngestionType);
                 if (interfaceId == "")
@@ -913,7 +913,7 @@ namespace AppSpecFlow.AppSteps
         {
             string proc = $"Then File {fileInRepoPath} Contains The Error {errorText}";
             var errorWarningText = "---- ERROR REPORT ----";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var fullFileNameAndPath = FileUtils.GetRepoDirectory() + fileInRepoPath;
                 fullFileNameAndPath = fullFileNameAndPath.Replace("\\", "/");
@@ -959,7 +959,7 @@ namespace AppSpecFlow.AppSteps
         public void GivenADFHasBeenCleared(string ingestionType)
         {
             string proc = $"Given ADF {ingestionType} Has Been Cleared";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 string ADFDirectory = "";
                 switch (ingestionType.ToLower())
@@ -1019,7 +1019,7 @@ namespace AppSpecFlow.AppSteps
         public void GivenInputFileFor(string fileToBeUploaded, string IngestionType)
         {
             string proc = $"Given Input File {fileToBeUploaded} For {IngestionType}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 string ADFDirectory = "";
                 switch(IngestionType.ToLower())

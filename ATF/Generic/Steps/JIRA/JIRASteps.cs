@@ -58,7 +58,7 @@ namespace Generic.Steps
         public async Task<HttpResponseMessage?> GivenJiraServerIsAvailable()
         {
             string proc = $"Given Jira Server Is Available";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 TargetJiraConfiguration.JiraConfiguration? jiraDetails;
                 if (!IsJiraEnabled() || TargetConfiguration.Configuration.JiraName == null )
@@ -111,7 +111,7 @@ namespace Generic.Steps
         public async Task<bool> GivenJiraEvidenceIsUploadedFromThisATF()
         {
             string proc = $"Given Jira Evidence Is Uploaded From This ATF";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 // get a list of directories in TestResults.
                 var testResultsDirectory = FileUtils.GetCorrectDirectory("/AppSpecFlow/TestResults/");
@@ -212,7 +212,7 @@ namespace Generic.Steps
         public async Task<bool> ThenJiraIssueExists(string issueNumber)
         {
             string proc = $"Then Jira Issue {issueNumber} Exists";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 TargetJiraConfiguration.JiraConfiguration? jiraDetails;
                 if (!IsJiraEnabled() || TargetConfiguration.Configuration.JiraName == null )
@@ -267,7 +267,7 @@ namespace Generic.Steps
         public async Task<bool> WhenIUploadToJiraTestExecution(string file,string executionKey)
         {
             string proc = $"When I Upload {file} To Jira Test Execution Key {executionKey}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var uploaded = await Jira.UploadAttachment(executionKey, file);
                 if (uploaded)  return true;
@@ -303,7 +303,7 @@ namespace Generic.Steps
         public async Task<bool> ThenTestExecutionKeyExistsInJira(string executionKey)
         {
             string proc = $"Then Test Execution Key {executionKey} Exists In Jira";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 TargetJiraConfiguration.JiraConfiguration? jiraDetails;
                 if (!IsJiraEnabled() || TargetConfiguration.Configuration.JiraName == null )
@@ -356,7 +356,7 @@ namespace Generic.Steps
         public async Task<bool> ThenTextExecutionKeyContainsTest(string executionKey,string testKey)
         {
             string proc = $"Then Test Execution Key {executionKey} Contains Test {testKey}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 TargetJiraConfiguration.JiraConfiguration? jiraDetails;
                 if (!IsJiraEnabled() || TargetConfiguration.Configuration.JiraName == null )
@@ -444,7 +444,7 @@ namespace Generic.Steps
         public void WhenIMoveTestExecutionKeyTestToStatus(string executionKey,string testKey,string status)
         {
             string proc = $"Then Test Execution Key {executionKey} Contains Test {testKey}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 
             }
@@ -492,7 +492,7 @@ namespace Generic.Steps
         public  async Task<bool> WhenIUpdateJiraExecutionKeyInJira(string executionKey)
         {
             string proc = $"When I Update Jira Execution Key {executionKey} In Jira";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 //Make sure there is an execution executionKey
                 if (TargetConfiguration.Configuration.JiraName == null) return false;
@@ -565,7 +565,7 @@ namespace Generic.Steps
         public async Task<bool> WhenICreateExecuteTestExecutionKeyInJira(string executionKey)
         {
             string proc = $"When I Create Execute Test Execution Key {executionKey} In Jira";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (TargetConfiguration.Configuration.JiraName == null) return false;
                 var jiraDetails = TargetJiraConfiguration.GetJiraConfigurationByName(TargetConfiguration.Configuration.JiraName);
@@ -609,7 +609,7 @@ namespace Generic.Steps
         public async Task<bool> ThenTestKeyExistsInJira(string testKey)
         {
             string proc = $"Then Test Key {testKey} Exists In Jira";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var x = VariableConfiguration.Configuration;
                 var userName = x.JiraUserName;
@@ -635,7 +635,7 @@ namespace Generic.Steps
         public async Task<bool> ThenProjectExistsInJira(string projectName)
         {
             string proc = $"Then Project {projectName} Exists In Jira";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var x = VariableConfiguration.Configuration;
                 var userName = x.JiraUserName;
@@ -661,7 +661,7 @@ namespace Generic.Steps
         public async Task<bool> WhenIGetJiraDataFromURL(string url)
         {
             string proc = $"When I Get Jira Data From URL {url}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var x = VariableConfiguration.Configuration;
                 var userName = x.JiraUserName;

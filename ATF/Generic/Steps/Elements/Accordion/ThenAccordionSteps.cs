@@ -25,7 +25,7 @@ namespace Generic.Elements.Steps.Accordion
         public void ThenAccordionIsDisplayed(string accordianName)
         {
             string proc = $"Then Accordion {accordianName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Accordion.IsDisplayed(accordianName))
                 {
@@ -40,7 +40,7 @@ namespace Generic.Elements.Steps.Accordion
         public void ThenAccordionIsExpanded(string accordianName)
         {
             string proc = $"Then Accordion {accordianName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Accordion.IsAccordionExpanded(accordianName))
                 {
@@ -56,7 +56,7 @@ namespace Generic.Elements.Steps.Accordion
         public void ThenGroupInAccordionIsExpanded(string groupName, string accordianName)
         {
             string proc = $"Then Group {groupName} In Accordion {accordianName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Accordion.GroupIsExpanded(accordianName, groupName))
                 {
@@ -72,7 +72,7 @@ namespace Generic.Elements.Steps.Accordion
         public void ThenGroupContainedInAccordion(string groupName, string accordianName)
         {
             string proc = $"Then Group {groupName} Contained In Accordion {accordianName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Accordion.GroupIsDisplayed(accordianName, groupName))
                 {
@@ -88,7 +88,7 @@ namespace Generic.Elements.Steps.Accordion
         public void ThenGroupInAccordionIsNotExpanded(string groupName, string accordianName)
         {
             string proc = $"Then Group {groupName} In Accordion {accordianName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Accordion.GroupIsNotExpanded(accordianName, groupName))
                 {
@@ -103,7 +103,7 @@ namespace Generic.Elements.Steps.Accordion
         public void ThenButtonInAccordionDisplayed(string buttonName, string accordianName)
         {
             string proc = $"Then Button {buttonName} In Accordion {accordianName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Accordion.IsButtonDisplayed(accordianName, buttonName))    
                 {

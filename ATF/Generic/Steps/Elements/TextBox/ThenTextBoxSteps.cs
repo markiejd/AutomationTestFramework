@@ -26,7 +26,7 @@ namespace Generic.Elements.Steps.Textbox
         public void ThenTextBoxIsDisplayed(string textBoxName)
         {
             string proc = $"Then TextBox {textBoxName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.TextBox.IsDisplayed(textBoxName))
                 {
@@ -42,7 +42,7 @@ namespace Generic.Elements.Steps.Textbox
         public void ThenTextBoxIsNotDisplayed(string textBoxName)
         {
             string proc = $"Then TextBox {textBoxName} Is Not Displayed HELLO";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!Helpers.TextBox.IsDisplayed(textBoxName, 1))
                 {
@@ -59,7 +59,7 @@ namespace Generic.Elements.Steps.Textbox
         public void ThenTextBoxIsReadOnly(string textBoxName)
         {
             string proc = $"Then TextBox {textBoxName} Is Read Only";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.TextBox.IsReadOnly(textBoxName))
                 {
@@ -75,7 +75,7 @@ namespace Generic.Elements.Steps.Textbox
         public void ThenTextboxIsNotReadOnly(string textBoxName)
         {
             string proc = $"Then TextBox {textBoxName} Is Not Read Only";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!Helpers.TextBox.IsReadOnly(textBoxName))
                 {
@@ -94,7 +94,7 @@ namespace Generic.Elements.Steps.Textbox
         {
             string proc = $"Then TextBox {textBoxName} Is Equal To {text}";
             text = StringValues.TextReplacementService(text);
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 text = StringValues.TextReplacementService(text);
                 if (Helpers.TextBox.GetText(textBoxName) == text)
@@ -114,7 +114,7 @@ namespace Generic.Elements.Steps.Textbox
             string proc = $"Then TextBox {textBoxName} Contains {text}";
             text = StringValues.TextReplacementService(text);
             proc = $"Then TextBox {textBoxName} Contains {text}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.TextBox.GetText(textBoxName).Contains(text))
                 {
@@ -132,7 +132,7 @@ namespace Generic.Elements.Steps.Textbox
         {
             string proc = $"Then TextBox {textBoxName} Is Not Equal To {text}";
             text = StringValues.TextReplacementService(text);
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.TextBox.GetText(textBoxName) != text)
                 {
@@ -149,7 +149,7 @@ namespace Generic.Elements.Steps.Textbox
         public void ThenTextboxIsWiderThenTextBox(string textBox1, string textBox2)
         {
             string proc = $"Then TextBox {textBox1} Is Wider Then TextBox {textBox2}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.TextBox.GetWidthOfTextBox(textBox1) > Helpers.TextBox.GetWidthOfTextBox(textBox2))
                 {
@@ -165,7 +165,7 @@ namespace Generic.Elements.Steps.Textbox
         {
             string proc = $"Then Placeholder In TextBox {textBoxName} Is {placeHolderText}";
             placeHolderText = StringValues.TextReplacementService(placeHolderText);
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.TextBox.GetPlaceholderText(textBoxName) == placeHolderText)
                 {

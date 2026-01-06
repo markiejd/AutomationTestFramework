@@ -17,7 +17,7 @@ namespace Generic.Elements.Steps.Image
         public void ThenPageImageIsCaptured()
         {
             string proc = $"Then Page Image Is Captured";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Image.GetImageOfPage())
                 {
@@ -33,7 +33,7 @@ namespace Generic.Elements.Steps.Image
         public bool ThenImageOfElementIsCaptured(string imageName)
         {
             string proc = $"Then Image {imageName} Is Captured";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Image.GetImageOfElement(imageName))
                 {
@@ -49,7 +49,7 @@ namespace Generic.Elements.Steps.Image
         public bool ThenImageOfElementIsEqualToInTestCompareDirectory(string imageOfElement, string oldImageOfElement)
         {
             string proc = $"Then Image {imageOfElement} On Screen Is Equal To {oldImageOfElement} In TestOutput Directory";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if(Helpers.Image.GetImageOfElement(imageOfElement))
                 {
@@ -67,7 +67,7 @@ namespace Generic.Elements.Steps.Image
         public void ThenImageOfElementIsNotEqualToInTestOutputDirectory(string imageOfElement, string oldImageOfElement)
         {
             string proc = $"Then Image {imageOfElement} On Screen Is Not Equal To {oldImageOfElement} In TestOutput Directory";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Image.GetImageOfElement(imageOfElement))
                 {
@@ -85,7 +85,7 @@ namespace Generic.Elements.Steps.Image
         public void ThenImageOnScreenContainsImageFoundInTestCompareDirectory(string imageOfElement, string subImage)
         {
             string proc = $"Then Image {imageOfElement} On Screen Contains Image {subImage} Found In TestCompare Directory";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Image.GetImageOfElement(imageOfElement))
                 {
@@ -103,7 +103,7 @@ namespace Generic.Elements.Steps.Image
         public void ThenImageIsFoundOnCurrentPage(string image)
         {
             string proc = $"Then Image {image} Is Found On Current page";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 //This creates the currentPage.png in TestOutput
                 if (Helpers.Image.ScreenShotPage())
@@ -122,7 +122,7 @@ namespace Generic.Elements.Steps.Image
         public void ThenImageElementIsDisplayed(string elementName)
         {
             string proc = $"Then Image Element {elementName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Image.ImageElementDisplayed(elementName)) 
                 {

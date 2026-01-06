@@ -17,7 +17,7 @@ namespace Generic.Elements.Steps.Tree
         public void GivenNodeIsSelectedInTree(string node, string tree)
         {
             string proc = $"Given Node {node} Is Selected In Tree {tree}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Tree.SelectNodeFromTree(node, tree))
                 {
@@ -33,7 +33,7 @@ namespace Generic.Elements.Steps.Tree
         public void GivenNodeExistsInTree(string node, string treeName)
         {
             string proc = $"Given Node {node} Exiss In Tree {treeName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Tree.ConfirmNode(node, treeName))
                 {

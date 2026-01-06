@@ -17,7 +17,7 @@ namespace Generic.Elements.Steps.Button
         public void WhenISetSliderTo(string slider, string value)
         {
             string proc = $"When I Set Slider {slider} To {value}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Slider.SetSliderValue(slider, value))
                 {
@@ -32,7 +32,7 @@ namespace Generic.Elements.Steps.Button
         public void WhenIEnterInSlider(string value, string slider)
         {
             string proc = $"When I Enter {value} In Slider {slider}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Slider.EnterSliderValue(slider, value)) 
                 {

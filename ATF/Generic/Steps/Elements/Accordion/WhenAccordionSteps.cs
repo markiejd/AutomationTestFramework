@@ -18,7 +18,7 @@ namespace Generic.Elements.Steps.Accordion
         public void WhenIClickAccordion(string accordianName)
         {
             string proc = $"When I Contract Accordion {accordianName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Accordion.AccordionClick(accordianName))
                 {
@@ -34,7 +34,7 @@ namespace Generic.Elements.Steps.Accordion
         public void WhenIClickGroupInAccordion(string groupName, string accordianName)
         {
             string proc = $"When I Click Group {groupName} In Accordion {accordianName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Accordion.GroupClick(accordianName, groupName))
                 {
@@ -50,7 +50,7 @@ namespace Generic.Elements.Steps.Accordion
         public void WhenIClickOnAccordionItemInAccordion(string accordionItem,string accordianName)
         {
             string proc = $"When I Click Accordion Item {accordionItem} In Accordion {accordianName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Accordion.AccordionItemClick(accordianName, accordionItem)) return;
                 CombinedSteps.Failure(proc);
@@ -63,7 +63,7 @@ namespace Generic.Elements.Steps.Accordion
         public void WhenIClickButtonInAccordion(string buttonName, string accordianName)
         {
             string proc = $"When I Click Button {buttonName} In Accordion {accordianName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Accordion.ButtonClick(accordianName, buttonName))
                 {

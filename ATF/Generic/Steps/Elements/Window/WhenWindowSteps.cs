@@ -18,7 +18,7 @@ namespace Generic.Elements.Steps.Window
         public void WhenICloseWindow(string windowsName)
         {
             string proc = $"When I Close Window {windowsName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Window.CloseWindow(windowsName))
                 {
@@ -41,7 +41,7 @@ namespace Generic.Elements.Steps.Window
         public void WhenICloseWindow()
         {
             string proc = $"When I Close Window";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Window.CloseTopElement())
                 {

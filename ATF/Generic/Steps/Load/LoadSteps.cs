@@ -35,7 +35,7 @@ namespace Generic.Steps
         {
             string proc = $"Given ATF368 Json Config Is Set As API \"{API}\" Verify SSL \"{SSL}\" Request \"{requestName}\" API KEY \"{APIKey}\" User Number {userNumber} Increment Rate {incrementRate} Run Time \"{runTime}\"";
 
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 DebugOutput.Log($"Creating Model with the following parameters: API: {API} verify_ssl: {SSL} request: {requestName} api_key: {APIKey} user_number: {userNumber} increment_rate: {incrementRate} run_time: {runTime}");
                 if (API == null || requestName == null)

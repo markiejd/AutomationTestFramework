@@ -19,7 +19,7 @@ namespace Generic.Elements.Steps.Tree
         {
             string proc = $"When I Expand Node {nodeName} In Tree {treeName}";
             DebugOutput.Log(proc + "jweojoeij");
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Tree.ExpandNodeInTree(treeName, nodeName))
                 {
@@ -36,7 +36,7 @@ namespace Generic.Elements.Steps.Tree
         public void WhenISelectNodeFromTree(string nodeName, string treeName)
         {
             string proc = $"When I Select {nodeName} From Tree {treeName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Tree.SelectNodeFromTree(nodeName, treeName))
                 {

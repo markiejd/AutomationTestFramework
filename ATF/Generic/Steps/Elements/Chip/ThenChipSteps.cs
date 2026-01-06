@@ -16,7 +16,7 @@ namespace Generic.Elements.Steps.Chip
         public void ThenChipArrayIsDisplayed(string chipArrayName)
         {
             string proc = $"Then Chip Arrary {chipArrayName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Chip.IsDisplayed(chipArrayName))
                 {
@@ -31,7 +31,7 @@ namespace Generic.Elements.Steps.Chip
         public void ThenChipArrayContainsChip(string chipArrayName, string chipName)
         {
             string proc = $"Then Chip Arrary {chipArrayName} Contains {chipName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Chip.ArraryContainsChip(chipArrayName, chipName))
                 {

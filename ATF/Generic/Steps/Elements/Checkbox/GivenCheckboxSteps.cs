@@ -16,7 +16,7 @@ namespace Generic.Elements.Steps.Checkbox
         public void GivenCheckBoxIsSelected(string checkboxName)
         {
             string proc = $"Given CheckBox {checkboxName} Is Selected";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Checkbox.Selected(checkboxName))
                 {
@@ -31,7 +31,7 @@ namespace Generic.Elements.Steps.Checkbox
         public void GivenCheckBoxIsNotSelected(string checkboxName)
         {
             string proc = $"Given CheckBox {checkboxName} Is Selected";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Checkbox.SelectedNot(checkboxName))
                 {

@@ -21,7 +21,7 @@ namespace Generic.Elements.Steps.TSQL
         public void ThenSQLCommandIsEqualTo(string sqlCommand,string expectedValue)
         {
             string proc = $"Then SQL Command {sqlCommand} Is Equal To {expectedValue}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var returnedString = Helpers.TSQL.SendSQLCommand(sqlCommand, "", "");
                 if (returnedString == null)
@@ -52,7 +52,7 @@ namespace Generic.Elements.Steps.TSQL
         public void ThenDeployedDataModelmatchesDataDictionary()
         {
             string proc = $"Then Deployed Data Model matches Data Dictionary";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!TSQLDataCode.CompareDatabaseToExcel())
                 {
@@ -68,7 +68,7 @@ namespace Generic.Elements.Steps.TSQL
         public void ThenDefinedSQLTableKeysHaskeyNameColumnNamekeyType(string tableName, string keyName, string columnName, string keyType)
         {
             string proc = $"Then Defined SQL Table Keys {tableName} Has keyName {keyName} ColumnName {columnName} keyType {keyType}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var descTableKeys = DescTableKeyStorage.GetDescTableKeyStore();
                 if (descTableKeys == null || descTableKeys.Count == 0)
@@ -115,7 +115,7 @@ namespace Generic.Elements.Steps.TSQL
         {
             string proc = $"Then Defined SQL Table {tableName} Has Column {columnName} With Data Type {dataType} And Max Length {maxLength} And Is Nullable {nullableString}";
             
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (maxLength.ToLower() == "null")
                 {

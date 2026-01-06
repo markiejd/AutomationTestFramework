@@ -16,7 +16,7 @@ namespace Generic.Steps.Elements.Stepper
         public void ThenStepperIsDisplayed(string stepperName)
         {
             string proc = $"Then Stepper {stepperName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Stepper.IsDisplayed(stepperName))
                 {
@@ -31,7 +31,7 @@ namespace Generic.Steps.Elements.Stepper
         public void ThenStepperContainsSteps(string stepperName, int numberOfSteps)
         {
             string proc = $"Then Stepper {stepperName} Contains {numberOfSteps} Steps";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Stepper.GetNumberOfSteps(stepperName) == numberOfSteps)
                 {
@@ -46,7 +46,7 @@ namespace Generic.Steps.Elements.Stepper
         public void ThenStepperContainsStep(string stepperName, string stepName)
         {
             string proc = $"Then Stepper {stepperName} Contains Step {stepName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Stepper.IsStepDisplayed(stepperName, stepName))
                 {
@@ -61,7 +61,7 @@ namespace Generic.Steps.Elements.Stepper
         public void ThenStepInStepperStatusIs(string stepName, string stepperName, string status)
         {
             string proc = $"Then Step {stepName} In Stepper {stepperName} Stust Is {status}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var stepValue = Helpers.Stepper.GetStatusOfStep(stepperName, stepName);
                 if (stepValue != null)

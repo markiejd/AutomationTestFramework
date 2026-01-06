@@ -17,7 +17,7 @@ namespace Generic.Elements.Steps.Button
         public void GivenButtonIsDisplayed(string buttonName)
         {
             string proc = $"Then Button {buttonName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Button.IsDisplayed(buttonName))
                 {
@@ -32,7 +32,7 @@ namespace Generic.Elements.Steps.Button
         public void GivenButtonIsActive(string buttonName)
         {
             string proc = $"Given Button {buttonName} Is Active";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Button.IsSelected(buttonName))
                 {

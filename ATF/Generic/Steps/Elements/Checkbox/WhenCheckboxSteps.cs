@@ -16,7 +16,7 @@ namespace Generic.Elements.Steps.Checkbox
         public void WhenIClickOnCheckBox(string checkboxName)
         {
             string proc = $"When I Click On CheckBox {checkboxName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Checkbox.Select(checkboxName))
                 {

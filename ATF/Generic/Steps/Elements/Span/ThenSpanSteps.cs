@@ -17,7 +17,7 @@ namespace Generic.Elements.Steps.Span
         public void ThenSpanIsDisplayed(string spanText)
         {
             string proc = $"Then Span {spanText} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Span.LinkDisplayedByName(spanText))
                 {

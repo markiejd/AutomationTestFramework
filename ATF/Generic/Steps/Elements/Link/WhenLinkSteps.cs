@@ -17,7 +17,7 @@ namespace Generic.Elements.Steps.Link
         public void WhenIClickLink(string linkName)
         {
             string proc = $"When I Click Link {linkName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Link.ClickLink(linkName))
                 {

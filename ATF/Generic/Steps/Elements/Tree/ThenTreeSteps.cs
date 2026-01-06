@@ -17,7 +17,7 @@ namespace Generic.Elements.Steps.Tree
         public void ThenTreeIsDisplayed(string treeName)
         {
             string proc = $"Then Tree {treeName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Tree.IsDisplayed(treeName))
                 {
@@ -33,7 +33,7 @@ namespace Generic.Elements.Steps.Tree
         public void ThenTreeIsNotDisplayed(string treeName)
         {
             string proc = $"Then Tree {treeName} Is Not Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!Helpers.Tree.IsDisplayed(treeName))
                 {
@@ -49,7 +49,7 @@ namespace Generic.Elements.Steps.Tree
         public void ThenTreeDoesNotContainNode(string treeName,string nodeName)
         {
             string proc = $"Then Tree {treeName} Does Not Contain Node {nodeName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!Helpers.Tree.IsNodeExist(treeName, nodeName))
                 {
@@ -68,7 +68,7 @@ namespace Generic.Elements.Steps.Tree
         public void ThenTreeNodeExists(string treeName, string nodeName)
         {
             string proc = $"Then Tree {treeName} Node {nodeName} Exists";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Tree.IsNodeExist(treeName, nodeName))
                 {

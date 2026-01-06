@@ -16,7 +16,7 @@ namespace Generic.Steps.Elements.Switch
         public void WhenIClickOnSwitch(string switchName)
         {
             string proc = $"When I Click On Switch {switchName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Switch.Click(switchName))
                 {

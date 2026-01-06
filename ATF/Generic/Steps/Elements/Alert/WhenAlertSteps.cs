@@ -18,7 +18,7 @@ namespace Generic.Steps.Elements.Alert
         public void WhenIAcceptAlert()
         {
             string proc = $"When I Accept Alert";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Alert.Accept())
                 {
@@ -33,7 +33,7 @@ namespace Generic.Steps.Elements.Alert
         public void ThenICancelAlert()
         {
             string proc = $"When I Cancel Alert";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Alert.Cancel())
                 {
@@ -48,7 +48,7 @@ namespace Generic.Steps.Elements.Alert
         public void WhenIEnterInAlert(string text)
         {
             string proc = $"When I Enter {text} In Alert";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Alert.SendKeys(text))
                 {

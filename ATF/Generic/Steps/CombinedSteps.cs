@@ -20,7 +20,7 @@ namespace Generic.Steps
             Assert.Fail(message + " FAILED");
         }
 
-        public static bool OuputProc(string proc, int timeOut = 0)
+        public static bool OutputProc(string proc, int timeOut = 0)
         {
             if (TargetConfiguration.Configuration == null) return false;
             if (TargetConfiguration.Configuration.OutputOnly)

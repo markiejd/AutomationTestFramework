@@ -18,7 +18,7 @@ namespace Generic.Elements.Steps.Tab
         {
             tabs = tabs.ToLower();
             string proc = $"Then Tabs {tabs} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Tab.IsDisplayed(tabs)) return;
                 CombinedSteps.Failure(proc);
@@ -31,7 +31,7 @@ namespace Generic.Elements.Steps.Tab
         {
             tabs = tabs.ToLower();
             string proc = $"Then Tabs {tabs} Contains {expecteNumberOfTabs} Tabs";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Tab.GetNumberOfTabsInTabs(tabs) == expecteNumberOfTabs) return;
                 CombinedSteps.Failure(proc);
@@ -45,7 +45,7 @@ namespace Generic.Elements.Steps.Tab
         {
             tabs = tabs.ToLower();
             string proc = $"Then Tabs {tabs} Contains {tabName} Tab";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Tab.TabContainedInTabs(tabs, tabName)) return;
                 CombinedSteps.Failure(proc);
@@ -59,7 +59,7 @@ namespace Generic.Elements.Steps.Tab
         {
             tabs = tabs.ToLower();
             string proc = $"Then Tabs {tabs} Does Not Contain Tab {tabName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!Helpers.Tab.TabContainedInTabs(tabs, tabName)) return;
                 CombinedSteps.Failure(proc);
@@ -74,7 +74,7 @@ namespace Generic.Elements.Steps.Tab
         {
             tabs = tabs.ToLower();
             string proc = $"Then Tab {tab} Is Selected In Tabs {tabs}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Tab.WhatTabIsSelected(tabs) == tab)
                 {

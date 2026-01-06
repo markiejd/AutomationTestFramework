@@ -20,7 +20,7 @@ namespace Generic.Elements.Steps.Page
         public void GivenURLIs(string url)
         {
             string proc = $"Given URL Is {url}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (ElementInteraction.NavigateToURL(url))
                 {
@@ -38,7 +38,7 @@ namespace Generic.Elements.Steps.Page
         public void GivenPageSizeX(int widthPixels, int heightPixels)
         {
             string proc = $"Given Page Size {widthPixels} x {heightPixels}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (ElementInteraction.SetWindowSize(widthPixels, heightPixels))
                 {
@@ -54,7 +54,7 @@ namespace Generic.Elements.Steps.Page
         public void GivenImagesFromElementsOnPageCaptured(string pageName)
         {
             string proc = $"Given Image From Elements On Page {pageName} Captured";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!TargetConfiguration.Configuration.HandleImages)
                 {
@@ -74,7 +74,7 @@ namespace Generic.Elements.Steps.Page
         public void GivenImagesFromElementsOnPageCompared(string pageName)
         {
             string proc = $"Given Image From Elements On Page {pageName} Compared";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!TargetConfiguration.Configuration.HandleImages)
                 {

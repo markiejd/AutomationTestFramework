@@ -18,7 +18,7 @@ namespace Generic.Elements.Steps.Table
         public void ThenTableIsDisplayed(string tableName)
         {
             string proc = $"Then Table {tableName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.IsDisplayed(tableName, 5))
                 {
@@ -34,7 +34,7 @@ namespace Generic.Elements.Steps.Table
         public void ThenTableHasRows(string tableName,int totalNumberOfRows)
         {
             string proc = $"Then Table {tableName} Has {totalNumberOfRows} Rows";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var numberOfRows = Helpers.Table.GetNumberOfRowsTotal(tableName);
                 DebugOutput.Log($"Total Number of Rows Found: {numberOfRows}");
@@ -53,7 +53,7 @@ namespace Generic.Elements.Steps.Table
         public void ThenTableIsNotDisplayed(string tableName)
         {
             string proc = $"Then Table {tableName} Is Not Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!Helpers.Table.IsDisplayed(tableName, 1))
                 {
@@ -69,7 +69,7 @@ namespace Generic.Elements.Steps.Table
         public void ThenTableHasColumn(string tableName,string columnName)
         {
             string proc = $"Then Table {tableName} Has Column {columnName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.IsColumnExist(tableName, columnName))
                 {
@@ -85,7 +85,7 @@ namespace Generic.Elements.Steps.Table
         public bool ThenTableHasColumnTitle(string tableName,int columnNumber,string columnTitle)
         {
             string proc = $"Then Table {tableName} Has Column {columnNumber} Title {columnTitle}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.IsColumnExistInLocation(tableName, columnTitle, columnNumber))
                 {
@@ -104,7 +104,7 @@ namespace Generic.Elements.Steps.Table
         public void ThenTableHasRowsDisplayed(string tableName, int numberOfRows)
         {
             string proc = $"Then Table {tableName} Has Rows {numberOfRows} Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.GetNumberOfRowsDisplayed(tableName) == numberOfRows)
                 {
@@ -120,7 +120,7 @@ namespace Generic.Elements.Steps.Table
         public void ThenTableIsEmpty(string tableName)
         {
             string proc = $"Then Table {tableName} Is Empty";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.GetNumberOfRowsDisplayed(tableName) == 0)
                 {
@@ -135,7 +135,7 @@ namespace Generic.Elements.Steps.Table
         public void ThenTableIsNotEmpty(string tableName)
         {
             string proc = $"Then Table {tableName} Is Not Empty";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.GetNumberOfRowsDisplayed(tableName) > 0)
                 {
@@ -152,7 +152,7 @@ namespace Generic.Elements.Steps.Table
         public void ThenTableRowColumnContainsHyperlink(string tableName,int rowNumber,int columnNumber)
         {
             string proc = $"Then Table {tableName} Row {rowNumber} Column {columnNumber} Contains Hyperlink";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.DoesRowColumnNumberContainsLink(tableName, rowNumber, columnNumber))
                 {
@@ -167,7 +167,7 @@ namespace Generic.Elements.Steps.Table
         public void ThenTableRowColumnContainsNoHyperlink(string tableName,int rowNumber,int columnNumber)
         {
             string proc = $"Then Table {tableName} Row {rowNumber} Column {columnNumber} Contains No Hyperlink";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!Helpers.Table.DoesRowColumnNumberContainsLink(tableName, rowNumber, columnNumber))
                 {
@@ -183,7 +183,7 @@ namespace Generic.Elements.Steps.Table
         public void ThenTableHasPopulatedRowsDisplayed(string tableName, int populatedRows)
         {
             string proc = $"Then Table {tableName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.GetNumberOfRowsDisplayed(tableName) == populatedRows)
                 //if (Helpers.Table.GetNumberOfPopulatedRowsDisplayed(tableName) == populatedRows)
@@ -199,7 +199,7 @@ namespace Generic.Elements.Steps.Table
         public void ThenTableColumnTitleRowIsEqualTo(string tableName, string columnTitle, int rowNumber, string value)
         {
             string proc = $"Then Table {tableName} Column Title {columnTitle} Row {rowNumber} Is Equal To {value}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.GetValueOfGridBoxUsingColumnTitle(tableName, columnTitle, rowNumber) == value)
                 {
@@ -214,7 +214,7 @@ namespace Generic.Elements.Steps.Table
         public void ThenTableRowIsHighlighted(string tableName, int rowNumber)
         {
             string proc = $"Then Table {tableName} Row {rowNumber} Is Highlighted";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.IsRowHighlighted(tableName, rowNumber))
                 {
@@ -229,7 +229,7 @@ namespace Generic.Elements.Steps.Table
         public void ThenTableRowIsNotHighlighted(string tableName, int rowNumber)
         {
             string proc = $"Then Table {tableName} Row {rowNumber} Is Not Highlighted";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!Helpers.Table.IsRowHighlighted(tableName, rowNumber))
                 {
@@ -247,7 +247,7 @@ namespace Generic.Elements.Steps.Table
         public void ThenTableRowColumnIsEqualTo(string tableName, int rowNumber, int columnNumber, string value)
         {
             string proc = $"Then Table {tableName} Row {rowNumber} Column {columnNumber} Is Equal To {value}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.GetValueOfGridBox(tableName, rowNumber, columnNumber, false) == value)
                 {
@@ -265,7 +265,7 @@ namespace Generic.Elements.Steps.Table
             string proc = $"Then Table {tableName} Column Title {columnName} Contains Value {value}";
             value = StringValues.TextReplacementService(value);
             proc = $"Then Table {tableName} Column Title {columnName} Contains Value {value}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.IsColumnContainValue(tableName, columnName, value))
                 {

@@ -19,7 +19,7 @@ namespace Generic.Elements.Steps.Button
         public bool ThenButtonIsDisplayed(string buttonName)
         {
             string proc = $"Then Button {buttonName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Button.IsDisplayed(buttonName))
                 {
@@ -37,7 +37,7 @@ namespace Generic.Elements.Steps.Button
         public bool ThenButtonIsNotDisplayed(string buttonName)
         {
             string proc = $"Then Button {buttonName} Is Not Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 Thread.Sleep(500);
                 if (!Helpers.Button.IsDisplayed(buttonName))
@@ -57,7 +57,7 @@ namespace Generic.Elements.Steps.Button
         public void ThenButtonIsEnabled(string buttonName)
         {
             string proc = $"Then Button {buttonName} Is Enabled";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Button.IsEnabled(buttonName))
                 {
@@ -73,7 +73,7 @@ namespace Generic.Elements.Steps.Button
         public void ThenButtonIsDisabled(string buttonName)
         {
             string proc = $"Then Button {buttonName} Is Disabled";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!Helpers.Button.IsEnabled(buttonName))
                 {

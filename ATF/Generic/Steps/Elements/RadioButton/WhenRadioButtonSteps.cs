@@ -17,7 +17,7 @@ namespace Generic.Elements.Steps.Radiobutton
         public void WhenIClickOnRadioButton(string radioButtonName)
         {
             string proc = $"When I Click On Radiobutton {radioButtonName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.RadioButton.Select(radioButtonName))
                 {

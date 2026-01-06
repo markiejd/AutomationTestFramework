@@ -19,7 +19,7 @@ namespace Generic.Elements.Steps.Dropdown
         public void WhenISelectFromDropdown(string selecting, string dropdownName)
         {
             string proc = $"When I Select {selecting} From Dropdown {dropdownName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Dropdown.SelectingFromWithoutText(selecting, dropdownName, 0, false))
                 {
@@ -34,7 +34,7 @@ namespace Generic.Elements.Steps.Dropdown
         public void WhenIChangeSelectedFromDropDown(string selecting,string dropdownName)
         {
             string proc = $"When I Change Selected {selecting} From Dropdown {dropdownName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Dropdown.SelectingFromWithoutText(selecting, dropdownName, 0, true))
                 {
@@ -49,7 +49,7 @@ namespace Generic.Elements.Steps.Dropdown
         public void WhenIEnterAndSelectFromDropDown(string selecting, string dropdownName)
         {
             string proc = $"When I Enter And Select {selecting} From Dropdown {dropdownName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Dropdown.EnterThenSelectFrom(selecting, dropdownName))
                 {
@@ -65,7 +65,7 @@ namespace Generic.Elements.Steps.Dropdown
         public void WhenIClickOnDropDown(string dropdownName)
         {            
             string proc = $"When I Click On DropDown {dropdownName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Dropdown.Click(dropdownName))
                 {

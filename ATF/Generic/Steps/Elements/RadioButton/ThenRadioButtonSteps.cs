@@ -17,7 +17,7 @@ namespace Generic.Elements.Steps.Radiobutton
         public void ThenRadioButtonIsDisplayed(string radioButtonName)
         {
             string proc = $"Then Radiobutton {radioButtonName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.RadioButton.IsDisplayed(radioButtonName))   
                 {
@@ -32,7 +32,7 @@ namespace Generic.Elements.Steps.Radiobutton
         public void ThenRadioButtonIsReadOnly(string radioButtonName)
         {
             string proc = $"Then Radiobutton {radioButtonName} Is Read Only";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!Helpers.RadioButton.IsEnabled(radioButtonName))
                 {
@@ -47,7 +47,7 @@ namespace Generic.Elements.Steps.Radiobutton
         public void ThenRadioButtonIsEnabled(string radioButtonName)
         {
             string proc = $"Then Radiobutton {radioButtonName} Is Read Only";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.RadioButton.IsEnabled(radioButtonName))
                 {
@@ -62,7 +62,7 @@ namespace Generic.Elements.Steps.Radiobutton
         public void ThenRadioButtonIsSelected(string radioButtonName)
         {
             string proc = $"Then Radiobutton {radioButtonName} Is Selected";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.RadioButton.IsSelected(radioButtonName))
                 {
@@ -77,7 +77,7 @@ namespace Generic.Elements.Steps.Radiobutton
         public void ThenRadioButtonIsNotSelected(string radioButtonName)
         {
             string proc = $"Then Radiobutton {radioButtonName} Is Not Selected";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!Helpers.RadioButton.IsSelected(radioButtonName))
                 {

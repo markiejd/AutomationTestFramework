@@ -17,7 +17,7 @@ namespace Generic.Elements.Steps.Spinner
         public void ThenSpinnerIsDisplayed()
         {
             string proc = $"Then Spinner Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Spinner.StillDisplayed())
                 {
