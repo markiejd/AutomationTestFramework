@@ -17,7 +17,7 @@ namespace Generic.Steps.Elements.Alert
         public void ThenAlertIsDisplayed(string alertMessage)
         {
             string proc = $"Then Alert {alertMessage} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Alert.IsDisplayed(alertMessage))
                 {

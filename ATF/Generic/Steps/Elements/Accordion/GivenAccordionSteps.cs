@@ -17,7 +17,7 @@ namespace Generic.Elements.Steps.Accordion
         public void GivenAccordionIsExpanded(string accordionName)
         {
             string proc = $"Given Accordion {accordionName} Is Expanded";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Accordion.IsAccordionExpanded(accordionName)) return;
                 DebugOutput.Log($"Need to expand accordion {accordionName}");

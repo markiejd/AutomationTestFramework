@@ -33,7 +33,7 @@ namespace Generic.Elements.Steps.Page
         public void WhenICompareImagesInPageObjectInDirectory(string pageName,string directory)
         {
             string proc = $"When I Compare Images In Page Object {pageName} In Directory{directory} ";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var newPageName = directory + "" + pageName + " Page";
                 newPageName = StringValues.GetTextInCase(newPageName);

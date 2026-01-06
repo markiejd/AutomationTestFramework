@@ -21,7 +21,7 @@ namespace Generic.Elements.Steps.Dropdown
         public void ThenDropdownIsEqualTo(string dropdownName, string value)
         {
             string proc = $"Then Dropdown {dropdownName} Is Equal To {value}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Dropdown.GetCurrentValue(dropdownName) == value)
                 {
@@ -45,7 +45,7 @@ namespace Generic.Elements.Steps.Dropdown
         public void ThenDropdownIsDisplayed(string dropdownName)
         {
             string proc = $"Then Dropdown {dropdownName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Dropdown.IsDisplayed(dropdownName))
                 {
@@ -62,7 +62,7 @@ namespace Generic.Elements.Steps.Dropdown
         public void ThenDropDownContainsOption(string dropdownName,string value)
         {
             string proc = $"Then Dropdown {dropdownName} Contains Option {value}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Dropdown.ContainsValue(dropdownName, value))
                 {
@@ -78,7 +78,7 @@ namespace Generic.Elements.Steps.Dropdown
         public void ThenDropdownIsNotDisplayed(string dropdownName)
         {
             string proc = $"Then Dropdown {dropdownName} Is Not Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!Helpers.Dropdown.IsDisplayed(dropdownName))
                 {

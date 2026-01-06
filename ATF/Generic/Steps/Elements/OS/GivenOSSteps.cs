@@ -20,7 +20,7 @@ namespace Generic.Elements.Steps.OS
         {
             fullDirectoryName = StringValues.TextReplacementService(fullDirectoryName);
             string proc = $"Given Directory {fullDirectoryName} Does Not Exist";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (FileUtils.OSDeleteDirectoryIfExists(fullDirectoryName))
                 {

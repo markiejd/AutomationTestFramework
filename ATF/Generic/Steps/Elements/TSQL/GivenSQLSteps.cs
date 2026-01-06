@@ -21,7 +21,7 @@ namespace Generic.Elements.Steps.TSQL
         public void GivenDataDictionaryxlsxfile(string fileLocation)
         {
             string proc = $"Given Data Dictionary xlsx file {fileLocation}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var excelJson = TSQLDataCode.ReadDataDictionaryFromExcel(fileLocation);
                 if (string.IsNullOrEmpty(excelJson) || excelJson.Length < 5)
@@ -50,7 +50,7 @@ namespace Generic.Elements.Steps.TSQL
         public void GivenSQLTableIsDefined(string tableName)
         {
             string proc = $"Given SQL Table {tableName} Is Defined";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!TSQLDataCode.SetColumnAndKeys(tableName))
                 {

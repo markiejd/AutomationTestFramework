@@ -19,7 +19,7 @@ namespace Generic.Elements.Steps.List
         public void WhenIFindEntitiesInVisualiser()
         {
             string proc = $"When I Find Entities In Visualiser";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!Helpers.Visualiser.FindEntity())
                 {
@@ -37,7 +37,7 @@ namespace Generic.Elements.Steps.List
             string proc = $"When I Press Key {keyDown} And Click On Node {node} In Visualiser";
             node = StringValues.TextReplacementService(node);
             proc = $"When I Press Key {keyDown} And Click On Node {node} In Visualiser";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Visualiser.KeyClickOnNode(keyDown, node)) return true;
                 CombinedSteps.Failure(proc);
@@ -52,7 +52,7 @@ namespace Generic.Elements.Steps.List
             string proc = $"When I Right Click On Node {node} In Visualiser";
             node = StringValues.TextReplacementService(node);
             proc = $"When I Right Click On Node {node} In Visualiser";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 // if (Helpers.Visualiser.RightClickOnNode(node)) return true;
                 CombinedSteps.Failure(proc);
@@ -68,7 +68,7 @@ namespace Generic.Elements.Steps.List
             node1Text = StringValues.TextReplacementService(node1Text);
             node2Text = StringValues.TextReplacementService(node2Text);
             proc = $"When I Create Link Between Node {node1Text} And Node {node2Text} In Visualiser";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 WhenIPressKeyAndClickOnNodeInVisualiser("Ctrl", "Ford");
                 WhenIPressKeyAndClickOnNodeInVisualiser("Ctrl", "DuffyEPOCH");
@@ -84,7 +84,7 @@ namespace Generic.Elements.Steps.List
         public bool WhenIInVisualiserClickButton(string visualiserButton)
         {
             string proc = $"When I In Visualiser Click Button {visualiserButton}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Visualiser.ClickVisualiserButton(visualiserButton))
                 {

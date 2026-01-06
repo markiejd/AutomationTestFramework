@@ -17,7 +17,7 @@ namespace Generic.Elements.Steps.Slider
         public void ThenSliderIsDisplayed(string slider)
         {
             string proc = $"Then Slider {slider} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Slider.IsDisplayed(slider))
                 {

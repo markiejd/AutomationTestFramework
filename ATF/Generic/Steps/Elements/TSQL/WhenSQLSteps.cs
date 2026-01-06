@@ -22,7 +22,7 @@ namespace Generic.Elements.Steps.TSQL
         public void WhenIStoreSQLCommand(string sqlCommand)
         {
             string proc = $"When I Store SQL Command {sqlCommand}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var returnedString = Helpers.TSQL.SendSQLCommand(sqlCommand, "", "");
                 if (returnedString == null)
@@ -54,7 +54,7 @@ namespace Generic.Elements.Steps.TSQL
         public void WhenIStoreAsJsonSQLCommand(string sqlCommand)
         {
             string proc = $"When I Store SQL Command {sqlCommand}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var returnedString = Helpers.TSQL.SendSQLCommand(sqlCommand, "", "", true);
                 if (returnedString == null)
@@ -77,7 +77,7 @@ namespace Generic.Elements.Steps.TSQL
         public void WhenISQLCommand(string sqlCommand)
         {
             string proc = $"When I SQL Command {sqlCommand}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var returnedString = Helpers.TSQL.SendSQLCommand(sqlCommand);
                 if (returnedString == null)

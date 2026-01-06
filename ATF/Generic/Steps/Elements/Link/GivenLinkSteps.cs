@@ -17,7 +17,7 @@ namespace Generic.Elements.Steps.Link
         public void GivenLinkIsDisplayed(string linkName)
         {
             string proc = $"Given Link {linkName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Link.IsDisplayed(linkName))
                 {

@@ -17,7 +17,7 @@ namespace Generic.Elements.Steps.Timepicker
         public void GivenTimePickerIsEqualTo(string timePickerName, string time)
         {
             string proc = $"Given TimePicker {timePickerName} Is Equal To {time}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.TimePicker.SetTimeValue(timePickerName, time))
                 {

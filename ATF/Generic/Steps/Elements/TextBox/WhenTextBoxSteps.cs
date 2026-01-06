@@ -19,7 +19,7 @@ namespace Generic.Elements.Steps.Textbox
         public void WhenIEnterInTextBox(string text, string textBoxName)
         {
             string proc = $"When I Enter {text} In TextBox {textBoxName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.TextBox.EnterText(textBoxName, text))
                 {
@@ -36,7 +36,7 @@ namespace Generic.Elements.Steps.Textbox
         public void WhenPressKeyInTextBox(string keyStroke,string textBoxName)
         {
             string proc = $"When I Press Key {keyStroke} In TextBox {textBoxName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.TextBox.EnterTextAndKey(textBoxName, "", keyStroke)) return;
                 CombinedSteps.Failure(proc);
@@ -49,7 +49,7 @@ namespace Generic.Elements.Steps.Textbox
         public void WhenIClearTextBox(string textBoxName)
         {
             string proc = $"When I Clear TextBox {textBoxName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.TextBox.Clear(textBoxName))
                 {
@@ -67,7 +67,7 @@ namespace Generic.Elements.Steps.Textbox
         public void WhenIClearThenEnterInTextBox(string text, string textBoxName)
         {
             string proc = $"When I Clear Then Enter {text} In TextBox {textBoxName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.TextBox.ClearThenEnterText(textBoxName, text))
                 {
@@ -82,7 +82,7 @@ namespace Generic.Elements.Steps.Textbox
         public void WhenIEnterThenPressInTextBox(string text, string key, string textBoxName)
         {
             string proc = $"When I Enter {text} Then Press {key} In TextBox {textBoxName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.TextBox.EnterTextAndKey(textBoxName, text, key))
                 {
@@ -98,7 +98,7 @@ namespace Generic.Elements.Steps.Textbox
         public void WhenIClickOnTextBox(string textBoxName)
         {
             string proc = $"When I Click On TextBox {textBoxName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.TextBox.Click(textBoxName))
                 {
@@ -114,7 +114,7 @@ namespace Generic.Elements.Steps.Textbox
         public void WhenIOutputTextBox(string textBoxName)
         {
             string proc = $"When I Output TextBox {textBoxName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.TextBox.IsDisplayed(textBoxName))
                 {

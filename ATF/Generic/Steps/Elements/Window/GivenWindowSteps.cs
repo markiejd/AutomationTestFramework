@@ -17,7 +17,7 @@ namespace Generic.Elements.Steps.Window
         public void GivenWindowIsDisplayed(string windowName)
         {
             string proc = $"Given Window {windowName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Window.IsDisplayed(windowName))
                 {
@@ -34,7 +34,7 @@ namespace Generic.Elements.Steps.Window
         public void GivenWindowSize(string compositeSize)
         {
             string proc = $"Given Window Size {compositeSize}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Window.SizeOfWindowString(compositeSize))
                 {

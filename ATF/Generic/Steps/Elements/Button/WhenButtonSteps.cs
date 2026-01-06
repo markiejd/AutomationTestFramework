@@ -18,7 +18,7 @@ namespace Generic.Elements.Steps.Button
         public void WhenIClickOnButton(string buttonName)
         {
             string proc = $"When I Click On Button {buttonName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Button.ClickButton(buttonName))
                 {
@@ -33,7 +33,7 @@ namespace Generic.Elements.Steps.Button
         public void WhenIDoubleClickOnButton(string buttonName)
         {
             string proc = $"When I Double Click On Button {buttonName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Button.DoubleClick(buttonName))
                 {
@@ -48,7 +48,7 @@ namespace Generic.Elements.Steps.Button
         public void WhenIRightClickOnButton(string buttonName)
         {
             string proc = $"When I Right Click On Button {buttonName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Button.RightClick(buttonName))
                 {
@@ -63,7 +63,7 @@ namespace Generic.Elements.Steps.Button
         public void WhenIMouseOverButton(string buttonName)
         {
             string proc = $"When I Mouse Over Button {buttonName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Button.MouseOver(buttonName))
                 {
@@ -79,7 +79,7 @@ namespace Generic.Elements.Steps.Button
         public void WhenIClickOnThenThButton(string which,string buttonName)
         {
             string proc = $"When I Click On The {which} Button {buttonName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Button.ClickNthButton(buttonName, which))
                 {
@@ -97,7 +97,7 @@ namespace Generic.Elements.Steps.Button
         public void WhenIDragButtonToButton(string elementA, string elementB)
         {
             string proc = $"When I Drag Button {elementA} To Button {elementB}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Button.DragAToB(elementA, elementB))
                 {

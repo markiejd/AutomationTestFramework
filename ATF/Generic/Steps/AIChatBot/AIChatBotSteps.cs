@@ -28,7 +28,7 @@ namespace Generic.Steps.AIChatBots
         public async Task<bool> WhenIAskAndAnalyseChatBotTheQuestion(string question)
         {
             string proc = $"When I Ask And Analyse ChatBot The Question {question}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var startTime = DateTime.Now;
                 if (!WhenIAskChatBotTheQuestion(question)) return Failure(proc, $"Failed to send question {question}");
@@ -63,7 +63,7 @@ namespace Generic.Steps.AIChatBots
         public bool WhenIAskChatBotTheQuestion(string question)
         {
             string proc = $"When I Ask ChatBot The Question {question}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!Helpers.TextBox.EnterTextAndKey("question", question, "enter")) return Failure($"Failed to enter text and key!");
                 DebugOutput.Log($"Sent {question} to question element");
@@ -77,7 +77,7 @@ namespace Generic.Steps.AIChatBots
         public bool ThenWaitForAnswerToGenerate()
         {
             string proc = $"Then Wait For Answer To Generate";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var answerBeingGeneratedText = "Generating answer...";                
                 var waitTime = TargetConfiguration.Configuration.PositiveTimeout;
@@ -93,7 +93,7 @@ namespace Generic.Steps.AIChatBots
         public bool ThenThereAreCitationShown(int expectedNumberOfCitations)
         {
             string proc = $"Then There Are Citation Shown {expectedNumberOfCitations}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var numberOfCitations = GetTheNumberOfCitationsInLastAnswer();
                 if (numberOfCitations != expectedNumberOfCitations) return Failure(proc, $"Failed as they do not match - wanted {expectedNumberOfCitations} gotten {numberOfCitations}");
@@ -107,7 +107,7 @@ namespace Generic.Steps.AIChatBots
         public bool ThenCitationPanelIsDisplayed()
         {
             string proc = $"Then Citation Panel Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var elementName = "citation panel";
                 if (!ElementInteraction.IsElementDisplayed(Helpers.Page.CurrentPage, elementName, "textbox")) return Failure(proc, $"Failed - it is displayed");
@@ -122,7 +122,7 @@ namespace Generic.Steps.AIChatBots
         public bool ThenCitationPanelIsNotDisplayed()
         {
             string proc = $"Then Citation Panel Is Not Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var elementName = "citation panel";
                 if (ElementInteraction.IsElementNotDisplayed(Helpers.Page.CurrentPage, elementName, "textbox")) return true;
@@ -135,7 +135,7 @@ namespace Generic.Steps.AIChatBots
         public bool ThenLastAnswerContainsTheText(string answerContains)
         {
             string proc = $"Then Last Answer Contains The Text {answerContains}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var answer = ElementInteraction.GetTextFromLastElement(Helpers.Page.CurrentPage, "answers", "textbox");
                 if (answer == null) return Failure(proc, "Failed to get the last answer, or the text from last answer!");
@@ -150,7 +150,7 @@ namespace Generic.Steps.AIChatBots
         public bool ThenWaitForChatHistoryToBeDisplayed()
         {
             string proc = "Then Wait For Chat History To Be Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (ElementInteraction.IsElementDisplayed(Helpers.Page.CurrentPage, "chat history panel", "textbox", 30)) return true;
                 DebugOutput.Log($"We have waited - no chat history!");

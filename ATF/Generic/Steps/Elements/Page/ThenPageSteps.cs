@@ -23,7 +23,7 @@ namespace Generic.Elements.Steps.Page
         public void ThenPageIsNotDisplayed(string pageName)
         {
             string proc = $"Then Page Is Not Displayed {pageName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!Helpers.Page.IsDisplayed(pageName))
                 {
@@ -54,7 +54,7 @@ namespace Generic.Elements.Steps.Page
         public bool ThenWaitForPageToBeDisplayed(string pageName)
         {
             string proc = $"Then Wait For Page {pageName} To Be Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Page.IsExists(pageName))
                 {
@@ -100,7 +100,7 @@ namespace Generic.Elements.Steps.Page
         {
             pageName = pageName.Replace("-"," ");
             string proc = $"Then Page {pageName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!Helpers.Page.IsExists(pageName))
                 {
@@ -144,7 +144,7 @@ namespace Generic.Elements.Steps.Page
         public void ThenPageDisplaysMessage(string message)
         {
             string proc = $"Then Page Displays Message {message}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Page.IsMessageDisplayed(message))
                 {
@@ -159,7 +159,7 @@ namespace Generic.Elements.Steps.Page
         public void ThenMessageIsNotDisplayed(string message)
         {
             string proc = $"Then Page Displays Message {message}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!Helpers.Page.IsMessageDisplayed(message))
                 {

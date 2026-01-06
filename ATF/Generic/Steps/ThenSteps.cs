@@ -49,7 +49,7 @@ namespace Generic.Steps
         public void ThenCSVFileHasHeaders(string fullFilePath,int expectedNumberOfHeaders)
         {
             string proc = $"Then CSV File {fullFilePath} Has {expectedNumberOfHeaders} Headers";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var actualColumns = GetNumberOfHeadersInCSVFile(fullFilePath, "¤");
                 if (actualColumns != expectedNumberOfHeaders)
@@ -81,7 +81,7 @@ namespace Generic.Steps
         public void ThenExcelFileCellSheetEqualTo(string osExcelFile,string cell,string sheetName,string value)
         {
             string proc = $"Then Excel File {osExcelFile} Cell {cell} Sheet {sheetName} Equal To {value}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 DebugOutput.Log($"We have the file {osExcelFile} cell {cell} sheet {sheetName} equal to {value}");
                 if (!ThenExcelFileContainsSheet(osExcelFile, sheetName))
@@ -116,7 +116,7 @@ namespace Generic.Steps
         public bool ThenExcelFileContainsSheet(string osExcelFile,string sheetName)
         {
             string proc = $"Then Excel File {osExcelFile} Contains Sheet {sheetName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!FileUtils.OSFileCheck(osExcelFile))
                 {
@@ -159,7 +159,7 @@ namespace Generic.Steps
         // public bool ThenOutputTextToTextFromWordDocument(string fullFilePathAndName)
         // {
         //     string proc = $"Then Output Text To Text From Word Document {fullFilePathAndName}";
-        //     if (CombinedSteps.OuputProc(proc))
+        //     if (CombinedSteps.OutputProc(proc))
         //     {
         //         if (ThenWordDocumentExists(fullFilePathAndName))
         //         {
@@ -182,7 +182,7 @@ namespace Generic.Steps
         public bool ThenWordDocumentExists(string fullFilePathAndName)
         {
             string proc = $"Then Word Document {fullFilePathAndName} Exists";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!FileUtils.OSFileCheck(fullFilePathAndName))
                 {
@@ -201,7 +201,7 @@ namespace Generic.Steps
         public void ThenCSVFileContainsRowsNotIncludingHeader(string fullFileName,int expectedNumberOfRows)
         {
             string proc = $"Then CSV File {fullFileName} Contains {expectedNumberOfRows} Not Including Header";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var NumberOfLines = FileUtils.GetNumberOfLinesInFile(fullFileName, true, false);
                 DebugOutput.Log($"We have {NumberOfLines} LINES");
@@ -218,7 +218,7 @@ namespace Generic.Steps
         public bool ThenNumberOfTabsInBrowserIsEqualTo(int numberOfTabs)
         {
             string proc = $"Then Number Of Tabs In Browser Is Equal To {numberOfTabs}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var actualNumberOfTabs = ElementInteraction.GetTheNumberOfTabsOpenInBrowser();
                 if (numberOfTabs != actualNumberOfTabs)

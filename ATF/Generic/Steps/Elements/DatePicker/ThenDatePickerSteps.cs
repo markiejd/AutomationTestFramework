@@ -18,7 +18,7 @@ namespace Generic.Elements.Steps.Datepicker
         public void ThenDatePickerIsEqualTo(string datePickerName, string date)
         {
             string proc = $"Then DatePicker {datePickerName} Is Equal To {date}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 date = StringValues.TextReplacementService(date);
                 if (Helpers.DatePicker.GetCurrentValue(datePickerName, 1) == date)
@@ -35,7 +35,7 @@ namespace Generic.Elements.Steps.Datepicker
         public void ThenDatePickerIsDisplayed()
         {
             string proc = $"Then DatePicker Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 //  all our date pickers are unique to a page - i.e. only 1  #mat-datepicker-1
                 if (Helpers.DatePicker.IsDisplayed(""))

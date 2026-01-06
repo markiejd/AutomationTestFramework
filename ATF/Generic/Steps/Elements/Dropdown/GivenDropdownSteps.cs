@@ -17,7 +17,7 @@ namespace Generic.Elements.Steps.Dropdown
         public void GivenDropdownIsDisplayed(string dropdownName)
         {
             string proc = $"Given Dropdown {dropdownName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Dropdown.IsDisplayed(dropdownName))
                 {
@@ -32,7 +32,7 @@ namespace Generic.Elements.Steps.Dropdown
         public void GivenDropDownIsEqualTo(string dropdownName, string value)
         {
             string proc = $"Given Dropdown {dropdownName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Dropdown.GetCurrentValue(dropdownName) == value)
                 {

@@ -18,7 +18,7 @@ namespace Generic.Elements.Steps.Tab
         {
             tabs = tabs.ToLower();
             string proc = $"Given Tab {tabNmae} Is Selected In Tabs {tabs}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Tab.SelectTab(tabs, tabNmae))
                 {

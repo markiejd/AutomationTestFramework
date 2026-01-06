@@ -18,7 +18,7 @@ namespace Generic.Elements.Steps.Tab
         public void GivenTabIsDisplayed(string tabName)
         {
             string proc = $"Given Tab {tabName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Tab.IsDisplayed(tabName))
                 {
@@ -34,7 +34,7 @@ namespace Generic.Elements.Steps.Tab
         {
             tabs = tabs.ToLower();
             string proc = $"Given Tab {tabName} Is Selected In Tabs {tabs}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Tab.WhatTabIsSelected(tabs) == tabName)
                 {

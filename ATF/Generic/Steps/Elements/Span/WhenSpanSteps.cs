@@ -17,7 +17,7 @@ namespace Generic.Elements.Steps.Span
         public void WhenIClickOnSpan(string text)
         {
             string proc = $"When I Click On Span {text}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Span.ClickOnLinkByName(text))
                 {

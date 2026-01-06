@@ -18,7 +18,7 @@ namespace Generic.Elements.Steps.List
         public void ThenListIsDisplayed(string listName)
         {
             string proc = $"Then List {listName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.List.IsDisplayed(listName)) return;
                 CombinedSteps.Failure(proc);
@@ -31,7 +31,7 @@ namespace Generic.Elements.Steps.List
         public void ThenListContains(string listName, string value)
         {
             string proc = $"Then List {listName} Contains {value}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.List.ListContainsValue(listName, value))
                 {

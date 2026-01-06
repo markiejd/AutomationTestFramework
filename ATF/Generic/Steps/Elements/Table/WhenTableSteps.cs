@@ -19,7 +19,7 @@ namespace Generic.Elements.Steps.Table
         public void WhenIFilterTableBy(string tableName, string value)
         {
             string proc = $"When I Filter Table {tableName} By {value}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.Filter(tableName, value))
                 {
@@ -35,7 +35,7 @@ namespace Generic.Elements.Steps.Table
         public void WhenIClickOnCheckBoxInTableRowColumn(string tableName,int rowNumber,int columnNumber)
         {
             string proc = $"When I Click On CheckBox In Table {tableName} Row {rowNumber} Column {columnNumber}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.ClickOnCheckBoxInTableColumnRow(tableName, rowNumber, columnNumber))
                 {
@@ -50,7 +50,7 @@ namespace Generic.Elements.Steps.Table
         public void WhenIActionTableWhereColumnIsEqualTo(string action, string tableName, string columnName, string value)
         {
             string proc = $"When I Action {action} Table {tableName} Where Column {columnName} Is Equal To {value}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.ActionRowByValueInColumnName(tableName, action, columnName, value))
                 {
@@ -65,7 +65,7 @@ namespace Generic.Elements.Steps.Table
         public void WhenIClickOnTableRow(string tableName, int rowNumber)
         {
             string proc = $"When I Click On Row {rowNumber} Of Table {tableName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.ClickOnRow(rowNumber, tableName))
                 {
@@ -81,7 +81,7 @@ namespace Generic.Elements.Steps.Table
         public void WhenIClickOnLinkInTableInRowColumnTitle(string tableName,int rowNumber,string columnName)
         {
             string proc = $"When I Click On Link In Table {tableName} In Row {rowNumber} Column Title {columnName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 // get the column number where columnNmae is the title 
                 if (Helpers.Table.ClickOnLinkInTableColumnNameRow(tableName, columnName, rowNumber))
@@ -98,7 +98,7 @@ namespace Generic.Elements.Steps.Table
         public void WhenIClickOnLinkInTableInRowColumn(string tableName,int rowNumber,int columnNumber)
         {
             string proc = $"When I Click On Link In Table {tableName} Row {rowNumber} Column {tableName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.ClikcOnLinkInTableColumnRow(tableName, columnNumber, rowNumber))
                 {
@@ -115,7 +115,7 @@ namespace Generic.Elements.Steps.Table
         public void WhenIClickInTableInRowColumnButton(string tableName,int rowNumber,int columnNumber)
         {
             string proc = $"When I Click In Table {tableName} Row {rowNumber} Column {tableName} Button";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.ClickOnButtonInTableColumnRow(tableName, columnNumber, rowNumber))
                 {
@@ -132,7 +132,7 @@ namespace Generic.Elements.Steps.Table
         public void WhenIOrderTableByColumn(string tableName, string columnName)
         {
             string proc = $"When I Order Table {tableName} By Column {columnName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.OrderTableByColumn(tableName, columnName))
                 {
@@ -147,7 +147,7 @@ namespace Generic.Elements.Steps.Table
         public void WhenIActionFromTableInRow(string action, string tableName, int rowNumber)
         {
             string proc = $"When I Action {action} Table {tableName} In Row {rowNumber}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.ActionRowByNumber(tableName, action, rowNumber))
                 {
@@ -163,7 +163,7 @@ namespace Generic.Elements.Steps.Table
         public bool WhenIClickOnButtonInTable(string buttonName,string tableName)
         {
             string proc = $"When I Click On {buttonName} Button In Table {tableName}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.ClickOnNextPageInPagination(tableName, buttonName)) return true;
                 CombinedSteps.Failure(proc);

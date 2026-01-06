@@ -19,7 +19,7 @@ namespace Generic.Elements.Steps.Datepicker
         public void WhenISelectDateFromDatePicker(string date)
         {
             string proc = $"When I Select Date {date} From DatePicker";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 Thread.Sleep(500); // wait for date picker to be ready
                 if (Helpers.DatePicker.SetDateValue("", date)) return;

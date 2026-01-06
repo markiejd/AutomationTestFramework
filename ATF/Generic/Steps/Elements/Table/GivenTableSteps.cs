@@ -16,7 +16,7 @@ namespace Generic.Elements.Steps.Table
         public void GivenTableIsDisplayed(string tableName)
         {
             string proc = $"Given Table {tableName} Is Displayed";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.IsDisplayed(tableName))
                 {
@@ -32,7 +32,7 @@ namespace Generic.Elements.Steps.Table
         public void GivenTableRowIsReady(string tableName,int rowNumber,string doing)
         {
             string proc = $"Given Table {tableName} Row {rowNumber} Is Ready {doing}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.IsRowForAction(tableName, rowNumber, doing))
                 {
@@ -82,7 +82,7 @@ namespace Generic.Elements.Steps.Table
         public void GivenTableIsOrderedByColumnDescending(string tableName, string columnName)
         {
             string proc = $"Given Table {tableName} Is Ordered by Column {columnName} Descending";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.OrderTableByColumn(tableName, columnName))
                 {
@@ -97,7 +97,7 @@ namespace Generic.Elements.Steps.Table
         public bool GivenTableRowsToPageIsEqualTo(string tableName,int expectedRowsPerPage)
         {
             string proc = $"Given Table {tableName} Rows To Page Is Equal To {expectedRowsPerPage}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (Helpers.Table.GetNumberOfRowsPerPage(tableName) == expectedRowsPerPage) return true;
                 DebugOutput.Log($"Need to set it!");

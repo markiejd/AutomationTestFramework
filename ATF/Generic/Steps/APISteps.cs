@@ -37,7 +37,7 @@ namespace Generic.Steps
         public bool ThenResponseStatusCodeIsEqualTo(string statusCode)
         {
             var proc = $"Then Response Status Code Is Equal To '{statusCode}'";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (APIResponse.fullResponse == null) return Failed(proc, "Failed to read response!");
                 var statusCodeReceived = (int)APIResponse.fullResponse.StatusCode;
@@ -55,7 +55,7 @@ namespace Generic.Steps
         public async Task<bool> WhenIWithActiveJSessionGetFromURL(string url)
         {
             string proc = $"When I With Active JSession Get From URL {url}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 // Retrieve session id
                 var JSESSIONID = await APIUtil.GetJsessionId();
@@ -75,7 +75,7 @@ namespace Generic.Steps
         public void GivenSessionToken()
         {
             string proc = $"Given Session Token";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 // Placeholder: session token will be acquired/validated by helper methods if needed.
             }
@@ -88,7 +88,7 @@ namespace Generic.Steps
         public async Task<bool> GivenIHaveRedirectionURLUsingJSession()
         {
             string proc = $"Given I Have Redirection URL Using JSession";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var x = await APIUtil.GetRedirectionURL();
                 if (x == null) return Failed(proc, "Failed in the redirection !");
@@ -104,7 +104,7 @@ namespace Generic.Steps
         public async Task<bool> WhenIGetFromURL(string url)
         {
             string proc = $"When I Get From URL {url}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var response = await APIUtil.Get(url, "get");
                 if (response.IsSuccessStatusCode)
@@ -125,7 +125,7 @@ namespace Generic.Steps
         public async Task<bool> WhenUsingWindowsAuthenticationUserPasswordIGetFromURL(string winUser,string winPassword,string url)
         {
             string proc = $"When I Get From URL {url}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var response = await APIUtil.GetWithWindowsAuth(url,"getWithAuth", winUser, winPassword);
                 if (response.IsSuccessStatusCode)
@@ -145,7 +145,7 @@ namespace Generic.Steps
         public async Task<bool> WhenIPostJsonToURL(string jSonString,string url)
         {
             string proc = $"When I Post Json {jSonString} To URL {url}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 var response = await APIUtil.Post(url, jSonString, "post", false);
                 if (response.IsSuccessStatusCode)
@@ -162,7 +162,7 @@ namespace Generic.Steps
         public async Task<bool> WhenIPostJsonFileToURL(string jsonFileLocation,string url)
         {
             string proc = $"When I Post Json File {jsonFileLocation} To URL {url}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!FileUtils.OSFileCheck(jsonFileLocation))
                 {
@@ -181,7 +181,7 @@ namespace Generic.Steps
         public async Task<bool> WhenIPatchJsonToURL(string jSonString,string url)
         {
             string proc = $"When I Patch Json {jSonString} To URL {url}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 // Note: APIUtil.Post is used for patching in this codebase; consider a dedicated Patch helper if needed.
                 var response = await APIUtil.Post(url, jSonString, "post", false);
@@ -199,7 +199,7 @@ namespace Generic.Steps
         public async Task<bool> WhenIPatchJsonFileToURL(string jsonFileLocation,string url)
         {
             string proc = $"When I Patch Json {jsonFileLocation} To URL {url}";
-            if (CombinedSteps.OuputProc(proc))
+            if (CombinedSteps.OutputProc(proc))
             {
                 if (!FileUtils.OSFileCheck(jsonFileLocation))
                 {
