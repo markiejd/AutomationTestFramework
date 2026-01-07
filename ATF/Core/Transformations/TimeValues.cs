@@ -15,23 +15,27 @@ namespace Core.Transformations
 			return time;
 		}
 
-		public static bool IsTimeIsh(string gotTime, string expectedTime, int range = 1)
+		// A method to check if two times are within a certain MINUTE range of each other
+		public static bool IsTimeIsh(string time1, string time2, int rangeInMinutes)
 		{
-			DebugOutput.Log($"Proc - IsTimeNowIsh {gotTime} {expectedTime} {range}minute");
-			var dateTimeGot = DateValues.GetDateTimeFromDateString(gotTime);
-			if (dateTimeGot == null) return false;
-			var dateTimeInUnix = DateValues.GetTimeInUnix(dateTimeGot.Value);
-			DebugOutput.Log($"Unix time = {dateTimeInUnix}");
-			var rangeUnix = DateValues.GetStaticUnix("min") * range;
-			DebugOutput.Log($"Range in UNIX time = {rangeUnix}");
-			var dateTimeExpected = DateValues.GetDateTimeFromDateString(expectedTime);
-			if (dateTimeExpected == null) return false;
-			var expectedTimeInUnix = DateValues.GetTimeInUnix(dateTimeExpected.Value);
-			var diff = expectedTimeInUnix - dateTimeInUnix;
-			if (diff < 0) diff = diff * -1;
-			if (diff > rangeUnix) return false;
-			return true;
+			try
+			{
+				// Parse both datetime strings
+				if (!DateTime.TryParseExact(time1, "dd/MM/yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out DateTime dateTime1))
+					return false;
+				if (!DateTime.TryParseExact(time2, "dd/MM/yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out DateTime dateTime2))
+					return false;
+				// Calculate the absolute difference in minutes
+				var timeDifference = Math.Abs((dateTime1 - dateTime2).TotalMinutes);
+				// Check if within range
+				return timeDifference <= rangeInMinutes;
+			}
+			catch
+			{
+				return false;
+			}
 		}
+
 
 
 	}

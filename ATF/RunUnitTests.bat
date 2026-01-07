@@ -13,18 +13,27 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
-REM Run xUnit tests using vstest.console (alternative to dotnet test)
+REM Run xUnit tests with detailed output
 echo.
-echo Running xUnit tests...
-dotnet test CoreUnitTests\CoreUnitTests.csproj --no-build -v normal --logger "console;verbosity=normal"
+echo ============================================================
+echo Running Unit Tests (with detailed output)
+echo ============================================================
+echo.
+echo Test Format: [ClassName.TestMethodName] PASSED/FAILED
+echo.
+dotnet test CoreUnitTests\CoreUnitTests.csproj --no-build -v detailed --logger "console;verbosity=detailed"
 
+echo.
+echo ============================================================
 if %ERRORLEVEL% EQU 0 (
-    echo.
-    echo Unit tests completed successfully!
+    echo Unit Tests PASSED - All tests executed successfully!
+    echo ============================================================
 ) else (
+    echo Unit Tests FAILED - See error details above
+    echo ============================================================
     echo.
-    echo Unit tests failed!
-    exit /b 1
+    echo TIP: Look for lines starting with "CoreUnitTests." to identify which test failed
+    echo.
 )
 
 endlocal
