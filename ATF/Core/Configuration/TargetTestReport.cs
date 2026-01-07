@@ -460,17 +460,32 @@ namespace Core.Configuration
                 TestProcName = procName
             };
             if (arguments != "") newProcPlan.Arguments = arguments;
+            
+            // Safety check for unit tests or external callers that don't use TestReport structure
             int howManyTestPlans = TestReport.TestPlans.Count;
+            if (howManyTestPlans == 0) return;
+            
             int howManyScenarioPlans = TestReport.TestPlans[howManyTestPlans - 1].ScenarioPlans.Count;
+            if (howManyScenarioPlans == 0) return;
+            
             int howManyStepPlans = TestReport.TestPlans[howManyTestPlans - 1].ScenarioPlans[howManyScenarioPlans - 1].StepPlans.Count;
+            if (howManyStepPlans == 0) return;
+            
             TestReport.TestPlans[howManyTestPlans - 1].ScenarioPlans[howManyScenarioPlans - 1].StepPlans[howManyStepPlans -1].ProcPlans.Add(newProcPlan);
         }
 
         public static void CloseProcPlan()
         {
+            // Safety check for unit tests or external callers that don't use TestReport structure
             int howManyTestPlans = TestReport.TestPlans.Count;
+            if (howManyTestPlans == 0) return;
+            
             int howManyScenarioPlans = TestReport.TestPlans[howManyTestPlans - 1].ScenarioPlans.Count;
+            if (howManyScenarioPlans == 0) return;
+            
             int howManyStepPlans = TestReport.TestPlans[howManyTestPlans - 1].ScenarioPlans[howManyScenarioPlans - 1].StepPlans.Count;
+            if (howManyStepPlans == 0) return;
+            
             foreach (var proc in TestReport.TestPlans[howManyTestPlans -1].ScenarioPlans[howManyScenarioPlans -1].StepPlans[howManyStepPlans -1].ProcPlans)
             {
                 if (proc.TestProcEnd == null) proc.TestProcEnd = DateTime.Now;
