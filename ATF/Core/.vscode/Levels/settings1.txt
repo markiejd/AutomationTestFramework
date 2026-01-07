@@ -21,7 +21,7 @@
         "**/AppSpecFlow/ImplicitUsings.cs": true,
         "**/AppSpecFlow/specflow.json": true,
         "**/AppSpecFlow/reqnroll.json": true,
-        "**/AppTargets/RetiredApps/**": true,
+        "**/AppTargets": true,
         "**/Chrome": true,
         "**/Communication*": true,
         "**/Core": true,
