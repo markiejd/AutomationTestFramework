@@ -1,6 +1,6 @@
 # CommunicationReporting
 
-A .NET Console application that converts TRX (Test Results) files into beautifully formatted HTML reports.
+A .NET Console application that converts TRX (Test Results) files into beautifully, if I say so myself, formatted HTML reports.
 
 ## Overview
 
