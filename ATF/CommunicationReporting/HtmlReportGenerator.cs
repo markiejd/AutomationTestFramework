@@ -5,6 +5,8 @@ namespace CommunicationReporting
 {
     public class HtmlReportGenerator
     {
+        public string LogoUrl { get; set; } = string.Empty;
+
         public string GenerateHtmlReport(TestRunData testRunData)
         {
             if (testRunData == null)
@@ -33,13 +35,14 @@ namespace CommunicationReporting
             return html.ToString();
         }
 
-        public void SaveHtmlReport(TestRunData testRunData, string outputPath)
+        public void SaveHtmlReport(TestRunData testRunData, string outputPath, string logoUrl = "")
         {
             if (string.IsNullOrWhiteSpace(outputPath))
                 throw new ArgumentException("Output path cannot be empty", nameof(outputPath));
 
             try
             {
+                LogoUrl = logoUrl;
                 string html = GenerateHtmlReport(testRunData);
                 File.WriteAllText(outputPath, html);
             }
@@ -79,6 +82,16 @@ namespace CommunicationReporting
                         border-radius: 8px;
                         margin-bottom: 30px;
                         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                        position: relative;
+                    }
+                    
+                    .header-logo {
+                        position: absolute;
+                        top: 20px;
+                        right: 20px;
+                        max-width: 120px;
+                        height: auto;
+                        border-radius: 4px;
                     }
                     
                     .header h1 {
@@ -282,9 +295,14 @@ namespace CommunicationReporting
 
         private string GetReportHeader(TestRunData testRunData)
         {
+            string logoHtml = string.IsNullOrWhiteSpace(LogoUrl) 
+                ? string.Empty 
+                : $"                        <img src=\"{HtmlEncode(LogoUrl)}\" alt=\"Logo\" class=\"header-logo\" />";
+            
             return $"""
                 <div class="container">
                     <div class="header">
+                        {logoHtml}
                         <h1>Test Execution Report</h1>
                         <p><strong>Run Name:</strong> {HtmlEncode(testRunData.Name)}</p>
                         <p><strong>Run User:</strong> {HtmlEncode(testRunData.RunUser)}</p>

@@ -38,13 +38,30 @@ class Program
             Console.WriteLine($"  - Pass Rate: {testRunData.PassPercentage:F2}%");
             Console.WriteLine();
 
+            // Load settings and get logo URL
+            Console.WriteLine("Loading settings...");
+            var settings = SettingsLoader.LoadSettings();
+            if (!string.IsNullOrWhiteSpace(settings.LogoUrl))
+            {
+                Console.WriteLine($"  - Logo URL loaded: {settings.LogoUrl}");
+            }
+            else
+            {
+                Console.WriteLine("  - No logo URL configured in settings");
+            }
+            Console.WriteLine();
+
             // Generate HTML report
             Console.WriteLine("Generating HTML report...");
             var htmlGenerator = new HtmlReportGenerator();
-            htmlGenerator.SaveHtmlReport(testRunData, outputHtmlPath);
+            htmlGenerator.SaveHtmlReport(testRunData, outputHtmlPath, settings.LogoUrl);
 
             Console.WriteLine($"✓ HTML report successfully generated");
             Console.WriteLine($"  - Output file: {outputHtmlPath}");
+            if (!string.IsNullOrWhiteSpace(settings.LogoUrl))
+            {
+                Console.WriteLine($"  - Logo URL: {settings.LogoUrl}");
+            }
             Console.WriteLine();
             Console.WriteLine("Report generation completed successfully!");
         }
