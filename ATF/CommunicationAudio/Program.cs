@@ -76,7 +76,7 @@ namespace CommunicationAudio
                     BitRate = audioProperties.AudioBitrate,
                     SampleRate = audioProperties.AudioSampleRate,
                     Channels = audioProperties.AudioChannels,
-                    Codec = audioProperties.CodecName ?? "Unknown",
+                    Codec = GetCodecName(file),
                     FileSize = new FileInfo(filePath).Length,
                     FileIntegrity = CalculateFileHash(filePath),
                     MediaType = file.MimeType ?? "Unknown"
@@ -156,11 +156,42 @@ namespace CommunicationAudio
                 BitRate = audioProperties.AudioBitrate,
                 SampleRate = audioProperties.AudioSampleRate,
                 Channels = audioProperties.AudioChannels,
-                Codec = audioProperties.CodecName ?? "Unknown",
+                Codec = GetCodecName(file),
                 FileSize = new FileInfo(filePath).Length,
                 FileIntegrity = CalculateFileHash(filePath),
                 MediaType = file.MimeType ?? "Unknown"
             };
+        }
+
+        static string GetCodecName(TagLib.File file)
+        {
+            try
+            {
+                // Get codec from file type name
+                if (file != null)
+                {
+                    string fileTypeName = file.GetType().Name;
+                    
+                    // Try to extract codec from the type name
+                    if (!string.IsNullOrEmpty(fileTypeName))
+                    {
+                        return fileTypeName.Replace("File", "").ToUpper();
+                    }
+                }
+            }
+            catch { }
+            
+            // Fallback: derive from mime type
+            if (!string.IsNullOrEmpty(file.MimeType))
+            {
+                string[] parts = file.MimeType.Split('/');
+                if (parts.Length > 1)
+                {
+                    return parts[1].ToUpper();
+                }
+            }
+            
+            return "Unknown";
         }
 
         static string CalculateFileHash(string filePath)
@@ -195,16 +226,16 @@ namespace CommunicationAudio
     public class AudioMetadata
     {
         [JsonProperty("filePath")]
-        public string FilePath { get; set; }
+        public string FilePath { get; set; } = string.Empty;
 
         [JsonProperty("fileName")]
-        public string FileName { get; set; }
+        public string FileName { get; set; } = string.Empty;
 
         [JsonProperty("duration")]
         public double Duration { get; set; }
 
         [JsonProperty("durationFormatted")]
-        public string DurationFormatted { get; set; }
+        public string DurationFormatted { get; set; } = string.Empty;
 
         [JsonProperty("bitRate")]
         public int BitRate { get; set; }
@@ -216,30 +247,30 @@ namespace CommunicationAudio
         public int Channels { get; set; }
 
         [JsonProperty("codec")]
-        public string Codec { get; set; }
+        public string Codec { get; set; } = string.Empty;
 
         [JsonProperty("fileSize")]
         public long FileSize { get; set; }
 
         [JsonProperty("fileIntegrity")]
-        public string FileIntegrity { get; set; }
+        public string FileIntegrity { get; set; } = string.Empty;
 
         [JsonProperty("mediaType")]
-        public string MediaType { get; set; }
+        public string MediaType { get; set; } = string.Empty;
     }
 
     public class AudioComparison
     {
         [JsonProperty("file1")]
-        public string File1 { get; set; }
+        public string File1 { get; set; } = string.Empty;
 
         [JsonProperty("file2")]
-        public string File2 { get; set; }
+        public string File2 { get; set; } = string.Empty;
 
         [JsonProperty("filesIdentical")]
         public bool FilesIdentical { get; set; }
 
         [JsonProperty("differences")]
-        public List<string> Differences { get; set; }
+        public List<string> Differences { get; set; } = new List<string>();
     }
 }
