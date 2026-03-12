@@ -8,6 +8,19 @@ A lightweight mock API server for testing automation scenarios. Runs on `http://
 2. Run in the terminal (or execute runme.bat for new terminal):
    dotnet run
 3. The API server will start on `http://localhost:4000/`
+4. **Open Swagger UI:** Navigate to `http://localhost:4000/` in your browser to see interactive API documentation
+
+## 📖 Swagger/OpenAPI Documentation
+
+The server includes **Swagger UI** for interactive API documentation and testing:
+- **Swagger UI:** `http://localhost:4000/` (interactive interface)
+- **OpenAPI JSON:** `http://localhost:4000/swagger/v1/swagger.json` (raw specification)
+
+Use Swagger UI to:
+- Browse all available endpoints
+- View request/response schemas
+- Test endpoints directly from your browser
+- See example responses
 
 ## 📚 Built-in Endpoints
 
@@ -54,8 +67,17 @@ Add this code to `Program.cs` before `app.Run()`:
 ```csharp
 app.MapGet("/products/{id}", (int id) =>
     Results.Json(new { id, name = "Product " + id, price = 99.99 })
-);
+)
+.WithName("GetProduct")
+.WithDescription("Returns a product by ID")
+.WithTags("Products");
 ```
+
+**Swagger Documentation Methods:**
+- `.WithName("OperationName")` - Unique operation identifier
+- `.WithDescription("Description")` - Endpoint description shown in Swagger
+- `.WithTags("TagName")` - Groups endpoints in Swagger UI
+- `.Produces(200)` - Documents response status codes
 
 ### POST Endpoint with Body
 ```csharp
@@ -66,7 +88,11 @@ app.MapPost("/orders", async (HttpRequest req) => {
         status = "created",
         items = body?["items"]
     });
-});
+})
+.WithName("CreateOrder")
+.WithDescription("Creates a new order")
+.WithTags("Orders")
+.Produces(200);
 ```
 
 ### PUT Endpoint

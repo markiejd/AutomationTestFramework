@@ -45,11 +45,9 @@ namespace Generic.Steps
                             await APIUtil.Get(b, a.ToLower());
                             break;
                         case "post":
-                            await APIUtil.Post(b, "{}", a.ToLower(), false);
-                            break;
+                            return Failed (proc, "POST method requires a body - use the step that includes the body parameter for POST requests.");
                         case "patch":
-                            await APIUtil.Post(b, "{}", "patch", false); // Note: using Post for patching as per existing codebase; consider a dedicated Patch helper if needed.
-                            break;
+                            return Failed(proc, "PATCH method requires a body - use the step that includes the body parameter for PATCH requests.");
                         default:
                             return Failed(proc, $"Unsupported *YET* HTTP method '{a}'");
                     }
@@ -63,6 +61,38 @@ namespace Generic.Steps
             CombinedSteps.Failure(proc);
             return false;
         }
+
+        [When(@"I ""([^""]*)"" The ""([^""]*)"" Endpoint With The Body ""([^""]*)""")]
+        [When(@"I ""([^""]*)"" The ""([^""]*)"" Endpoint With The Payload ""([^""]*)""")]
+        public bool WhenITheEndpointWithTheBody(string a, string b, string c)
+        {
+            string proc = $"When I \"{a}\" The \"{b}\" Endpoint With The Payload \"{c}\"";
+                
+            if (CombinedSteps.OutputProc(proc))
+            {
+                switch(a.ToLower())
+                {
+                    case "post":
+                        var postResponse = APIUtil.Post(b, c, a.ToLower(), false).Result;
+                        break;
+                    case "patch":
+                        var patchResponse = APIUtil.Post(b, c, a.ToLower(), false).Result; // Note: using Post helper for PATCH - consider a dedicated Patch helper if needed.
+                        break;
+                    case "get":
+                        return Failed(proc, "GET method does not support a body - use the step without body parameter for GET requests.");
+                    default:
+                        return Failed(proc, $"Unsupported *YET* HTTP method '{a}'");
+                }
+                return true;
+            }
+            CombinedSteps.Failure(proc);
+            return false;
+        }
+
+
+
+
+
 
         [Then(@"I Receive A ""([^""]*)"" Status Code")]
         public bool ThenIReceiveAStatusCode(string a)
