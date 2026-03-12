@@ -10,7 +10,7 @@
   <ItemGroup>
     <!-- Nuget Latest 31/10/2024 -->
     <!-- Microsoft Playwright Latest Version 1.48.0 -->
-    <!-- <PackageReference Include="Microsoft.Playwright" Version="1.44.0" /> -->
+    <PackageReference Include="Microsoft.Playwright" Version="1.48.0" />
     <!-- Selenium WebDriver Latest Version 4.26.0 -->
     <PackageReference Include="Selenium.WebDriver" Version="4.24.0" />
     <!-- System Drawing Common Latest Version 8.0.10 -->
