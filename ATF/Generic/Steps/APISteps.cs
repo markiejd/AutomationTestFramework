@@ -7,6 +7,7 @@ using Core.FileIO;
 using Core.Transformations;
 using AppXAPI.Models;
 using AppXAPI;
+using System.Threading.Tasks;
 
 namespace Generic.Steps
 {
@@ -29,6 +30,93 @@ namespace Generic.Steps
             CombinedSteps.Failure(proc);
             return flag;
         }
+
+        [When(@"I ""([^""]*)"" The ""([^""]*)"" Endpoint")]
+        public async Task<bool> WhenITheEndpoint(string a, string b)
+        {
+            string proc = $"When I \"{a}\" The \"{b}\" Endpoint";                
+            if (CombinedSteps.OutputProc(proc))
+            {
+                try
+                {
+                    switch(a.ToLower())
+                    {
+                        case "get":
+                            await APIUtil.Get(b, a.ToLower());
+                            break;
+                        case "post":
+                            await APIUtil.Post(b, "{}", a.ToLower(), false);
+                            break;
+                        case "patch":
+                            await APIUtil.Post(b, "{}", "patch", false); // Note: using Post for patching as per existing codebase; consider a dedicated Patch helper if needed.
+                            break;
+                        default:
+                            return Failed(proc, $"Unsupported *YET* HTTP method '{a}'");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return Failed(proc, $"Exception during API call: {ex.Message}");
+                }
+                return true;
+            }
+            CombinedSteps.Failure(proc);
+            return false;
+        }
+
+        [Then(@"I Receive A ""([^""]*)"" Status Code")]
+        public bool ThenIReceiveAStatusCode(string a)
+        {
+            string proc = $"Then I Receive A \"{a}\" Status Code";
+
+            // convert the string a to a status code and compare to the cached APIResponse status code - if can not convert fail here.
+            if (!int.TryParse(a, out int expectedStatusCode))
+            {
+                return Failed(proc, $"Failed to parse expected status code '{a}'");
+            }
+                            
+            if (CombinedSteps.OutputProc(proc))
+            {
+                if (APIResponse.fullResponse == null) return Failed(proc, "Failed to read response! Make sure you have a previous communication step that populates APIResponse.fullResponse before this validation step.");
+                var statusCodeReceived = (int)APIResponse.fullResponse.StatusCode;
+                if (statusCodeReceived == expectedStatusCode) return true;
+                DebugOutput.Log($"Did not match! Received {statusCodeReceived}");
+                return Failed(proc, "Did not match!");
+            }
+            CombinedSteps.Failure(proc);
+            return false;
+        }
+
+        [Then(@"The Response Body Is Equal To ""([^""]*)""")]
+        public bool ThenTheResponseBodyIsEqualTo(string a)
+        {
+            string proc = $"Then The Response Body Is Equal To \"{a}\"";
+                
+            if (CombinedSteps.OutputProc(proc))
+            {
+                if (APIResponse.fullResponse == null) return Failed(proc, "Failed to read response! Make sure you have a previous communication step that populates APIResponse.fullResponse before this validation step.");
+                var responseBody = APIResponse.fullResponse.Content.ReadAsStringAsync().Result;
+                if (responseBody == a) return true;
+                DebugOutput.Log($"Did not match! Received {responseBody} - but those double quotes are a nightmare to work with in the feature file, so consider using single quotes in the feature and replacing them here for a more readable feature file.");
+                // replace the response body double quotes with single quotes for easier comparison if the feature file uses single quotes to avoid escaping issues - this is a bit of a hack but makes the feature files more readable.
+                responseBody = responseBody.Replace("\"", "'");
+                DebugOutput.Log($"After replacement, comparing {responseBody} to {a}");
+                if (responseBody == a) return true;
+                return Failed(proc, "Did not match!");
+            }
+            CombinedSteps.Failure(proc);
+            return false;
+        }
+
+
+
+
+
+
+
+
+
+
 
         /// <summary>
         /// Verifies the cached APIResponse status code equals the supplied expected value.
