@@ -38,7 +38,7 @@ app.MapGet("/users/{id}", (int id) =>
 )
 .WithName("GetUser")
 .WithDescription("Returns a mock user by ID")
-.WithTags("Users")
+.WithTags("Dynamic URLs")
 .Produces(200);
 
 // ✅ Example POST (login simulation)
@@ -60,7 +60,7 @@ app.MapGet("/unstable", () => {
 })
 .WithName("UnstableEndpoint")
 .WithDescription("Randomly returns success or error (30% failure rate) for testing error handling")
-.WithTags("Testing")
+.WithTags("Error Handling")
 .Produces(200)
 .Produces(500);
 
