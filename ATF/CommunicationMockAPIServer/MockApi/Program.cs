@@ -384,6 +384,104 @@ app.MapPost("/examples/customers/validate", (ExampleCustomerValidationRequest re
 .Produces<ExampleCustomerValidationSuccessResponse>(200)
 .Produces<ExampleValidationErrorResponse>(400);
 
+app.MapGet("/examples/rows", (int rows, int? skip) =>
+{
+    var normalizedRows = Math.Clamp(rows, 1, 1000);
+    var normalizedSkip = Math.Max(0, skip ?? 0);
+
+    var items = Enumerable.Range(normalizedSkip + 1, normalizedRows)
+        .Select(rowNumber => new ExampleRowItem(
+            RowNumber: rowNumber,
+            Reference: $"ROW-{rowNumber:000000}",
+            Description: $"Mock row {rowNumber}"))
+        .ToList();
+
+    return Results.Ok(new ExamplePagedRowsResponse(
+        Skip: normalizedSkip,
+        Rows: normalizedRows,
+        Returned: items.Count,
+        Items: items));
+})
+.WithName("GetExampleRows")
+.WithSummary("Return a requested number of mock rows")
+.WithDescription("Testing use: simulate paged result sets. Provide rows and optional skip as query string values. Example: /examples/rows?rows=3&skip=100 returns 3 rows starting at row 101. Expected 200 returns { skip, rows, returned, items[] }.")
+.WithTags("Examples")
+.Produces<ExamplePagedRowsResponse>(200);
+
+app.MapGet("/examples/rows/paged", (int rows, int? skip, int? totalRows) =>
+{
+    var normalizedRows = Math.Clamp(rows, 1, 1000);
+    var normalizedSkip = Math.Max(0, skip ?? 0);
+    var normalizedTotalRows = Math.Max(normalizedSkip, totalRows ?? 500);
+    var returned = Math.Max(0, Math.Min(normalizedRows, normalizedTotalRows - normalizedSkip));
+
+    var items = Enumerable.Range(normalizedSkip + 1, returned)
+        .Select(rowNumber => new ExampleRowItem(
+            RowNumber: rowNumber,
+            Reference: $"ROW-{rowNumber:000000}",
+            Description: $"Mock row {rowNumber}"))
+        .ToList();
+
+    var hasMore = normalizedSkip + returned < normalizedTotalRows;
+    int? nextSkip = hasMore ? normalizedSkip + returned : null;
+
+    return Results.Ok(new ExamplePagedRowsMetadataResponse(
+        Skip: normalizedSkip,
+        Rows: normalizedRows,
+        Returned: returned,
+        TotalRows: normalizedTotalRows,
+        HasMore: hasMore,
+        NextSkip: nextSkip,
+        Items: items));
+})
+.WithName("GetExampleRowsPaged")
+.WithSummary("Return mock rows with paging metadata")
+.WithDescription("Testing use: simulate paged result sets when the caller also needs totalRows, hasMore, and nextSkip. Example: /examples/rows/paged?rows=3&skip=100&totalRows=105 returns rows 101-103 with hasMore=true and nextSkip=103.")
+.WithTags("Examples")
+.Produces<ExamplePagedRowsMetadataResponse>(200);
+
+app.MapGet("/examples/rows/by-page", (int pageSize, int? pageNumber, int? totalRows) =>
+{
+    var normalizedPageSize = Math.Clamp(pageSize, 1, 1000);
+    var normalizedPageNumber = Math.Max(1, pageNumber ?? 1);
+    var normalizedTotalRows = Math.Max(0, totalRows ?? 500);
+    var skip = (normalizedPageNumber - 1) * normalizedPageSize;
+    var returned = skip >= normalizedTotalRows
+        ? 0
+        : Math.Min(normalizedPageSize, normalizedTotalRows - skip);
+
+    var items = returned == 0
+        ? []
+        : Enumerable.Range(skip + 1, returned)
+            .Select(rowNumber => new ExampleRowItem(
+                RowNumber: rowNumber,
+                Reference: $"ROW-{rowNumber:000000}",
+                Description: $"Mock row {rowNumber}"))
+            .ToList();
+
+    var totalPages = normalizedTotalRows == 0
+        ? 0
+        : (int)Math.Ceiling(normalizedTotalRows / (double)normalizedPageSize);
+    var hasMore = normalizedPageNumber < totalPages;
+    int? nextPageNumber = hasMore ? normalizedPageNumber + 1 : null;
+
+    return Results.Ok(new ExamplePageNumberRowsResponse(
+        PageNumber: normalizedPageNumber,
+        PageSize: normalizedPageSize,
+        Skip: skip,
+        Returned: returned,
+        TotalRows: normalizedTotalRows,
+        TotalPages: totalPages,
+        HasMore: hasMore,
+        NextPageNumber: nextPageNumber,
+        Items: items));
+})
+.WithName("GetExampleRowsByPage")
+.WithSummary("Return mock rows by page number")
+.WithDescription("Testing use: simulate APIs that page by pageNumber and pageSize instead of skip and rows. Example: /examples/rows/by-page?pageSize=25&pageNumber=2&totalRows=60 returns rows 26-50 and shows page metadata.")
+.WithTags("Examples")
+.Produces<ExamplePageNumberRowsResponse>(200);
+
 app.Run("http://localhost:4000");
 
 static async Task<string> ReadRequestBodyAsync(HttpRequest request)
@@ -430,6 +528,10 @@ sealed record ExampleOrderItemResponse(string Sku, int Quantity, decimal UnitPri
 sealed record ExampleCustomerValidationRequest(string? FirstName, string? LastName, string? Email);
 sealed record ExampleCustomerValidationSuccessResponse(string Message, string CustomerReference);
 sealed record ExampleValidationErrorResponse(string Message, Dictionary<string, string[]> Errors);
+sealed record ExamplePagedRowsResponse(int Skip, int Rows, int Returned, List<ExampleRowItem> Items);
+sealed record ExamplePagedRowsMetadataResponse(int Skip, int Rows, int Returned, int TotalRows, bool HasMore, int? NextSkip, List<ExampleRowItem> Items);
+sealed record ExamplePageNumberRowsResponse(int PageNumber, int PageSize, int Skip, int Returned, int TotalRows, int TotalPages, bool HasMore, int? NextPageNumber, List<ExampleRowItem> Items);
+sealed record ExampleRowItem(int RowNumber, string Reference, string Description);
 
 sealed class MockServerState
 {
