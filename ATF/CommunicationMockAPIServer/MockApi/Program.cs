@@ -1,7 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +20,25 @@ builder.Services.AddSwaggerGen(options =>
     options.SwaggerDoc("v1", new() { 
         Title = "ATF Mock API Server", 
         Version = "v1",
-        Description = "A mock API server for automation testing. Use Admin endpoints to switch scenarios, inject faults, and inspect recorded requests. Default behavior is scenario='happy' with fault injection disabled."
+        Description = "A mock API server for automation testing. Use Admin endpoints to switch scenarios, inject faults, and inspect recorded requests. Default behavior is scenario='happy' with fault injection disabled. For JWT authentication examples, first call /examples/auth/login, copy only the raw token value from the response, then click Authorize in Swagger and paste only that token. Swagger will add the Bearer prefix for you."
+    });
+
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Paste only the raw JWT token here, without the word Bearer. Example: eyJhbGciOi... Swagger will automatically send Authorization: Bearer {token}."
+    });
+
+    options.AddSecurityRequirement(_ => new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecuritySchemeReference("Bearer", null, null),
+            new List<string>()
+        }
     });
 });
 
@@ -482,6 +505,62 @@ app.MapGet("/examples/rows/by-page", (int pageSize, int? pageNumber, int? totalR
 .WithTags("Examples")
 .Produces<ExamplePageNumberRowsResponse>(200);
 
+// 🔐 AUTHENTICATION EXAMPLES
+app.MapPost("/examples/auth/login", (ExampleJwtLoginRequest request) =>
+{
+    if (string.IsNullOrWhiteSpace(request.Username))
+    {
+        return Results.BadRequest(new ExampleAuthErrorResponse("Username is required."));
+    }
+
+    var username = request.Username.Trim();
+    var roles = request.Roles is { Length: > 0 }
+        ? request.Roles.Where(role => !string.IsNullOrWhiteSpace(role)).Select(role => role.Trim()).Distinct(StringComparer.OrdinalIgnoreCase).ToArray()
+        : ["reader"];
+
+    var expiresUtc = DateTime.UtcNow.AddMinutes(30);
+    var token = CreateJwtToken(username, roles, expiresUtc);
+
+    return Results.Ok(new ExampleJwtLoginResponse(
+        Token: token,
+        TokenType: "Bearer",
+        ExpiresUtc: expiresUtc,
+        Username: username,
+        Roles: roles));
+})
+.WithName("ExampleJwtLogin")
+.WithSummary("Issue a JWT token")
+.WithDescription("Testing use: call this endpoint first to get a real JWT bearer token for the authentication examples. Send JSON like { \"username\": \"alice\", \"roles\": [\"reader\"] }. Expected 200 returns { token, tokenType, expiresUtc, username, roles }. In Swagger, copy only the token value, click Authorize, and paste only the token. Do not add Bearer yourself.")
+.WithTags("AUTHENTICATION EXAMPLES")
+.Accepts<ExampleJwtLoginRequest>("application/json")
+.Produces<ExampleJwtLoginResponse>(200)
+.Produces<ExampleAuthErrorResponse>(400);
+
+app.MapGet("/examples/auth/profile", ([FromHeader(Name = "Authorization")] string? authorization) =>
+{
+    if (!TryValidateJwtToken(authorization, out var principal, out var errorMessage))
+    {
+        return Results.Json(new ExampleAuthErrorResponse(errorMessage), statusCode: 401);
+    }
+
+    var username = principal?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
+        ?? principal?.FindFirst(ClaimTypes.Name)?.Value
+        ?? "unknown";
+    var roles = principal?.FindAll(ClaimTypes.Role).Select(claim => claim.Value).ToArray() ?? [];
+
+    return Results.Ok(new ExampleJwtProtectedResponse(
+        Message: "JWT token accepted.",
+        Username: username,
+        Roles: roles,
+        AuthenticationType: principal?.Identity?.AuthenticationType ?? "Bearer"));
+})
+.WithName("ExampleJwtProfile")
+.WithSummary("Use a JWT token to access a protected endpoint")
+.WithDescription("Testing use: call /examples/auth/login first, copy the returned token, then click Authorize in Swagger and paste only the token value. Swagger will send Authorization: Bearer {token} for this endpoint. Expected 200 only when the JWT is valid and signed by this mock server. Expected 401 when the token is missing, malformed, expired, or signed with a different key.")
+.WithTags("AUTHENTICATION EXAMPLES")
+.Produces<ExampleJwtProtectedResponse>(200)
+.Produces<ExampleAuthErrorResponse>(401);
+
 app.Run("http://localhost:4000");
 
 static async Task<string> ReadRequestBodyAsync(HttpRequest request)
@@ -518,6 +597,85 @@ static RecordedRequest BuildRecord(HttpContext ctx, string requestBody, string r
 static string Truncate(string value, int maxLength) =>
     value.Length <= maxLength ? value : value[..maxLength];
 
+static string CreateJwtToken(string username, string[] roles, DateTime expiresUtc)
+{
+    var credentials = new SigningCredentials(GetJwtSigningKey(), SecurityAlgorithms.HmacSha256);
+    var claims = new List<Claim>
+    {
+        new(JwtRegisteredClaimNames.Sub, username),
+        new(ClaimTypes.Name, username),
+        new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+    };
+
+    claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+    var token = new JwtSecurityToken(
+        issuer: GetJwtIssuer(),
+        audience: GetJwtAudience(),
+        claims: claims,
+        notBefore: DateTime.UtcNow,
+        expires: expiresUtc,
+        signingCredentials: credentials);
+
+    return new JwtSecurityTokenHandler().WriteToken(token);
+}
+
+static bool TryValidateJwtToken(string? authorization, out ClaimsPrincipal? principal, out string errorMessage)
+{
+    principal = null;
+
+    if (string.IsNullOrWhiteSpace(authorization))
+    {
+        errorMessage = "Authorization header is required. Use 'Bearer {token}'.";
+        return false;
+    }
+
+    const string bearerPrefix = "Bearer ";
+    if (!authorization.StartsWith(bearerPrefix, StringComparison.OrdinalIgnoreCase))
+    {
+        errorMessage = "Authorization header must start with 'Bearer '.";
+        return false;
+    }
+
+    var token = authorization[bearerPrefix.Length..].Trim();
+    if (string.IsNullOrWhiteSpace(token))
+    {
+        errorMessage = "Bearer token was empty.";
+        return false;
+    }
+
+    var validationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = GetJwtIssuer(),
+        ValidateAudience = true,
+        ValidAudience = GetJwtAudience(),
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = GetJwtSigningKey(),
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
+    };
+
+    try
+    {
+        principal = new JwtSecurityTokenHandler().ValidateToken(token, validationParameters, out _);
+        errorMessage = string.Empty;
+        return true;
+    }
+    catch (Exception ex)
+    {
+        errorMessage = $"Invalid token: {ex.Message}";
+        return false;
+    }
+}
+
+static SymmetricSecurityKey GetJwtSigningKey() =>
+    new(System.Text.Encoding.UTF8.GetBytes("ATF-MockApi-JWT-Signing-Key-2026-Example-Only"));
+
+static string GetJwtIssuer() => "ATF.MockApi";
+
+static string GetJwtAudience() => "ATF.MockApi.Client";
+
 sealed record ExampleLoginRequest(string? Username);
 sealed record ExampleLoginResponse(string Token, string Username, DateTime ExpiresUtc);
 sealed record ExampleCreateOrderRequest(string CustomerId, string Currency, List<ExampleCreateOrderItemRequest> Items);
@@ -532,6 +690,10 @@ sealed record ExamplePagedRowsResponse(int Skip, int Rows, int Returned, List<Ex
 sealed record ExamplePagedRowsMetadataResponse(int Skip, int Rows, int Returned, int TotalRows, bool HasMore, int? NextSkip, List<ExampleRowItem> Items);
 sealed record ExamplePageNumberRowsResponse(int PageNumber, int PageSize, int Skip, int Returned, int TotalRows, int TotalPages, bool HasMore, int? NextPageNumber, List<ExampleRowItem> Items);
 sealed record ExampleRowItem(int RowNumber, string Reference, string Description);
+sealed record ExampleJwtLoginRequest(string Username, string[]? Roles);
+sealed record ExampleJwtLoginResponse(string Token, string TokenType, DateTime ExpiresUtc, string Username, string[] Roles);
+sealed record ExampleJwtProtectedResponse(string Message, string Username, string[] Roles, string AuthenticationType);
+sealed record ExampleAuthErrorResponse(string Error);
 
 sealed class MockServerState
 {
