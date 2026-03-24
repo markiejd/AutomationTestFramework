@@ -172,11 +172,22 @@ ATF/
 │   ├── 143.0.7499.169/
 │   └── 143.0.7499.192/
 │
+├── CommunicationMockAPIServer/        # Mock REST API server
+│   ├── MockApi/                       # ASP.NET Core mock API application
+│   │   ├── Program.cs
+│   │   ├── appsettings.json
+│   │   ├── appsettings.Development.json
+│   │   └── runme.bat                  # Launch mock API server
+│
 ├── TestAutomationSpecFlow.sln         # Solution file
-├── Prep.bat                           # Preparation batch script
+├── Prep.bat                           # Preparation batch script (build specific projects)
 ├── RunUnitTests.bat                   # Unit test execution script
-├── Help.bat                           # Help documentation
-└── README.md                          # Original project documentation
+├── Help.bat                           # Interactive CLI menu for test operations
+├── UNIT_TESTS_ANALYSIS.md             # Comprehensive unit test coverage analysis
+├── LICENSE                            # Project license
+├── pastea.json                        # Configuration file
+├── README.md                          # Original project documentation
+└── .vscode/                           # VS Code configuration
 ```
 
 ---
@@ -212,6 +223,8 @@ ATF/
 - **File Operations**: CSV, Excel, JSON file handling
 - **Image Comparison**: Screenshot and visual regression testing
 - **Async Operations**: Support for asynchronous test scenarios
+- **Audio Testing**: Audio file metadata extraction and comparison
+- **Mock API Support**: Internal mock server for isolated testing
 
 ### 6. **Test Categorization**
 - **Smoke Tests**: Quick sanity checks for database and UI
@@ -449,24 +462,171 @@ Generated HTML reports include:
 ### CommunicationADF (Azure Data Factory)
 Utilities for interacting with Azure Data Factory pipelines and data operations.
 
+**Operations:**
+- List files in Data Lake Storage
+- Download files from ADF storage
+- Upload files to ADF storage
+- Delete files from ADF storage
+
+**Usage:**
+```bash
+# List files
+dotnet run -- list "<filePath>"
+
+# Download a file
+dotnet run -- download "<filePath>" "<destinationPath>"
+
+# Upload a file
+dotnet run -- upload "<filePath>" "<destinationPath>"
+dotnet run -- upload "c:\tmp\hello.txt" "Input/TEIP Invoice data_BL002/hello.txt"
+
+# Delete a file
+dotnet run -- delete "<filePath>"
+```
+
+**Prerequisites:**
+- Azure Storage account access
+- Environment variables configured
+
+### CommunicationAudio
+Standalone .NET application for audio file testing and comparison.
+
+**Features:**
+- Extract audio file metadata (duration, bitrate, sample rate, channels, codec, size, integrity)
+- Compare two audio files for differences
+- MD5 hash integrity verification
+- JSON output format for test automation integration
+
+**Supported Formats:** MP3, FLAC, OGG, WAV, M4A, and most common audio formats
+
+**Usage:**
+```bash
+# Extract metadata
+dotnet run -- metadata "<audioFilePath>"
+
+# Compare audio files
+dotnet run -- compare "<audioFile1>" "<audioFile2>"
+```
+
+**Output:** JSON format with detailed metadata and comparison results
+
 ### CommunicationExcel
 Excel file handling for test data management and reporting.
 
 ### CommunicationLoad (Performance Testing)
-Load testing using Locust framework.
+Load testing using Locust framework for performance and stress testing.
+
+**Features:**
+- Flask-based configuration management
+- Configurable load profiles (users, ramp-up rate, duration)
+- JSON configuration support
+- CSV result exports
+- API endpoint testing at scale
 
 **Setup:**
 ```bash
 cd CommunicationLoad
 pip install -r requirements.txt
-locust -f locustfile.py
 ```
 
+**Configuration:**
+1. Upload/update `<app>_config.json` with API endpoints
+2. Modify `target_config.json` with test parameters
+
+**Basic Usage:**
+```bash
+# Start Flask configuration server (optional)
+python app.py
+
+# Run Locust load test
+locust -f locustfile.py --headless -u 2 -r 1 -t 2m --csv Results/locust
+
+# Parameters:
+#   -u: Number of concurrent users
+#   -r: Ramp-up (users per second)
+#   -t: Runtime duration
+#   --headless: Terminal-only (no web UI)
+#   --csv: Output results to CSV files in Results/ folder
+```
+
+**Configuration via Flask API:**
+```bash
+# Update config and trigger test run
+curl -X GET "http://127.0.0.1:8000/locust/run?username=test&password=123&keyword=RunLocust"
+```
+
+**Output:**
+- CSV files with test metrics (stats, response times, failures)
+- Files regenerated on each run
+
 ### CommunicationSqlServer
-SQL Server utilities for database operations and queries.
+SQL Server utilities for database operations, queries, and data export.
+
+**Features:**
+- Execute arbitrary SQL statements
+- Export results to JSON or CSV format
+- Query database metadata and schema
+- Integration with other test projects
+
+**Required Environment Variables:**
+```cmd
+SET SQLSERVER_PASSWORD=<your-password>
+SET SQLSERVER_USERNAME=<your-username>
+SET SQLSERVER_SERVER=<your-server>
+SET SQLSERVER_DATABASE=<your-database>
+```
+
+**Usage:**
+```bash
+# Query with no output file (display only)
+dotnet run --project ./CommunicationSqlServer/SqlServerCommunication.csproj -- "SELECT * FROM [ACCOUNT]" "<licence>" ""
+
+# Query with specific output file
+dotnet run --project ./CommunicationSqlServer/SqlServerCommunication.csproj -- "SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'ACCOUNT';" "<licence>" "c:\tmp\output.csv"
+
+# Query with default output directory
+dotnet run --project ./CommunicationSqlServer/SqlServerCommunication.csproj -- "SELECT * FROM [ACCOUNT]" "<licence>" "default"
+```
+
+**Parameters:**
+- SQL Statement (quoted, required)
+- Licence/API key (quoted, required)
+- Output path (quoted, can be empty string or "default")
+
+**Output Formats:** JSON or CSV
 
 ### CommunicationXrayCloud
 Integration with Atlassian Xray Cloud for test case management and result reporting.
+
+**Features:**
+- Create test executions in Xray Cloud
+- Add tests to existing executions
+- Update test run status
+- Sync BDD/Gherkin definitions with Xray Cloud
+- Retrieve test data and schema information
+- Upload test results with evidence for failed tests
+
+**Prerequisites:**
+- Xray Cloud account with API access
+- Valid JWT token for authentication
+- .NET 6.0 SDK or higher
+
+**Usage:**
+```bash
+dotnet run --project ./CommunicationXrayCloud.csproj -- <action> <parameters>
+```
+
+**Available Actions:**
+- `syncbdd` - Sync BDD/Gherkin definitions with Xray Cloud
+- `createexecution` - Create new test execution
+- `addtests` - Add tests to execution
+- `updaterun` - Update test run status
+- `retrieve` - Fetch test execution details
+
+**Configuration:**
+- GraphQL API for complex operations
+- REST API for basic operations
+- Base64 file encoding support for evidence upload
 
 ---
 
@@ -623,15 +783,128 @@ This project is licensed under the terms specified in the LICENSE file.
 
 ---
 
+## 🎨 Test Application Targets
+
+The framework includes support for multiple application types:
+
+### Web Applications
+- **Swaglabs**: E-commerce testing
+- **EFR AI Chatbot**: AI chatbot testing
+- **Website**: General web application testing
+
+### API Applications  
+- **ATF360 API**: Custom REST API testing
+- **Mock API**: Internal mock API server for testing
+
+### Specialized Applications
+- **UNKNOWNN**: Legacy application support (retireable)
+
+All applications are managed through the `Help.bat` menu system and can be retired or restored as needed.
+
+---
+
+## 🛠️ Helper Scripts and Batch Utilities
+
+### **Help.bat** - Interactive Menu System
+Provides interactive CLI menu for common operations:
+- **Create Feature File**: Generate new Gherkin feature files
+- **Clear Test History**: Remove test result history
+- **Build Application**: Compile projects
+- **Create Page File**: Generate page object files
+- **Run Tests**: Execute test suites
+- **Settings**: Configure framework settings
+- **Jira Integration**: Link tests to Jira issues
+- **Application In Test**: Manage test target applications
+
+### **Prep.bat** - Project Preparation Script
+Builds and prepares specific project components:
+- `prep targets` - Build AppTargets project
+- `prep api` - Build AppXAPI project
+- `prep core` - Build Core project
+- `prep appspec` - Build AppSpecFlow project
+
+### **RunUnitTests.bat** - Unit Test Executor
+Executes the CoreUnitTests project and generates results
+
+---
+
+## 🔄 Feature Files and Test Scenarios
+
+The framework organizes tests by application domain:
+
+### ATFAPITester
+Tests for the ATF API and endpoint validation
+
+### SwagLabs
+Complete test coverage for SwagLabs e-commerce application:
+- User login/authentication
+- Product catalog browsing
+- Shopping cart operations
+- Checkout process
+- Payment processing
+
+### Unit Testing
+Core functionality and utility testing suite
+
+---
+
+## 🗄️ Data Management
+
+### Test Data Locations
+- **TestPreConditionData/**: Pre-condition data files for test setup
+- **TestOutput/**: Generated test output files
+- **TestResults/**: TRX and test execution results
+- **APIOutFiles/**: API response output files
+
+### File Formats Supported
+- **JSON**: API requests/responses and configuration
+- **CSV**: Data import/export
+- **Excel**: Spreadsheet data handling (via CommunicationExcel)
+- **XML**: Legacy API responses
+- **Audio**: Audio file metadata extraction and comparison
+
+---
+
+## 📡 Mock API Server
+
+A standalone ASP.NET Core mock API server (`CommunicationMockAPIServer`) for testing:
+- Provides configurable mock endpoints
+- Returns predefined responses for testing
+- Supports various HTTP methods (GET, POST, PUT, DELETE)
+- Configuration files: `appsettings.json` and `appsettings.Development.json`
+- Launch via `runme.bat` in the MockApi directory
+
+**Location**: `ATF/CommunicationMockAPIServer/MockApi/`
+
+---
+
+## 🌐 Communication Modules Reference
+
+| Module | Purpose | Type |
+|--------|---------|------|
+| **CommunicationADF** | Azure Data Factory interaction | .NET Console |
+| **CommunicationAudio** | Audio file metadata extraction & comparison | .NET Console |
+| **CommunicationExcel** | Excel file operations | .NET Console |
+| **CommunicationLoad** | Locust performance testing | Python |
+| **CommunicationReporting** | TRX to HTML report conversion | .NET Console |
+| **CommunicationSqlServer** | SQL Server query execution | .NET Console |
+| **CommunicationXrayCloud** | Xray Cloud test management integration | .NET Console |
+| **CommunicationMockAPIServer** | Mock REST API server | ASP.NET Core |
+
+---
+
 ## ✉️ Support
 
 For issues, questions, or contributions:
 1. Review existing test examples in `AppSpecFlow/Features/`
 2. Check the detailed analysis in [UNIT_TESTS_ANALYSIS.md](ATF/UNIT_TESTS_ANALYSIS.md)
-3. Contact the development team via GIT
+3. Review specific component READMEs in Communication module folders
+4. Contact the development team via GIT
 
 ---
 
-**Last Updated**: January 2026  
-**Version**: 1.0  
-**Framework**: .NET 9.0, Reqnroll, Selenium 4.24+
+**Last Updated**: March 2026  
+**Version**: 1.1  
+**Framework**: .NET 9.0, Reqnroll, Selenium 4.24+  
+**Python Support**: Locust for load testing  
+**Browser Support**: Chrome, Firefox, Edge
