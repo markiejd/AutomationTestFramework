@@ -298,6 +298,92 @@ app.MapGet("/secure", (HttpRequest req) =>
 .Produces(200)
 .Produces(401);
 
+// 🆕 New typed example endpoints for Swagger/testing without changing existing routes
+app.MapPost("/examples/login", (ExampleLoginRequest request) =>
+{
+    var username = string.IsNullOrWhiteSpace(request.Username) ? "guest" : request.Username.Trim();
+    return Results.Ok(new ExampleLoginResponse(
+        Token: $"fake-jwt-for-{username}",
+        Username: username,
+        ExpiresUtc: DateTime.UtcNow.AddHours(1)));
+})
+.WithName("ExampleLogin")
+.WithSummary("Typed login example")
+.WithDescription("Testing use: demonstrates a typed login request/response in Swagger without modifying the original /login endpoint.\nSend JSON like { \"username\": \"alice\" }.\nExpected 200 returns { token, username, expiresUtc }.")
+.WithTags("Examples")
+.Accepts<ExampleLoginRequest>("application/json")
+.Produces<ExampleLoginResponse>(200);
+
+app.MapPost("/examples/orders", (ExampleCreateOrderRequest request) =>
+{
+    var orderId = $"ORD-{Random.Shared.Next(1000, 9999)}";
+    var total = request.Items.Sum(item => item.Quantity * item.UnitPrice);
+
+    return Results.Created($"/examples/orders/{orderId}", new ExampleCreateOrderResponse(
+        OrderId: orderId,
+        CustomerId: request.CustomerId,
+        Status: "created",
+        Currency: request.Currency,
+        Total: total,
+        ItemCount: request.Items.Count));
+})
+.WithName("CreateExampleOrder")
+.WithSummary("Create a typed mock order")
+.WithDescription("Testing use: demonstrates a POST endpoint with a richer request body and a 201 Created response.\nExpected 201 returns { orderId, customerId, status, currency, total, itemCount }.")
+.WithTags("Examples")
+.Accepts<ExampleCreateOrderRequest>("application/json")
+.Produces<ExampleCreateOrderResponse>(201);
+
+app.MapGet("/examples/orders/{orderId}", (string orderId) =>
+    Results.Ok(new ExampleOrderResponse(
+        OrderId: orderId,
+        CustomerId: "CUST-1001",
+        Status: "processing",
+        Currency: "GBP",
+        Total: 149.97m,
+        Items:
+        [
+            new ExampleOrderItemResponse("SKU-RED-01", 1, 49.99m),
+            new ExampleOrderItemResponse("SKU-BLU-02", 2, 49.99m)
+        ])))
+.WithName("GetExampleOrder")
+.WithSummary("Get a typed mock order")
+.WithDescription("Testing use: demonstrates a typed GET response with nested data.\nExpected 200 returns a single order with item details.")
+.WithTags("Examples")
+.Produces<ExampleOrderResponse>(200);
+
+app.MapPost("/examples/customers/validate", (ExampleCustomerValidationRequest request) =>
+{
+    var errors = new Dictionary<string, string[]>();
+
+    if (string.IsNullOrWhiteSpace(request.FirstName))
+        errors["firstName"] = ["First name is required."];
+
+    if (string.IsNullOrWhiteSpace(request.LastName))
+        errors["lastName"] = ["Last name is required."];
+
+    if (string.IsNullOrWhiteSpace(request.Email) || !request.Email.Contains('@'))
+        errors["email"] = ["A valid email address is required."];
+
+    if (errors.Count > 0)
+    {
+        return Results.BadRequest(new ExampleValidationErrorResponse(
+            Message: "Validation failed",
+            Errors: errors));
+    }
+
+    return Results.Ok(new ExampleCustomerValidationSuccessResponse(
+        Message: "Customer payload is valid",
+        CustomerReference: $"CUS-{Random.Shared.Next(10000, 99999)}"));
+})
+.WithName("ValidateExampleCustomer")
+.WithSummary("Validate a customer payload")
+.WithDescription("Testing use: demonstrates success and validation-error responses in Swagger.\nExpected 200 when FirstName, LastName, and Email are valid.\nExpected 400 returns { message, errors } when required fields are missing or malformed.")
+.WithTags("Examples")
+.Accepts<ExampleCustomerValidationRequest>("application/json")
+.Produces<ExampleCustomerValidationSuccessResponse>(200)
+.Produces<ExampleValidationErrorResponse>(400);
+
 app.Run("http://localhost:4000");
 
 static async Task<string> ReadRequestBodyAsync(HttpRequest request)
@@ -333,6 +419,17 @@ static RecordedRequest BuildRecord(HttpContext ctx, string requestBody, string r
 
 static string Truncate(string value, int maxLength) =>
     value.Length <= maxLength ? value : value[..maxLength];
+
+sealed record ExampleLoginRequest(string? Username);
+sealed record ExampleLoginResponse(string Token, string Username, DateTime ExpiresUtc);
+sealed record ExampleCreateOrderRequest(string CustomerId, string Currency, List<ExampleCreateOrderItemRequest> Items);
+sealed record ExampleCreateOrderItemRequest(string Sku, int Quantity, decimal UnitPrice);
+sealed record ExampleCreateOrderResponse(string OrderId, string CustomerId, string Status, string Currency, decimal Total, int ItemCount);
+sealed record ExampleOrderResponse(string OrderId, string CustomerId, string Status, string Currency, decimal Total, List<ExampleOrderItemResponse> Items);
+sealed record ExampleOrderItemResponse(string Sku, int Quantity, decimal UnitPrice);
+sealed record ExampleCustomerValidationRequest(string? FirstName, string? LastName, string? Email);
+sealed record ExampleCustomerValidationSuccessResponse(string Message, string CustomerReference);
+sealed record ExampleValidationErrorResponse(string Message, Dictionary<string, string[]> Errors);
 
 sealed class MockServerState
 {
