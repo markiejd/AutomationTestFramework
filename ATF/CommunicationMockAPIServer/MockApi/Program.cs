@@ -33,10 +33,10 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Paste only the raw JWT token here, without the word Bearer. Example: eyJhbGciOi... Swagger will automatically send Authorization: Bearer {token}."
     });
 
-    options.AddSecurityRequirement(_ => new OpenApiSecurityRequirement
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
     {
         {
-            new OpenApiSecuritySchemeReference("Bearer", null, null),
+            new OpenApiSecuritySchemeReference("Bearer", document, null),
             new List<string>()
         }
     });
