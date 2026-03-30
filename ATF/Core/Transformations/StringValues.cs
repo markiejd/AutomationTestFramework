@@ -44,27 +44,22 @@ namespace Core.Transformations
 			// Dynamic ATF variables (ATFVARIABLE0..9)
 			value = ReplaceATFVariables(value);
 
+			
+			var countryCode = TargetConfiguration.Configuration.DateFormat == "UK" ? "103" : "101";
+
 			// Alphabetical token replacements (easy to scan/maintain)
-			value = ReplaceToken(value, "%APPDATA", () => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
-			value = ReplaceToken(value, "CURRENTHOUR", () => TimeValues.ReturnNowTimeAsString("HH"));
-			value = ReplaceToken(value, "CURRENTMINUTE", () => TimeValues.ReturnNowTimeAsString("mm"));
-			value = ReplaceToken(value, "DATEACTION", () => DateValues.ReturnNowDateAsString("103"));
+			value = ReplaceToken(value, "<APPDATA>", () => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+			value = ReplaceToken(value, "<CURRENTHOUR>", () => TimeValues.ReturnNowTimeAsString("HH"));
+			value = ReplaceToken(value, "<CURRENTMINUTE>", () => TimeValues.ReturnNowTimeAsString("mm"));
 			value = ReplaceToken(value, "<DATEACTION>", () => DateValues.ReturnNowDateAsString("103"));
-			value = ReplaceToken(value, "DATEREVERSE", () => DateValues.ReturnNowDateAsString("23"));
 			value = ReplaceToken(value, "<DATEREVERSE>", () => DateValues.ReturnNowDateAsString("23"));
 			value = ReplaceToken(value, "<EPOCH>", GetEpochOrDefault);
-			value = ReplaceToken(value, "DATEFIRSTOFTHISMONTH", () => DateValues.ReturnFirstOfThisMonth("23"));
-			value = ReplaceToken(value, "EPOCH", GetEpochOrDefault);
-			value = ReplaceToken(value, "MYREPO", FileUtils.GetRepoDirectory);
-			value = ReplaceToken(value, "NOW", () => TimeValues.ReturnNowTimeAsString());
-			value = ReplaceToken(value, "URL", () => VariableConfiguration.Configuration.URL);
-			value = ReplaceToken(value, "<URL>", () => VariableConfiguration.Configuration.URL);
+			value = ReplaceToken(value, "<DATEFIRSTOFTHISMONTH>", () => DateValues.ReturnFirstOfThisMonth("23"));
+			value = ReplaceToken(value, "<MYREPO>", FileUtils.GetRepoDirectory);
+			value = ReplaceToken(value, "<NOW>", () => TimeValues.ReturnNowTimeAsString());
+			value = ReplaceToken(value, "<URL>", () => VariableConfiguration.Configuration.URL);			
+			value = ReplaceTokenTime(value, "<TIME>", countryCode);
 
-			if (value.Contains("TODAY"))
-			{
-				var countryCode = TargetConfiguration.Configuration.DateFormat == "UK" ? "103" : "101";
-				value = value.Replace("TODAY", DateValues.ReturnNowDateAsString(countryCode));
-			}
 
 			// Add any new token replacements above this line to ensure they are processed before the debug output and return.
 			
@@ -76,6 +71,18 @@ namespace Core.Transformations
 			}
 
 			return value;
+		}
+
+		private static string ReplaceTokenTime(string input, string token, string format)
+		{
+			if (!input.Contains(token))
+			{
+				return input;
+			}
+
+			var replacement = TimeValues.ReturnNowTimeAsString(format);
+			DebugOutput.Log($"Replacing {token} with '{replacement}'");
+			return input.Replace(token, replacement);
 		}
 
 		/// Helper method to replace a token with a value from a factory function, only if the token is present in the input string.
