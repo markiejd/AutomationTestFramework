@@ -31,6 +31,37 @@ namespace Generic.Steps
             return flag;
         }
 
+        [When(@"I ""([^""]*)"" Payload ""([^""]*)"" At The ""([^""]*)"" Endpoint")]
+        public bool WhenIPayloadAtTheEndpoint(string action, string payload, string endPointURL)
+        {
+            string proc = $"When I \"{action}\" Payload \"{payload}\" At The \"{endPointURL}\" Endpoint";
+            endPointURL = StringValues.TextReplacementService(endPointURL);
+            proc = $"When I \"{action}\" Payload \"{payload}\" At The \"{endPointURL}\" Endpoint";
+
+            if (CombinedSteps.OutputProc(proc))
+            {            
+                // single quotes are used in the FF to make it easy to read and avoid escaping issues, but the APIUtil expects double quotes for JSON - so replace them here before sending to the helper method.
+                payload = payload.Replace("'", "\"");
+                DebugOutput.Log($"Payload after replacement: {payload}");
+                switch(action.ToLower())
+                {
+                    case "post":
+                        var postResponse = APIUtil.Post(endPointURL, payload, action.ToLower(), false).Result;
+                        break;
+                    case "patch":
+                        var patchResponse = APIUtil.Post(endPointURL, payload, action.ToLower(), false).Result; // Note: using Post helper for PATCH - consider a dedicated Patch helper if needed.
+                        break;
+                    case "get":
+                        return Failed(proc, "GET method does not support a body - use the step without body parameter for GET requests.");
+                    default:
+                        return Failed(proc, $"Unsupported *YET* HTTP method '{action}'");
+                }
+                return true;
+            }
+            CombinedSteps.Failure(proc);
+            return false;
+        }
+
         [When(@"I ""([^""]*)"" The ""([^""]*)"" Endpoint")]
         public async Task<bool> WhenITheEndpoint(string action, string endPointURL)
         {
@@ -64,34 +95,34 @@ namespace Generic.Steps
             return false;
         }
 
-        [When(@"I ""([^""]*)"" The ""([^""]*)"" Endpoint With The Body ""([^""]*)""")]
-        [When(@"I ""([^""]*)"" The ""([^""]*)"" Endpoint With The Payload ""([^""]*)""")]
-        public bool WhenITheEndpointWithTheBody(string action, string endPointURL, string body)
-        {
-            string proc = $"When I \"{action}\" The \"{endPointURL}\" Endpoint With The Payload \"{body}\"";       
-            endPointURL = StringValues.TextReplacementService(endPointURL);
-            proc = $"When I \"{action}\" The \"{endPointURL}\" Endpoint";         
+        // [When(@"I ""([^""]*)"" The ""([^""]*)"" Endpoint With The Body ""([^""]*)""")]
+        // [When(@"I ""([^""]*)"" The ""([^""]*)"" Endpoint With The Payload ""([^""]*)""")]
+        // public bool WhenITheEndpointWithTheBody(string action, string endPointURL, string body)
+        // {
+        //     string proc = $"When I \"{action}\" The \"{endPointURL}\" Endpoint With The Payload \"{body}\"";       
+        //     endPointURL = StringValues.TextReplacementService(endPointURL);
+        //     proc = $"When I \"{action}\" The \"{endPointURL}\" Endpoint";         
                 
-            if (CombinedSteps.OutputProc(proc))
-            {
-                switch(action.ToLower())
-                {
-                    case "post":
-                        var postResponse = APIUtil.Post(endPointURL, body, action.ToLower(), false).Result;
-                        break;
-                    case "patch":
-                        var patchResponse = APIUtil.Post(endPointURL, body, action.ToLower(), false).Result; // Note: using Post helper for PATCH - consider a dedicated Patch helper if needed.
-                        break;
-                    case "get":
-                        return Failed(proc, "GET method does not support a body - use the step without body parameter for GET requests.");
-                    default:
-                        return Failed(proc, $"Unsupported *YET* HTTP method '{action}'");
-                }
-                return true;
-            }
-            CombinedSteps.Failure(proc);
-            return false;
-        }
+        //     if (CombinedSteps.OutputProc(proc))
+        //     {
+        //         switch(action.ToLower())
+        //         {
+        //             case "post":
+        //                 var postResponse = APIUtil.Post(endPointURL, body, action.ToLower(), false).Result;
+        //                 break;
+        //             case "patch":
+        //                 var patchResponse = APIUtil.Post(endPointURL, body, action.ToLower(), false).Result; // Note: using Post helper for PATCH - consider a dedicated Patch helper if needed.
+        //                 break;
+        //             case "get":
+        //                 return Failed(proc, "GET method does not support a body - use the step without body parameter for GET requests.");
+        //             default:
+        //                 return Failed(proc, $"Unsupported *YET* HTTP method '{action}'");
+        //         }
+        //         return true;
+        //     }
+        //     CombinedSteps.Failure(proc);
+        //     return false;
+        // }
 
 
 
