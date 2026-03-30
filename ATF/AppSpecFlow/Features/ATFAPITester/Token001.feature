@@ -5,4 +5,6 @@ Feature: Token001 GetToken
           dotnet test --filter:"TestCategory=Token001" --logger "trx;logfilename=Token001.trx" 
   
 Scenario Outline: Token001-GetToken 
-   Given JWT Token Created Using Payload "{'username': 'string',  'roles': [    'string'  ]}" At URL "<URL>/examples/auth/login"
+   Given JWT Token Created Using Payload "{'username': 'mark',  'roles': [    'admin'  ]}" At URL "<URL>/examples/auth/login"
+   Then I Receive A "200" Status Code
+   Then I Have A JWT Token 

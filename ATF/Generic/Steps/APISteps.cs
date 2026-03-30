@@ -217,6 +217,27 @@ namespace Generic.Steps
             return false;
         }
 
+        [Then(@"I Have A JWT Token")]
+        public bool ThenIHaveAJWTToken()
+        {
+            string proc = "Then I Have A JWT Token";
+                
+            if (CombinedSteps.OutputProc(proc))
+            {
+                if (!string.IsNullOrEmpty(APIUtil.JWTToken))
+                {
+                    DebugOutput.Log("JWT Token is available for use.");
+                    return true;
+                }
+                else
+                {
+                    return Failed(proc, "JWT Token is null or empty. Make sure you have a previous step that generates and stores the token before this validation step.");
+                }
+            }
+            CombinedSteps.Failure(proc);
+            return false;
+        }
+
 
 
 
