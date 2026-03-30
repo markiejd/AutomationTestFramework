@@ -32,24 +32,24 @@ namespace Generic.Steps
         }
 
         [When(@"I ""([^""]*)"" The ""([^""]*)"" Endpoint")]
-        public async Task<bool> WhenITheEndpoint(string a, string b)
+        public async Task<bool> WhenITheEndpoint(string action, string endPintURL)
         {
-            string proc = $"When I \"{a}\" The \"{b}\" Endpoint";                
+            string proc = $"When I \"{action}\" The \"{endPintURL}\" Endpoint";                
             if (CombinedSteps.OutputProc(proc))
             {
                 try
                 {
-                    switch(a.ToLower())
+                    switch(action.ToLower())
                     {
                         case "get":
-                            await APIUtil.Get(b, a.ToLower());
+                            await APIUtil.Get(endPintURL, action.ToLower());
                             break;
                         case "post":
                             return Failed (proc, "POST method requires a body - use the step that includes the body parameter for POST requests.");
                         case "patch":
                             return Failed(proc, "PATCH method requires a body - use the step that includes the body parameter for PATCH requests.");
                         default:
-                            return Failed(proc, $"Unsupported *YET* HTTP method '{a}'");
+                            return Failed(proc, $"Unsupported *YET* HTTP method '{action}'");
                     }
                 }
                 catch (Exception ex)
@@ -64,24 +64,24 @@ namespace Generic.Steps
 
         [When(@"I ""([^""]*)"" The ""([^""]*)"" Endpoint With The Body ""([^""]*)""")]
         [When(@"I ""([^""]*)"" The ""([^""]*)"" Endpoint With The Payload ""([^""]*)""")]
-        public bool WhenITheEndpointWithTheBody(string a, string b, string c)
+        public bool WhenITheEndpointWithTheBody(string action, string endPintURL, string body)
         {
-            string proc = $"When I \"{a}\" The \"{b}\" Endpoint With The Payload \"{c}\"";
+            string proc = $"When I \"{action}\" The \"{endPintURL}\" Endpoint With The Payload \"{body}\"";
                 
             if (CombinedSteps.OutputProc(proc))
             {
-                switch(a.ToLower())
+                switch(action.ToLower())
                 {
                     case "post":
-                        var postResponse = APIUtil.Post(b, c, a.ToLower(), false).Result;
+                        var postResponse = APIUtil.Post(endPintURL, body, action.ToLower(), false).Result;
                         break;
                     case "patch":
-                        var patchResponse = APIUtil.Post(b, c, a.ToLower(), false).Result; // Note: using Post helper for PATCH - consider a dedicated Patch helper if needed.
+                        var patchResponse = APIUtil.Post(endPintURL, body, action.ToLower(), false).Result; // Note: using Post helper for PATCH - consider a dedicated Patch helper if needed.
                         break;
                     case "get":
                         return Failed(proc, "GET method does not support a body - use the step without body parameter for GET requests.");
                     default:
-                        return Failed(proc, $"Unsupported *YET* HTTP method '{a}'");
+                        return Failed(proc, $"Unsupported *YET* HTTP method '{action}'");
                 }
                 return true;
             }
@@ -95,14 +95,14 @@ namespace Generic.Steps
 
 
         [Then(@"I Receive A ""([^""]*)"" Status Code")]
-        public bool ThenIReceiveAStatusCode(string a)
+        public bool ThenIReceiveAStatusCode(string statusCode)
         {
-            string proc = $"Then I Receive A \"{a}\" Status Code";
+            string proc = $"Then I Receive A \"{statusCode}\" Status Code";
 
-            // convert the string a to a status code and compare to the cached APIResponse status code - if can not convert fail here.
-            if (!int.TryParse(a, out int expectedStatusCode))
+            // convert the string statusCode to a status code and compare to the cached APIResponse status code - if can not convert fail here.
+            if (!int.TryParse(statusCode, out int expectedStatusCode))
             {
-                return Failed(proc, $"Failed to parse expected status code '{a}'");
+                return Failed(proc, $"Failed to parse expected status code '{statusCode}' as an integer.    Make sure the status code in the feature file is a valid integer.");
             }
                             
             if (CombinedSteps.OutputProc(proc))
@@ -118,20 +118,20 @@ namespace Generic.Steps
         }
 
         [Then(@"The Response Body Is Equal To ""([^""]*)""")]
-        public bool ThenTheResponseBodyIsEqualTo(string a)
+        public bool ThenTheResponseBodyIsEqualTo(string responseBodyExpected)
         {
-            string proc = $"Then The Response Body Is Equal To \"{a}\"";
+            string proc = $"Then The Response Body Is Equal To \"{responseBodyExpected}\"";
                 
             if (CombinedSteps.OutputProc(proc))
             {
                 if (APIResponse.fullResponse == null) return Failed(proc, "Failed to read response! Make sure you have a previous communication step that populates APIResponse.fullResponse before this validation step.");
                 var responseBody = APIResponse.fullResponse.Content.ReadAsStringAsync().Result;
-                if (responseBody == a) return true;
+                if (responseBody == responseBodyExpected) return true;
                 DebugOutput.Log($"Did not match! Received {responseBody} - but those double quotes are a nightmare to work with in the feature file, so consider using single quotes in the feature and replacing them here for a more readable feature file.");
                 // replace the response body double quotes with single quotes for easier comparison if the feature file uses single quotes to avoid escaping issues - this is a bit of a hack but makes the feature files more readable.
                 responseBody = responseBody.Replace("\"", "'");
-                DebugOutput.Log($"After replacement, comparing {responseBody} to {a}");
-                if (responseBody == a) return true;
+                DebugOutput.Log($"After replacement, comparing {responseBody} to {responseBodyExpected}");
+                if (responseBody == responseBodyExpected) return true;
                 return Failed(proc, "Did not match!");
             }
             CombinedSteps.Failure(proc);
