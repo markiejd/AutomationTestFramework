@@ -32,9 +32,11 @@ namespace Generic.Steps
         }
 
         [When(@"I ""([^""]*)"" The ""([^""]*)"" Endpoint")]
-        public async Task<bool> WhenITheEndpoint(string action, string endPintURL)
+        public async Task<bool> WhenITheEndpoint(string action, string endPointURL)
         {
-            string proc = $"When I \"{action}\" The \"{endPintURL}\" Endpoint";                
+            string proc = $"When I \"{action}\" The \"{endPointURL}\" Endpoint";         
+            endPointURL = StringValues.TextReplacementService(endPointURL);
+            proc = $"When I \"{action}\" The \"{endPointURL}\" Endpoint";         
             if (CombinedSteps.OutputProc(proc))
             {
                 try
@@ -42,7 +44,7 @@ namespace Generic.Steps
                     switch(action.ToLower())
                     {
                         case "get":
-                            await APIUtil.Get(endPintURL, action.ToLower());
+                            await APIUtil.Get(endPointURL, action.ToLower());
                             break;
                         case "post":
                             return Failed (proc, "POST method requires a body - use the step that includes the body parameter for POST requests.");
@@ -64,19 +66,21 @@ namespace Generic.Steps
 
         [When(@"I ""([^""]*)"" The ""([^""]*)"" Endpoint With The Body ""([^""]*)""")]
         [When(@"I ""([^""]*)"" The ""([^""]*)"" Endpoint With The Payload ""([^""]*)""")]
-        public bool WhenITheEndpointWithTheBody(string action, string endPintURL, string body)
+        public bool WhenITheEndpointWithTheBody(string action, string endPointURL, string body)
         {
-            string proc = $"When I \"{action}\" The \"{endPintURL}\" Endpoint With The Payload \"{body}\"";
+            string proc = $"When I \"{action}\" The \"{endPointURL}\" Endpoint With The Payload \"{body}\"";       
+            endPointURL = StringValues.TextReplacementService(endPointURL);
+            proc = $"When I \"{action}\" The \"{endPointURL}\" Endpoint";         
                 
             if (CombinedSteps.OutputProc(proc))
             {
                 switch(action.ToLower())
                 {
                     case "post":
-                        var postResponse = APIUtil.Post(endPintURL, body, action.ToLower(), false).Result;
+                        var postResponse = APIUtil.Post(endPointURL, body, action.ToLower(), false).Result;
                         break;
                     case "patch":
-                        var patchResponse = APIUtil.Post(endPintURL, body, action.ToLower(), false).Result; // Note: using Post helper for PATCH - consider a dedicated Patch helper if needed.
+                        var patchResponse = APIUtil.Post(endPointURL, body, action.ToLower(), false).Result; // Note: using Post helper for PATCH - consider a dedicated Patch helper if needed.
                         break;
                     case "get":
                         return Failed(proc, "GET method does not support a body - use the step without body parameter for GET requests.");
@@ -219,12 +223,14 @@ namespace Generic.Steps
         /// Performs a simple GET to the provided URL and logs success/failure.
         /// </summary>
         [When(@"I Get From URL ""(.*)""")]
-        public async Task<bool> WhenIGetFromURL(string url)
+        public async Task<bool> WhenIGetFromURL(string endPointURL)
         {
-            string proc = $"When I Get From URL {url}";
+            string proc = $"When I Get From URL {endPointURL}";
+            endPointURL = StringValues.TextReplacementService(endPointURL);
+            proc = $"When I Get From URL {endPointURL}";
             if (CombinedSteps.OutputProc(proc))
             {
-                var response = await APIUtil.Get(url, "get");
+                var response = await APIUtil.Get(endPointURL, "get");
                 if (response.IsSuccessStatusCode)
                 {
                     DebugOutput.Log("Successful GET - JSON file has been created with output (may be empty).");
@@ -240,12 +246,14 @@ namespace Generic.Steps
         /// Performs a GET using Windows authentication with supplied credentials.
         /// </summary>
         [When(@"Using Windows Authentication User ""(.*)"" Password ""(.*)"" I Get From URL ""(.*)""")]
-        public async Task<bool> WhenUsingWindowsAuthenticationUserPasswordIGetFromURL(string winUser,string winPassword,string url)
+        public async Task<bool> WhenUsingWindowsAuthenticationUserPasswordIGetFromURL(string winUser,string winPassword,string endPointURL)
         {
-            string proc = $"When I Get From URL {url}";
+            string proc = $"When I Get From URL {endPointURL} using Windows Authentication with user {winUser}";
+            endPointURL = StringValues.TextReplacementService(endPointURL);
+            proc = $"When I Get From URL {endPointURL} using Windows Authentication with user {winUser}";
             if (CombinedSteps.OutputProc(proc))
             {
-                var response = await APIUtil.GetWithWindowsAuth(url,"getWithAuth", winUser, winPassword);
+                var response = await APIUtil.GetWithWindowsAuth(endPointURL,"getWithAuth", winUser, winPassword);
                 if (response.IsSuccessStatusCode)
                 {
                     DebugOutput.Log("Successful GET with Windows Auth - JSON file created (may be empty).");
@@ -260,12 +268,13 @@ namespace Generic.Steps
         /// POSTs a JSON string payload to the specified URL.
         /// </summary>
         [When(@"I Post Json ""(.*)"" To URL ""(.*)""")]
-        public async Task<bool> WhenIPostJsonToURL(string jSonString,string url)
+        public async Task<bool> WhenIPostJsonToURL(string jSonString,string endPointURL)
         {
-            string proc = $"When I Post Json {jSonString} To URL {url}";
+            endPointURL = StringValues.TextReplacementService(endPointURL);
+            string proc = $"When I Post Json {jSonString} To URL {endPointURL}";
             if (CombinedSteps.OutputProc(proc))
             {
-                var response = await APIUtil.Post(url, jSonString, "post", false);
+                var response = await APIUtil.Post(endPointURL, jSonString, "post", false);
                 if (response.IsSuccessStatusCode)
                 {
                     DebugOutput.Log("Successful POST - JSON file created with output (may be empty).");
@@ -277,9 +286,10 @@ namespace Generic.Steps
         }
 
         [When(@"I Post Json File ""(.*)"" To URL ""(.*)""")]
-        public async Task<bool> WhenIPostJsonFileToURL(string jsonFileLocation,string url)
+        public async Task<bool> WhenIPostJsonFileToURL(string jsonFileLocation,string endPointURL)
         {
-            string proc = $"When I Post Json File {jsonFileLocation} To URL {url}";
+            endPointURL = StringValues.TextReplacementService(endPointURL);
+            string proc = $"When I Post Json File {jsonFileLocation} To URL {endPointURL}";
             if (CombinedSteps.OutputProc(proc))
             {
                 if (!FileUtils.OSFileCheck(jsonFileLocation))
@@ -288,7 +298,7 @@ namespace Generic.Steps
                 }
                 var jSonText = JsonValues.ReadOSJsonFile(jsonFileLocation);
                 if (jSonText == null) return Failed(proc, "Read the file, Json part failed!");
-                var success =  await WhenIPostJsonToURL(jSonText, url);
+                var success =  await WhenIPostJsonToURL(jSonText, endPointURL);
                 if (success) return true;
                 return Failed(proc, "Failed to post!");
             }
@@ -296,13 +306,15 @@ namespace Generic.Steps
         }
 
         [When(@"I Patch Json ""(.*)"" To URL ""(.*)""")]
-        public async Task<bool> WhenIPatchJsonToURL(string jSonString,string url)
+        public async Task<bool> WhenIPatchJsonToURL(string jSonString,string endPointURL)
         {
-            string proc = $"When I Patch Json {jSonString} To URL {url}";
+            endPointURL = StringValues.TextReplacementService(endPointURL);
+            string proc = $"When I Patch Json {jSonString} To URL {endPointURL}";
+
             if (CombinedSteps.OutputProc(proc))
             {
                 // Note: APIUtil.Post is used for patching in this codebase; consider a dedicated Patch helper if needed.
-                var response = await APIUtil.Post(url, jSonString, "post", false);
+                var response = await APIUtil.Post(endPointURL, jSonString, "post", false);
                 if (response.IsSuccessStatusCode)
                 {
                     DebugOutput.Log("Successful PATCH - JSON file created with output (may be empty).");
@@ -314,9 +326,10 @@ namespace Generic.Steps
         }
 
         [When(@"I Patch Json File ""(.*)"" To URL ""(.*)""")]
-        public async Task<bool> WhenIPatchJsonFileToURL(string jsonFileLocation,string url)
+        public async Task<bool> WhenIPatchJsonFileToURL(string jsonFileLocation,string endPointURL)
         {
-            string proc = $"When I Patch Json {jsonFileLocation} To URL {url}";
+            endPointURL = StringValues.TextReplacementService(endPointURL);
+            string proc = $"When I Patch Json File {jsonFileLocation} To URL {endPointURL}";
             if (CombinedSteps.OutputProc(proc))
             {
                 if (!FileUtils.OSFileCheck(jsonFileLocation))
@@ -325,7 +338,7 @@ namespace Generic.Steps
                 }
                 var jSonText = JsonValues.ReadOSJsonFile(jsonFileLocation);
                 if (jSonText == null) return Failed(proc, "Read the file, Json part failed!");
-                var success =  await WhenIPostJsonToURL(jSonText, url);
+                var success =  await WhenIPostJsonToURL(jSonText, endPointURL);
                 if (success) return true;
                 return Failed(proc, "Failed to post!");
             }

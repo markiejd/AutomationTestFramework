@@ -1,5 +1,5 @@
 {
-    "URL": "localhost",    
+    "URL": "http://localhost:4000",    
     "DefaultUserName": "Test User",
     "DefaultPassword": "Password",
     "FileSystemName": "dev"

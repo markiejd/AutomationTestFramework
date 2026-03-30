@@ -1,4 +1,5 @@
-﻿using Core.Configuration;
+﻿using AppXAPI;
+using Core.Configuration;
 using Core.FileIO;
 using Core.Logging;
 using System.Text.RegularExpressions;
@@ -14,176 +15,138 @@ namespace Core.Transformations
 		/// <param name="value"></param>
 		/// <returns>text supplied changed</returns>
 		public static string TextReplacementService(string value)
-        {
+		{
 			DebugOutput.Log($"TextReplacementService {value}");
-			if (value.Contains("ATFVARIABLE"))
+
+			if (string.IsNullOrEmpty(value))
 			{
-				// find the next char after VARIABLE don't use REGEX as we want the actual text
-				var regex = new Regex(@"ATFVARIABLE(\d+)");
-				var match = regex.Match(value);
-				if (match.Success)
-				{
-					var variableNumber = match.Groups[1].Value;
-					DebugOutput.Log($"We have found ATFVARIABLE {variableNumber}");
-					// convert variableNumber to int and get the value from the TargetConfiguration.Configuration.ATFVariableArray
-					int variableCounter = -1;
-					if (int.TryParse(match.Groups[1].Value, out int parsedNumber) && parsedNumber >= 0 && parsedNumber <= 9)
-					{
-						variableCounter = parsedNumber;
-						DebugOutput.Log($"Converted ATFVARIABLE to number: {variableNumber}");
-						// get this value from the TargetConfiguration.Configuration.ATFVariableArray
-						var replacement = TargetConfiguration.Configuration.ATFVariableArray[variableCounter];
-						// in the orginal text 'value' replace VARIABLEx with the value from the array, even if null
-						value = value.Replace($"ATFVARIABLE{variableNumber}", replacement);
-					}
-					else
-					{
-						DebugOutput.Log($"Invalid ATFVARIABLE number: {match.Groups[1].Value} we only do 0 to 9 inclusive.  keeping ATFVARIABLE as is.");
-					}
-				}
+				return value;
 			}
-			if (value.Contains("MYREPO"))
-				{
-					var repoDir = FileUtils.GetRepoDirectory();
-					value = value.Replace("MYREPO", repoDir);
-				}
-			if (value.Contains("%APPDATA"))
+
+			// Special cases that return immediately
+			if (TryHandleEpochSlice(value, out var epochSlice))
 			{
-				var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-				value = value.Replace("%APPDATA", appData);
+				return epochSlice;
 			}
-			if (value.Contains("<DATEACTION>"))
+
+			if (TryHandleTodayMath(value, out var mathDate))
 			{
-				//103 is dd/MM/yyyy
-				var dateChange = DateValues.ReturnNowDateAsString("103");
-				value = value.Replace("<DATEACTION>", dateChange);
+				return mathDate;
 			}
-			if (value.Contains("DATEACTION"))
-            {
-				//103 is dd/MM/yyyy
-				var dateChange = DateValues.ReturnNowDateAsString("103");
-				value = value.Replace("DATEACTION", dateChange);
-			}
-			if (value.Contains("<DATEREVERSE>"))
-			{
-				//23 is yyyy-mm-dd
-				var dateChange = DateValues.ReturnNowDateAsString("23");
-				value = value.Replace("<DATEREVERSE>", dateChange);
-			}
-			if (value.Contains("DATEREVERSE"))
-			{
-				//23 is yyyy-mm-dd
-				var dateChange = DateValues.ReturnNowDateAsString("23");
-				value = value.Replace("DATEREVERSE", dateChange);
-			}
-			if (value.Contains("<DATEWARRANT>"))
-            {
-				var dateChange = DateValues.ReturnFirstOfThisMonth("23");
-				value = value.Replace("<DATEWARRANT>", dateChange);
-			}
-			if (value.Contains("DATEWARRANT"))
-			{
-				var dateChange = DateValues.ReturnFirstOfThisMonth("23");
-				value = value.Replace("DATEWARRANT", dateChange);
-			}
-			if (value.Contains("<EPOCH>"))
-			{
-				var featureEpoch = EPOCHControl.Epoch;
-				DebugOutput.Log($"Replacing EPOCH with Epoch number {featureEpoch} ");
-				value = value.Replace("<EPOCH>", featureEpoch);
-			}
-			if (value.Contains("EPOCH"))
-            {
-				var featureEpoch = EPOCHControl.Epoch;
-				if (featureEpoch == null) featureEpoch = "000001";
-				if (value.Contains("|"))
-				{
-					string[] brokenUp = value.Split("|");					
-					DebugOutput.Log($"We don't want the WHOLE of the EPOCH");
-					int number = 0;
-					try
-					{
-						number = Int32.Parse(brokenUp[1]);
-						DebugOutput.Log($"We only want the last {number} chars of EPOCH ");
-						var toBeReturned = featureEpoch.Substring(featureEpoch.Length - number);
-						if (toBeReturned != null)
-						{
-							return toBeReturned;
-						} 
-					}
-					catch
-					{
-						DebugOutput.Log($"Tried to break up EPOCH - FAILED!");
-					}
-				}
-				DebugOutput.Log($"Replacing EPOCH with Epoch number {featureEpoch} ");
-				value = value.Replace("EPOCH", featureEpoch);
-			}
+
 			if (value.Contains("FIRSTOFMOTH") || value.Contains("FIRSTOFTHEMONTH"))
 			{
 				var date = DateValues.ReturnFirstOfThisMonth("103");
-				DebugOutput.Log($"Replacing FIRSTOFTHEMONTH with {date} ");
+				DebugOutput.Log($"Replacing FIRSTOFTHEMONTH with {date}");
 				return date;
 			}
-			if (value.Contains("NOW"))
-			{
-				if (value.Contains("ISH"))
-				{
-					var timeChange = TimeValues.ReturnNowTimeAsString();
-					value = value.Replace("NOW", timeChange);					
-				}
-				else
-				{
-					var timeChange = TimeValues.ReturnNowTimeAsString();
-					value = value.Replace("NOW", timeChange);
-				}
-			}
-			if (value.Contains("CURRENTHOUR"))
-			{
-				var timeChange = TimeValues.ReturnNowTimeAsString("HH");
-				value = value.Replace("CURRENTHOUR", timeChange);
-			}
-			if (value.Contains("CURRENTMINUTE"))
-			{
-				var timeChange = TimeValues.ReturnNowTimeAsString("mm");
-				value = value.Replace("CURRENTMINUTE", timeChange);
-			}
+
+			// Dynamic ATF variables (ATFVARIABLE0..9)
+			value = ReplaceATFVariables(value);
+
+			// Alphabetical token replacements (easy to scan/maintain)
+			value = ReplaceToken(value, "%APPDATA", () => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+			value = ReplaceToken(value, "CURRENTHOUR", () => TimeValues.ReturnNowTimeAsString("HH"));
+			value = ReplaceToken(value, "CURRENTMINUTE", () => TimeValues.ReturnNowTimeAsString("mm"));
+			value = ReplaceToken(value, "DATEACTION", () => DateValues.ReturnNowDateAsString("103"));
+			value = ReplaceToken(value, "<DATEACTION>", () => DateValues.ReturnNowDateAsString("103"));
+			value = ReplaceToken(value, "DATEREVERSE", () => DateValues.ReturnNowDateAsString("23"));
+			value = ReplaceToken(value, "<DATEREVERSE>", () => DateValues.ReturnNowDateAsString("23"));
+			value = ReplaceToken(value, "<EPOCH>", GetEpochOrDefault);
+			value = ReplaceToken(value, "DATEFIRSTOFTHISMONTH", () => DateValues.ReturnFirstOfThisMonth("23"));
+			value = ReplaceToken(value, "EPOCH", GetEpochOrDefault);
+			value = ReplaceToken(value, "MYREPO", FileUtils.GetRepoDirectory);
+			value = ReplaceToken(value, "NOW", () => TimeValues.ReturnNowTimeAsString());
+			value = ReplaceToken(value, "URL", () => VariableConfiguration.Configuration.URL);
+			value = ReplaceToken(value, "<URL>", () => VariableConfiguration.Configuration.URL);
+
 			if (value.Contains("TODAY"))
-            {
-				var countryCode = "101";
-				var dateFormatCountry = TargetConfiguration.Configuration.DateFormat;
-				if (dateFormatCountry == "UK") countryCode = "103";
-				if (value.Contains("+") || value.Contains("-"))
-                {
-					DebugOutput.Log($"We have some maths to do!");
-					bool plus = false;
-					if (value.Contains("+")) plus = true;
-					/// splits TODAY+10 into TODAY and 10,  TOMORROW-2 into TOMORROW and 2
-					string[] brokenUpText;
-					string returnDate;
-					if (plus)
-                    {
-						brokenUpText = value.Split("+");
-						returnDate = DateValues.MathsToDate(brokenUpText[1], "+");
-					}
-					else
-					{
-						brokenUpText = value.Split("-");
-						returnDate = DateValues.MathsToDate(brokenUpText[1], "-");
-					}
-					value = returnDate;
-					return returnDate;
-				}
-				var dateChange = DateValues.ReturnNowDateAsString(countryCode);
-				value = value.Replace("TODAY", dateChange);
+			{
+				var countryCode = TargetConfiguration.Configuration.DateFormat == "UK" ? "103" : "101";
+				value = value.Replace("TODAY", DateValues.ReturnNowDateAsString(countryCode));
 			}
+
+			// Add any new token replacements above this line to ensure they are processed before the debug output and return.
+			
+			// Debug output after all replacements to avoid logging intermediate states and to prevent logging excessively long strings.
 			DebugOutput.Log($"Size = {value.Length}");
 			if (value.Length < 1000)
 			{
 				DebugOutput.Log($"Returning after TextReplacement {value}");
 			}
+
 			return value;
-        }
+		}
+
+		/// Helper method to replace a token with a value from a factory function, only if the token is present in the input string.
+		private static string ReplaceToken(string input, string token, Func<string> valueFactory)
+		{
+			if (!input.Contains(token))
+			{
+				return input;
+			}
+
+			var replacement = valueFactory() ?? string.Empty;
+			return input.Replace(token, replacement);
+		}
+
+		private static string ReplaceATFVariables(string input)
+		{
+			return Regex.Replace(input, @"ATFVARIABLE(\d+)", match =>
+			{
+				var numberText = match.Groups[1].Value;
+				if (!int.TryParse(numberText, out var index) || index < 0 || index > 9)
+				{
+					DebugOutput.Log($"Invalid ATFVARIABLE number: {numberText}. Keeping token as-is.");
+					return match.Value;
+				}
+
+				var replacement = TargetConfiguration.Configuration.ATFVariableArray[index];
+				DebugOutput.Log($"Replacing ATFVARIABLE{numberText} with '{replacement}'");
+				return replacement ?? string.Empty;
+			});
+		}
+
+		private static string GetEpochOrDefault()
+		{
+			return EPOCHControl.Epoch ?? "000001";
+		}
+
+		private static bool TryHandleEpochSlice(string value, out string result)
+		{
+			result = string.Empty;
+			var match = Regex.Match(value, @"^EPOCH\|(\d+)$");
+			if (!match.Success)
+			{
+				return false;
+			}
+
+			var epoch = GetEpochOrDefault();
+			if (!int.TryParse(match.Groups[1].Value, out var count) || count <= 0 || count > epoch.Length)
+			{
+				DebugOutput.Log("Invalid EPOCH slice value. Falling back to normal token replacement.");
+				return false;
+			}
+
+			result = epoch.Substring(epoch.Length - count);
+			return true;
+		}
+
+		private static bool TryHandleTodayMath(string value, out string result)
+		{
+			result = string.Empty;
+			var match = Regex.Match(value, @"^TODAY([+-])(\d+)$");
+			if (!match.Success)
+			{
+				return false;
+			}
+
+			var op = match.Groups[1].Value;
+			var amount = match.Groups[2].Value;
+			result = DateValues.MathsToDate(amount, op);
+			return true;
+		}
+
 		
 		public static string[] ConvertCSVStringToArray(string csvString)
 		{
