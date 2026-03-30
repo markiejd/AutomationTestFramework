@@ -174,6 +174,50 @@ namespace Generic.Steps
         }
 
 
+        ///   JWT Tokens
+        /// 
+        [Given(@"JWT Token Created Using Payload ""([^""]*)"" At URL ""([^""]*)""")]
+        public bool GivenJWTTokenCreatedUsingPayloadAtURL(string payload, string endpoint)
+        {
+            string proc = $"Given JWT Token Created Using Payload \"{payload}\" At URL \"{endpoint}\"";
+            endpoint = StringValues.TextReplacementService(endpoint);
+            proc = $"Given JWT Token Created Using Payload \"{payload}\" At URL \"{endpoint}\"";
+            payload = payload.Replace("'", "\"");
+            proc = $"Given JWT Token Created Using Payload \"{payload}\" At URL \"{endpoint}\"";
+                
+            if (CombinedSteps.OutputProc(proc))
+            {
+                // we need to post the payload to the endpoint and extract the token from the response - this is very specific to how the API being tested implements token generation, so this step may need to be updated/overridden for specific APIs or use cases.
+                var response = APIUtil.Post(endpoint, payload, "post", false).Result;
+                if (!response.IsSuccessStatusCode) return Failed(proc, $"Failed to get token from endpoint. Received status code {response.StatusCode} with content: {response.Content}");
+                var responseBody = response.Content.ReadAsStringAsync().Result;
+                DebugOutput.Log($"Received response body for token request: {responseBody}");
+                // This assumes the token is returned in a JSON object with a property named "token" - this will likely need to be updated for different APIs.
+                try
+                {
+                    var tokenResponse = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(responseBody);
+                    if (tokenResponse != null && tokenResponse.ContainsKey("token"))
+                    {
+                        APIUtil.JWTToken = tokenResponse["token"].ToString() ?? "";
+                        if (string.IsNullOrEmpty(APIUtil.JWTToken)) return Failed(proc, "Token value is null or empty after extraction. Make sure the response contains a valid 'token' property.");
+                        DebugOutput.Log("Token successfully extracted and stored for future use.");
+                        return true;
+                    }
+                    else
+                    {
+                        return Failed(proc, "Token not found in response. Make sure the response contains a 'token' property.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return Failed(proc, $"Exception while parsing token from response: {ex.Message}");
+                }
+            }
+            CombinedSteps.Failure(proc);
+            return false;
+        }
+
+
 
 
 

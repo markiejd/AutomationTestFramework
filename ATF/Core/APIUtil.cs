@@ -37,6 +37,8 @@ namespace Core
             return response;
         }
 
+        public static string JWTToken = "";
+
 
         //////////   GET
         ///
