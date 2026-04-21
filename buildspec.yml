@@ -1,0 +1,43 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      dotnet: 10.0
+    commands:
+      - echo Checking internet connectivity
+      - curl -I https://www.google.com
+      - yum install -y wget unzip
+      - echo Installing Google Chrome
+      - wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+      - yum install -y ./google-chrome-stable_current_x86_64.rpm
+      - google-chrome --version
+
+  pre_build:
+    commands:
+      - echo Restoring packages
+      - dotnet restore ATF/TestAutomationSpecFlow.sln
+
+  build:
+    commands:
+      - echo Building solution
+      - dotnet build ATF/TestAutomationSpecFlow.sln --configuration Release --no-restore
+
+  post_build:
+    commands:
+      - echo Running filtered tests
+      - dotnet test ATF/TestAutomationSpecFlow.sln --configuration Release --no-build --filter "TestCategory=TEST001" --logger "trx;LogFileName=TEST001.trx" --results-directory ATF/TestResults
+
+reports:
+  TEST001-reports:
+    files:
+      - '**/*.trx'
+    base-directory: ATF/TestResults
+    file-format: VISUALSTUDIOTRX
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: ATF/TestResults
+  discard-paths: no
+  packaging: ZIP
