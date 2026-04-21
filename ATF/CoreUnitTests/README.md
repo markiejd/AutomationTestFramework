@@ -36,7 +36,7 @@ CoreUnitTests/
 
 ### System Requirements
 - **Windows 10+** or **Linux/macOS**
-- **.NET 9.0 SDK** installed
+- **.NET 10.0 SDK** installed
 - **PowerShell** or **Command Prompt**
 
 ### Verify Installation
@@ -44,7 +44,7 @@ CoreUnitTests/
 dotnet --version
 ```
 
-Should output version 9.0.0 or higher.
+Should output version 10.0.0 or higher.
 
 ---
 
@@ -269,7 +269,7 @@ for /L %i in (1,1,3) do dotnet test CoreUnitTests\CoreUnitTests.csproj
 
 | Issue | Solution |
 |-------|----------|
-| `dotnet: command not found` | Install .NET 9.0 SDK |
+| `dotnet: command not found` | Install .NET 10.0 SDK |
 | `Test project not found` | Run from ATF root directory |
 | `Build failed` | Check Core project references |
 | `Encryption tests fail` | Set ENCRYPTION_KEY and ENCRYPTION_IV environment variables |

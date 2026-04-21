@@ -220,7 +220,7 @@ dotnet test CoreUnitTests\CoreUnitTests.csproj --no-build -v normal
 
 ### Option 3: Using xUnit Console Runner
 ```bash
-xunit.console.exe CoreUnitTests\bin\Debug\net9.0\CoreUnitTests.dll
+xunit.console.exe CoreUnitTests\bin\Debug\net10.0\CoreUnitTests.dll
 ```
 
 ---
