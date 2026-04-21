@@ -37,7 +37,12 @@ namespace AppSpecFlow.Libs
                 // Reads the TargetSettings.<ENV> found in AppTargets\Resources  - Application Configuration
                 try
                 {
-                    TargetConfiguration.ReadJson();
+                    var whatsReturned = TargetConfiguration.ReadJson();
+                    if (whatsReturned == null)
+                    {
+                        DebugOutput.Log("TestSetup - TargetConfiguration.ReadJson() returned null, check previous logs for details");
+                        throw new Exception("TargetConfiguration.ReadJson() failed to read configuration");
+                    }
                     DebugOutput.Log("TestSetup - TargetConfiguration.ReadJson() completed successfully");
                 }
                 catch (Exception ex)
