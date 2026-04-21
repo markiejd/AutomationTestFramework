@@ -95,7 +95,7 @@ Test results are color-coded for easy identification:
 
 ## Dependencies
 
-- .NET 9.0 or higher
+- .NET 10.0 or higher
 - Newtonsoft.Json (NuGet package)
 
 ## Example TRX File
