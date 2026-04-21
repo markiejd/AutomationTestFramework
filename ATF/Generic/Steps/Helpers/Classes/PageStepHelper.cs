@@ -491,6 +491,10 @@ namespace Generic.Steps.Helpers.Classes
         {
             DebugOutput.Log($"Proc - GetCorrectPageName {pageName}");  
             var app = TargetConfiguration.Configuration.AreaPath;
+            if (string.IsNullOrWhiteSpace(app))
+            {
+                throw new InvalidOperationException("TargetConfiguration.Configuration.AreaPath is empty. Check that targetSettings.<environment>.json was loaded during test startup.");
+            }
             // Remove existing application path prefixes (case variations)
             if (pageName.Contains(app)) pageName = pageName.Replace(app, "");
             if (pageName.Contains(app.ToLower())) pageName = pageName.Replace(app.ToLower(), "");

@@ -49,29 +49,62 @@ namespace Core.Configuration
         public static TargetConfigurationData? ReadJson()
         {
             var fileName = $"targetSettings.{Environment}.json";
-            var directory = "./AppTargets/Resources/";
-            var fullFileName = directory + fileName;
-            if (!FileUtils.FileCheck(fullFileName))
-            {
-                DebugOutput.Log($"Unable to find the file {fullFileName}");
-                return null;
-            }
-            var jsonText = File.ReadAllText(fullFileName);
-            DebugOutput.Log($"Json - {jsonText}");
+            var fullFileName = ResolveConfigurationPath(fileName);
+
+            DebugOutput.Log($"TargetConfiguration.ReadJson() using file: {fullFileName}");
+
             try
             {
+                var jsonText = File.ReadAllText(fullFileName);
+                DebugOutput.Log($"Json - {jsonText}");
+
                 var obj = JsonConvert.DeserializeObject<TargetConfigurationData>(jsonText);
-                if (obj == null) return null;
+                if (obj == null)
+                {
+                    throw new InvalidOperationException($"Failed to deserialize configuration file '{fullFileName}'.");
+                }
+
+                if (string.IsNullOrWhiteSpace(obj.AreaPath))
+                {
+                    throw new InvalidOperationException($"Configuration file '{fullFileName}' was loaded, but AreaPath is empty.");
+                }
+
                 Configuration = obj;
-                // DebugOutput.Log($">>>> {obj.AreaPath}  ... {Configuration.AreaPath}");
-                // DebugOutput.Log($"THIS DEBUG LEVEL SET TO {System.Environment.GetEnvironmentVariable("ENVIRONMENT")}");
                 return Configuration;
             }
-            catch
+            catch (Exception ex) when (ex is not FileNotFoundException)
             {
-                DebugOutput.Log($"We out ere");
-                return null;
+                DebugOutput.Log($"TargetConfiguration.ReadJson() failed: {ex.Message}");
+                throw;
             }
+        }
+
+        private static string ResolveConfigurationPath(string fileName)
+        {
+            var candidatePaths = new List<string>
+            {
+                Path.Combine(AppContext.BaseDirectory, "AppTargets", "Resources", fileName),
+                Path.Combine(Directory.GetCurrentDirectory(), "AppTargets", "Resources", fileName)
+            };
+
+            var currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
+            while (currentDirectory != null)
+            {
+                candidatePaths.Add(Path.Combine(currentDirectory.FullName, "AppTargets", "Resources", fileName));
+                currentDirectory = currentDirectory.Parent;
+            }
+
+            foreach (var candidatePath in candidatePaths.Distinct())
+            {
+                DebugOutput.Log($"TargetConfiguration.ReadJson() checking: {candidatePath}");
+                if (File.Exists(candidatePath))
+                {
+                    return candidatePath;
+                }
+            }
+
+            throw new FileNotFoundException(
+                $"Unable to find configuration file '{fileName}'. Searched: {string.Join(" | ", candidatePaths.Distinct())}");
         }
 
 
