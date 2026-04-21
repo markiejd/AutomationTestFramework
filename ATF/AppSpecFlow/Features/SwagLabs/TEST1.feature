@@ -2,9 +2,10 @@
 Feature: TEST1 TEST2 
      TEST4 
      TEST5 
+     dotnet test --filter:"TestCategory=TEST3TEST1" --logger "trx;logfilename=TEST3TEST1.trx"
           
   
-Scenario Outline: TEST1-TEST2 
+Scenario Outline: ONE
    Given Browser Is Open
    When I Navigate To "https://www.saucedemo.com/"
    Then Page "Login" Is Displayed
