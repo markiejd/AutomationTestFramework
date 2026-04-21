@@ -26,35 +26,119 @@ namespace AppSpecFlow.Libs
         [BeforeTestRun]
         public static void TestSetup()
         {
-            var assembly = Assembly.Load("AppTargets");
-            TargetForms.Instance.PopulateList(assembly);
-            // Reads the TargetSettings.<ENV> found in AppTargets\Resources  - Application Configuration
-            TargetConfiguration.ReadJson();
+            try
+            {
+                DebugOutput.Log($"TestSetup - Current Directory: {Directory.GetCurrentDirectory()}");
+                
+                var assembly = Assembly.Load("AppTargets");
+                TargetForms.Instance.PopulateList(assembly);
+                DebugOutput.Log("TestSetup - AppTargets assembly loaded successfully");
+                
+                // Reads the TargetSettings.<ENV> found in AppTargets\Resources  - Application Configuration
+                try
+                {
+                    TargetConfiguration.ReadJson();
+                    DebugOutput.Log("TestSetup - TargetConfiguration.ReadJson() completed successfully");
+                }
+                catch (Exception ex)
+                {
+                    DebugOutput.Log($"ERROR: TargetConfiguration.ReadJson() failed - {ex.Message}");
+                    throw;
+                }
 
-            // Reads the Locators found in Core\Configuration\Resources - Locators Lists
-            TargetLocator.ReadJson();
+                // Reads the Locators found in Core\Configuration\Resources - Locators Lists
+                try
+                {
+                    TargetLocator.ReadJson();
+                    DebugOutput.Log("TestSetup - TargetLocator.ReadJson() completed successfully");
+                }
+                catch (Exception ex)
+                {
+                    DebugOutput.Log($"ERROR: TargetLocator.ReadJson() failed - {ex.Message}");
+                    throw;
+                }
 
-            // Reads the browser.<driver>.<ENV> found in AppTargets\Resources\Browsers - Browser Settings
-            Drivers.ReadJson();
+                // Reads the browser.<driver>.<ENV> found in AppTargets\Resources\Browsers - Browser Settings
+                try
+                {
+                    Drivers.ReadJson();
+                    DebugOutput.Log("TestSetup - Drivers.ReadJson() completed successfully");
+                }
+                catch (Exception ex)
+                {
+                    DebugOutput.Log($"ERROR: Drivers.ReadJson() failed - {ex.Message}");
+                    throw;
+                }
 
-            // Read the Var-<ENV> found in AppTargets\Resources\Variables - Variables Settings
-            var x = JsonValues.ReadAPIListJsonFile();
-            if (x != null) VariableConfiguration.GetVariableModel(x);    
+                // Read the Var-<ENV> found in AppTargets\Resources\Variables - Variables Settings
+                try
+                {
+                    var x = JsonValues.ReadAPIListJsonFile();
+                    if (x != null) VariableConfiguration.GetVariableModel(x);
+                    DebugOutput.Log("TestSetup - JsonValues.ReadAPIListJsonFile() completed successfully");
+                }
+                catch (Exception ex)
+                {
+                    DebugOutput.Log($"ERROR: JsonValues.ReadAPIListJsonFile() failed - {ex.Message}");
+                    throw;
+                }
 
-            // Set the debug level        
-            HooksCode.SetDebug(TargetConfiguration.Configuration.Debug);
+                // Set the debug level        
+                HooksCode.SetDebug(TargetConfiguration.Configuration.Debug);
+                DebugOutput.Log("TestSetup - Debug level set successfully");
 
-            // IF TestReport Setup new Test Report
-            if (TargetConfiguration.Configuration.TestReport) TargetTestReport.NewTestReport();
+                // IF TestReport Setup new Test Report
+                if (TargetConfiguration.Configuration.TestReport)
+                {
+                    TargetTestReport.NewTestReport();
+                    DebugOutput.Log("TestSetup - TargetTestReport.NewTestReport() completed successfully");
+                }
 
-            // IF Jira Config in the TargetSettings Read AppTargets\Resources\Variables\Jira\JiraSettings<ENV>
-            if (TargetConfiguration.Configuration.Jira) TargetJiraConfiguration.ReadJson();
+                // IF Jira Config in the TargetSettings Read AppTargets\Resources\Variables\Jira\JiraSettings<ENV>
+                if (TargetConfiguration.Configuration.Jira)
+                {
+                    try
+                    {
+                        TargetJiraConfiguration.ReadJson();
+                        DebugOutput.Log("TestSetup - TargetJiraConfiguration.ReadJson() completed successfully");
+                    }
+                    catch (Exception ex)
+                    {
+                        DebugOutput.Log($"ERROR: TargetJiraConfiguration.ReadJson() failed - {ex.Message}");
+                        throw;
+                    }
+                }
 
-            // IF AIChatBot Config in the TargetSettings Read AppTargets\Resources\Variables\AIChatBot\AIChatBot.<ENV>
-            if (TargetConfiguration.Configuration.AIChatBot) TargetAIChatBotConfiguration.ReadJson();
+                // IF AIChatBot Config in the TargetSettings Read AppTargets\Resources\Variables\AIChatBot\AIChatBot.<ENV>
+                if (TargetConfiguration.Configuration.AIChatBot)
+                {
+                    try
+                    {
+                        TargetAIChatBotConfiguration.ReadJson();
+                        DebugOutput.Log("TestSetup - TargetAIChatBotConfiguration.ReadJson() completed successfully");
+                    }
+                    catch (Exception ex)
+                    {
+                        DebugOutput.Log($"ERROR: TargetAIChatBotConfiguration.ReadJson() failed - {ex.Message}");
+                        throw;
+                    }
+                }
 
-            // IF AnswerIsAnalysed Config set up New Analysis Report
-            if (TargetAIChatBotConfiguration.Configuration.AnswerIsAnalysed && TargetConfiguration.Configuration.AIChatBot) TargetAnalysisReport.NewAnalysisReport();
+                // IF AnswerIsAnalysed Config set up New Analysis Report
+                if (TargetAIChatBotConfiguration.Configuration.AnswerIsAnalysed && TargetConfiguration.Configuration.AIChatBot)
+                {
+                    TargetAnalysisReport.NewAnalysisReport();
+                    DebugOutput.Log("TestSetup - TargetAnalysisReport.NewAnalysisReport() completed successfully");
+                }
+
+                DebugOutput.Log("TestSetup - ALL INITIALIZATION COMPLETED SUCCESSFULLY");
+            }
+            catch (Exception ex)
+            {
+                DebugOutput.Log($"CRITICAL ERROR in TestSetup: {ex.Message}");
+                DebugOutput.Log($"Stack Trace: {ex.StackTrace}");
+                throw;
+            }
         }
 
 
