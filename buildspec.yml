@@ -26,8 +26,11 @@ phases:
 
   post_build:
     commands:
+      - export RUN_TS=$(date +%Y%m%d-%H%M%S)
+      - export RUN_LABEL="${TEST_CATEGORY:-All}-$RUN_TS"
+      - echo Build run label: $RUN_LABEL
       - echo Running filtered tests for category $TEST_CATEGORY
-      - dotnet test ATF/TestAutomationSpecFlow.sln --configuration Release --no-build --filter "TestCategory=$TEST_CATEGORY" --logger "trx;LogFileName=$TEST_CATEGORY.trx" --results-directory ATF/TestResults
+      - dotnet test ATF/TestAutomationSpecFlow.sln --configuration Release --no-build --filter "TestCategory=$TEST_CATEGORY" --logger "trx;LogFileName=$RUN_LABEL.trx" --results-directory ATF/TestResults
 
 reports:
   test-reports:
@@ -37,6 +40,7 @@ reports:
     file-format: VISUALSTUDIOTRX
 
 artifacts:
+  name: TestResults-$TEST_CATEGORY-$(date +%Y%m%d-%H%M%S)
   files:
     - '**/*'
   base-directory: ATF/TestResults
