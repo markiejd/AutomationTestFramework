@@ -28,7 +28,7 @@ phases:
     commands:
       - export RUN_TS=$(date +%Y%m%d-%H%M%S)
       - export RUN_LABEL="${TEST_CATEGORY:-All}-$RUN_TS"
-      - echo Build run label: $RUN_LABEL
+      - 'echo Build run label: $RUN_LABEL'
       - echo Running filtered tests for category $TEST_CATEGORY
       - dotnet test ATF/TestAutomationSpecFlow.sln --configuration Release --no-build --filter "TestCategory=$TEST_CATEGORY" --logger "trx;LogFileName=$RUN_LABEL.trx" --results-directory ATF/TestResults
 
