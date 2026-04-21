@@ -24,15 +24,10 @@ phases:
       - echo Building solution
       - dotnet build ATF/TestAutomationSpecFlow.sln --configuration Release --no-restore
 
-  post_build:
-    commands:
-      - echo Running filtered tests
-      - dotnet test ATF/TestAutomationSpecFlow.sln \
-        --configuration Release \
-        --no-build \
-        --filter "TestCategory=TEST001" \
-        --logger "trx;LogFileName=TEST001.trx" \
-        --results-directory ATF/TestResults
+  execute_tests:
+  commands:
+    - echo Running filtered tests
+    - dotnet test ATF/TestAutomationSpecFlow.sln --configuration Release --no-build --filter "TestCategory=TEST001" --logger "trx;LogFileName=TEST001.trx" --results-directory ATF/TestResults
 
 reports:
   TEST001-reports:
