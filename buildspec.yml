@@ -26,11 +26,11 @@ phases:
 
   post_build:
     commands:
-      - echo Running filtered tests
-      - dotnet test ATF/TestAutomationSpecFlow.sln --configuration Release --no-build --filter "TestCategory=TEST001" --logger "trx;LogFileName=TEST001.trx" --results-directory ATF/TestResults
+      - echo Running filtered tests for category $TEST_CATEGORY
+      - dotnet test ATF/TestAutomationSpecFlow.sln --configuration Release --no-build --filter "TestCategory=$TEST_CATEGORY" --logger "trx;LogFileName=$TEST_CATEGORY.trx" --results-directory ATF/TestResults
 
 reports:
-  TEST001-reports:
+  test-reports:
     files:
       - '**/*.trx'
     base-directory: ATF/TestResults
