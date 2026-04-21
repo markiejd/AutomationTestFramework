@@ -7,8 +7,9 @@ phases:
     commands:
       - echo Checking internet connectivity
       - curl -I https://www.google.com
+
+      - echo Installing Chrome
       - yum install -y wget unzip
-      - echo Installing Google Chrome
       - wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
       - yum install -y ./google-chrome-stable_current_x86_64.rpm
       - google-chrome --version
@@ -26,7 +27,12 @@ phases:
   post_build:
     commands:
       - echo Running filtered tests
-      - dotnet test ATF/TestAutomationSpecFlow.sln --configuration Release --no-build --filter "TestCategory=TEST001" --logger "trx;LogFileName=TEST001.trx" --results-directory ATF/TestResults
+      - dotnet test ATF/TestAutomationSpecFlow.sln \
+        --configuration Release \
+        --no-build \
+        --filter "TestCategory=TEST001" \
+        --logger "trx;LogFileName=TEST001.trx" \
+        --results-directory ATF/TestResults
 
 reports:
   TEST001-reports:
