@@ -1,3 +1,6 @@
+# ChromeDriver binaries - downloaded automatically at runtime via WebDriverManager
+Chrome/
+
 # Ignore compiled files and folders
 bin/
 obj/
