@@ -15,6 +15,7 @@ using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.IE;
 using WebDriverManager;
 using WebDriverManager.DriverConfigs.Impl;
+using WebDriverManager.Helpers;
 
 namespace Generic.Steps.Helpers.Classes
 {
@@ -114,8 +115,8 @@ namespace Generic.Steps.Helpers.Classes
 
             DebugOutput.Log($"READING CHROME LANG: {ChromeInstance?.Languages}");
 
-            // Automatically download and manage Chrome driver binary
-            new DriverManager().SetUpDriver(new ChromeConfig());
+            // Automatically download and manage Chrome driver binary, matched to installed Chrome version
+            new DriverManager().SetUpDriver(new ChromeConfig(), VersionResolveStrategy.MatchingBrowser);
 
             var options = new ChromeOptions();
 
